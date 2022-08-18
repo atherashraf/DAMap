@@ -1,0 +1,174 @@
+import 'ol/ol.css';
+import 'ol-ext/dist/ol-ext.css'
+// import '../static/css/LayerSwitcher.css'
+// @ts-ignore
+import RedPinIcon from "./static/img/red_pin_icon_16.png"
+
+import Map from 'ol/Map';
+import View from 'ol/View';
+
+
+import {defaults as defaultControls, FullScreen} from 'ol/control';
+import BaseLayers from "./layers/BaseLayers";
+import LayerSwitcher from "ol-ext/control/LayerSwitcher";
+import MapToolbar from "./controls/MapToolbar";
+
+
+class MapVM {
+    map: Map = null
+    overlayLayers: object = {};
+    mapExtent: number[] = [
+        7031250.271849444,
+        2217134.3474655207,
+        8415677.728150556,
+        4922393.652534479
+    ]
+
+    initMap() {
+        this.map = new Map({
+            controls: defaultControls().extend([
+                new FullScreen(),
+                new MapToolbar({mapVM: this})
+            ]),
+            view: new View({
+                center: [7723464, 3569764],
+                zoom: 5
+            }),
+        });
+        this.addBaseLayers()
+        this.addSidebarController();
+        // this.addLayerSwitcher()
+    }
+
+    addBaseLayers() {
+        const bl = new BaseLayers(this)
+        bl.addBaseLayers()
+        // const osm = bl.getBingMapLayer("AerialWithLabelsOnDemand")
+        // this.map.addLayer(osm)
+    }
+
+    addSidebarController() {
+        // let sidebarElem: HTMLElement = document.querySelector('.sidebar');
+        // sidebarElem.style.display = "block";
+        // let sidebar: Sidebar = new Sidebar({element: 'sidebar', position: 'right'});
+        // this.getMap().addControl(sidebar);
+    }
+
+    addLayerSwitcher() {
+        this.map.addControl(
+            new LayerSwitcher({
+                // target:$(".layerSwitcher").get(0),
+                // displayInLayerSwitcher: function (l) { return false; },
+                show_progress: true,
+                // extent: true,
+                trash: true,
+                // oninfo: function (l) { alert(l.get("title")); }
+            })
+        )
+    }
+
+    setTarget(target: string) {
+        this.map.setTarget(target);
+        setTimeout(() => this.map.updateSize(), 2000);
+
+    }
+
+    getMap(): Map {
+        return this.map;
+    }
+
+    zoomToFullExtent() {
+        // const extent = [7031250.271849444, 2217134.3474655207, 8415677.728150556, 4922393.652534479]
+        // @ts-ignore
+        this.map.getView().fit(this.mapExtent, this.map.getSize());
+    }
+
+    // addSelectionLayer() {
+    //     const title = "sel_layer";
+    //     const vectorLayer = new VectorLayer({
+    //         // @ts-ignore
+    //         title: title,
+    //         source: new VectorSource(),
+    //         style: new Style({
+    //             image: new CircleStyle({
+    //                 radius: 10,
+    //                 fill: new Fill({color: 'yellow'}),
+    //                 stroke: new Stroke({
+    //                     color: [0, 0, 0], width: 3
+    //                 })
+    //             })
+    //         })
+    //     });
+    //     this.addOverlayLayer(vectorLayer, title)
+    // }
+    //
+    // getSelectionLayer(): VectorLayer<VectorSource> {
+    //     // @ts-ignore
+    //     return this.overlayLayers["sel_layer"]
+    // }
+    //
+    // getIconStyle() {
+    //     return new Style({
+    //         image: new Icon({
+    //             anchor: [0.5, 15],
+    //             anchorXUnits: 'fraction',
+    //             anchorYUnits: 'pixels',
+    //             src: RedPinIcon
+    //         }),
+    //     });
+    // }
+    //
+    //
+    // addGeoJSONLayer(geojsonObject: object) {
+    //     const title = "project_location"
+    //     const vectorSource = new VectorSource({
+    //         features: new GeoJSON().readFeatures(geojsonObject),
+    //     });
+    //     const vectorLayer = new VectorLayer({
+    //         //@ts-ignore
+    //         title: title,
+    //         source: vectorSource,
+    //         style: () => this.getIconStyle()
+    //     });
+    //     this.addOverlayLayer(vectorLayer, title)
+    // }
+    //
+    // addOverlayLayer(layer: VectorLayer<any>, title: string) {
+    //     // @ts-ignore
+    //     this.overlayLayers[title] = layer
+    //     this.map.addLayer(layer)
+    // }
+    //
+    // selectFeature(id: any) {
+    //     // console.log("feature " + id)
+    //     // @ts-ignore
+    //     const layer = this.overlayLayers["project_location"]
+    //     const source = layer.getSource()
+    //     const feature = source.getFeatures().find((feature: Feature) => {
+    //         const properties = feature.getProperties()
+    //         if (properties.id === id)
+    //             return feature
+    //     })
+    //     // this.flash(feature)
+    //     const sel_source = this.getSelectionLayer().getSource()
+    //     sel_source.addFeature(feature)
+    //
+    // }
+    //
+    // clearSelectedFeatures() {
+    //     const source = this.getSelectionLayer().getSource()
+    //     source.clear()
+    // }
+    //
+    // zoomToSelectedFeatures() {
+    //     const layer = this.getSelectionLayer()
+    //     const extent = buffer(layer.getSource().getExtent(), 20 * 1000)
+    //     // @ts-ignore
+    //     extent && this.map.getView().fit(extent, this.map.getSize());
+    //
+    // }
+
+
+}
+
+export default MapVM;
