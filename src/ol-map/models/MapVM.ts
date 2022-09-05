@@ -33,6 +33,7 @@ class MapVM {
         8415677.728150556,
         4922393.652534479
     ]
+    isInit: Boolean = false;
 
     initMap(rightDrawerRef: RefObject<RightDrawer>, leftDrawerRef: RefObject<LeftDrawer>) {
         this.map = new Map({
@@ -48,6 +49,7 @@ class MapVM {
         this.addBaseLayers()
         this.addSidebarController();
         this.addLayerSwitcher()
+        this.isInit = true;
     }
 
     addBaseLayers() {

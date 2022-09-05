@@ -7,17 +7,24 @@ import RightDrawer from "../components/drawers/RightDrawer";
 export const leftDrawerRef = React.createRef<LeftDrawer>();
 export const rightDrawerRef = React.createRef<RightDrawer>();
 
-const MapView = () => {
+interface MapVMProps {
+    height?: number
+}
+
+const MapView = (props: MapVMProps) => {
     const mapVM = new MapVM()
-    mapVM.initMap();
     useEffect(() => {
+        if (!mapVM.isInit) {
+
+            mapVM.initMap(rightDrawerRef, leftDrawerRef);
+        }
         mapVM.setTarget('map');
-    })
+    }, [])
     return (
         <React.Fragment>
             <div style={{
                 display: "flex",
-                padding: "50px",
+                // padding: "50px",
                 width: "100%",
                 boxSizing: "border-box",
                 height: "100%"
@@ -25,7 +32,7 @@ const MapView = () => {
                 <LeftDrawer ref={leftDrawerRef}/>
                 <div id={"map"} style={{
                     width: "100%",
-                    height: "100%"
+                    height: props.height ? props.height : "100%"
                 }}/>
                 <RightDrawer ref={rightDrawerRef}/>
 
