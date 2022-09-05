@@ -2,21 +2,31 @@ import 'ol/ol.css';
 import 'ol-ext/dist/ol-ext.css'
 // import '../static/css/LayerSwitcher.css'
 // @ts-ignore
-import RedPinIcon from "./static/img/red_pin_icon_16.png"
+import RedPinIcon from "../static/img/red_pin_icon_16.png"
 
 import Map from 'ol/Map';
 import View from 'ol/View';
 
 
 import {defaults as defaultControls, FullScreen} from 'ol/control';
-import BaseLayers from "./layers/BaseLayers";
+import BaseLayers from "../layers/BaseLayers";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
-import MapToolbar from "./controls/MapToolbar";
+import MapToolbar from "../components/MapToolbar";
+import MVTLayer from "../layers/MVTLayer";
+import Api, {APIs} from "../../Api";
+import {RefObject} from "react";
+import RightDrawer from "../components/drawers/RightDrawer";
+import LeftDrawer from "../components/drawers/LeftDrawer";
+import AbstractVectorLayer from "../layers/AbstractVectorLayer";
 
+export interface IDALayers {
+    [key: string]: AbstractVectorLayer
+}
 
 class MapVM {
     map: Map = null
-    overlayLayers: object = {};
+    daLayer: IDALayers = {}
+    // leftDrawerRef: any
     mapExtent: number[] = [
         7031250.271849444,
         2217134.3474655207,
@@ -24,11 +34,11 @@ class MapVM {
         4922393.652534479
     ]
 
-    initMap() {
+    initMap(rightDrawerRef: RefObject<RightDrawer>, leftDrawerRef: RefObject<LeftDrawer>) {
         this.map = new Map({
             controls: defaultControls().extend([
                 new FullScreen(),
-                new MapToolbar({mapVM: this})
+                new MapToolbar({mapVM: this, rightDrawerRef: rightDrawerRef, leftDrawerRef: leftDrawerRef})
             ]),
             view: new View({
                 center: [7723464, 3569764],
@@ -37,7 +47,7 @@ class MapVM {
         });
         this.addBaseLayers()
         this.addSidebarController();
-        // this.addLayerSwitcher()
+        this.addLayerSwitcher()
     }
 
     addBaseLayers() {
@@ -169,6 +179,17 @@ class MapVM {
     // }
 
 
+    addVectorLayer(uuid: string) {
+        Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid}).then((payload) => {
+            const mvtLayer = new MVTLayer(payload, this)
+            this.daLayer[payload.uuid] = mvtLayer
+        })
+    }
+
+
+    getDALayer(layerId: string): AbstractVectorLayer {
+        return this.daLayer[layerId]
+    }
 }
 
 export default MapVM;

@@ -1,21 +1,30 @@
 import * as React from "react";
-import MapVM from "./ol-map/MapVM";
-import {useEffect} from "react";
-import SideDrawer from "./ol-map/components/SideDrawer";
+
+import LayerDesigner from "./ol-map/containers/LayerDesigner";
+import {createTheme, ThemeProvider, styled} from '@mui/material/styles';
+import {orange} from '@mui/material/colors';
+
+
+const theme = createTheme({
+    // @ts-ignore
+    status: {danger: orange[500],},
+    palette: {
+        primary: {
+            main: '#234184'
+        },
+        secondary: {
+            main: '#800000'
+        }
+    }
+
+});
 
 const App = () => {
-    const mapVM = new MapVM()
-    mapVM.initMap();
-    useEffect(() => {
-        mapVM.setTarget('map');
-    })
-
 
     return (
-        <React.Fragment>
-            <div id="map" style={{width: "100%", height: "100%"}}/>
-            <SideDrawer />
-        </React.Fragment>
+        <ThemeProvider theme={theme}>
+            <LayerDesigner layerId={"d7071f20-269a-11ed-a591-367dda4cf16d"}/>
+        </ThemeProvider>
     );
 }
 export default App;

@@ -1,23 +1,15 @@
-import MapVM from "../MapVM";
+import MapVM from "../models/MapVM";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import {BingMaps} from "ol/source";
 import {Group} from "ol/layer";
+import {ILayerSources, ILayerSourcesInfo} from "../utils/TypeDeclaration";
 
-interface LayerSourcesInfo {
-    source: string;
-    imagerySet?: string;
-    visible: boolean;
-    title: string;
-}
 
-interface LayerSources {
-    [key: string]: LayerSourcesInfo
-}
 
 class BaseLayers {
     private mapVM: MapVM;
-    private readonly layersSources: LayerSources;
+    private readonly layersSources: ILayerSources;
 
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM;
@@ -66,7 +58,7 @@ class BaseLayers {
         return layer
     }
 
-    getOSMLLayer(info: LayerSourcesInfo): TileLayer<OSM> {
+    getOSMLLayer(info: ILayerSourcesInfo): TileLayer<OSM> {
         return new TileLayer({
             //@ts-ignore
             title: info.title,
@@ -79,7 +71,7 @@ class BaseLayers {
         });
     }
 
-    getBingMapLayer(info: LayerSourcesInfo): TileLayer<BingMaps> {
+    getBingMapLayer(info: ILayerSourcesInfo): TileLayer<BingMaps> {
         return new TileLayer({
             //@ts-ignore
             title: info.title,
