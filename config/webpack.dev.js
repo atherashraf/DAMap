@@ -15,7 +15,7 @@ module.exports = merge(common, {
     plugins: [
         new HtmlWebpackPlugin({
             // title: 'Production',
-            template: path.join(__dirname, "public", "index.html"),
+            template: path.join(__dirname, "../public", "index.html"),
         }),
     ]
 
