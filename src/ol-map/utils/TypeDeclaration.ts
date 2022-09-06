@@ -34,6 +34,15 @@ export interface ILayerInfo {
     style?: DAFeatureStyle
 }
 
+export interface IMapInfo {
+    title: string
+    layers: {uuid:string, style: DAFeatureStyle, visible:boolean}[]
+    extent: number[]
+    srid: number
+    units: string
+    description?: string
+}
+
 export interface DAStyle{
     type: string
 }

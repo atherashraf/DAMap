@@ -3,23 +3,32 @@ import MapVM from "../models/MapVM";
 import {useEffect} from "react";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import RightDrawer from "../components/drawers/RightDrawer";
+import Api, {APIs} from "../../Api";
+import {DAFeatureStyle, IMapInfo} from "../utils/TypeDeclaration";
 
 export const leftDrawerRef = React.createRef<LeftDrawer>();
 export const rightDrawerRef = React.createRef<RightDrawer>();
 
 interface MapVMProps {
-    height?: number
+    height?: number,
+    uuid: string
 }
 
 const MapView = (props: MapVMProps) => {
     const mapVM = new MapVM()
     useEffect(() => {
-        if (!mapVM.isInit) {
-
-            mapVM.initMap(rightDrawerRef, leftDrawerRef);
+        const {uuid} = props
+        if (uuid) {
+            Api.get(APIs.DCH_MAP_INFO, {"uuid": props.uuid})
+                .then((payload: IMapInfo) => {
+                    console.log("payload", payload)
+                    if (!mapVM.isInit) {
+                        mapVM.initMap(payload,rightDrawerRef, leftDrawerRef);
+                    }
+                    mapVM.setTarget('map');
+                })
         }
-        mapVM.setTarget('map');
-    }, [])
+    }, [props])
     return (
         <React.Fragment>
             <div style={{

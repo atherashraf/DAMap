@@ -8,106 +8,110 @@ export const APIs = Object.freeze({
     DCH_LAYER_EXTENT: "dch/layer_extent/",
     DCH_LAYER_MVT_ZXY: "api/dch/layer_mvt/{uuid}/{z}/{x}/{y}/",
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
-    DCH_SAVE_STYLE:"api/dch/save_style/{uuid}",
+    DCH_SAVE_STYLE: "api/dch/save_style/{uuid}",
     DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
-    DCH_LAYER_FIELD_VALUE: "api/dch/layer_field_values/{uuid}/{field_name}/{field_type}/"
+    DCH_LAYER_FIELD_VALUE: "api/dch/layer_field_values/{uuid}/{field_name}/{field_type}/",
+    DCH_MAP_INFO: "api/dch/get_map_info/{uuid}/",
 });
 
 
 export default class Api {
     static getURL(api, params = null) {
-        const port = process.env.port;
         const API_URL = process.env.REACT_APP_API_URL;
         let url = `${API_URL}/${api}`;
         for (const key in params)
             url = url.replace(`{${key}}`, params[key]);
 
         url = url.slice(-1) !== "/" ? url + "/" : url;
-        console.log("url", url)
         return url;
     }
 
     static async getAccessToken() {
-        // try {
-        //   const state = store.getState();
-        //   const refreshToken = state.auth.refreshToken;
-        //   if (refreshToken) {
-        //     const url = Api.getURL(APIs.API_REFRESH_TOKEN);
-        //     const response = await fetch(url, {
-        //       method: "POST",
-        //       mode: "cors",
-        //       cache: "no-cache",
-        //       credentials: "same-origin",
-        //       headers: new Headers({
-        //         "Content-Type": "application/json"
-        //       }),
-        //       redirect: "follow", // manual, *follow, error
-        //       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //       body: JSON.stringify({
-        //         refresh: refreshToken
-        //       })
-        //     });
-        //     const data = await response.json();
-        //     console.log("accessToken", data);
-        //     return data.access;
-        //   }
-        // }catch (e){
-        //   CommonUtils.showSnackbar("Failed to contact to server. Please ask system administrator.");
-        // }
-        return true;
-    }
-
-    static async get(apiKey, params = {}, isJSON = true) {
-        try {
-            const accessToken = await this.getAccessToken(); //state.user.accessToken
-
-            // const state = store.getState();
-            if (accessToken) {
-                const headers = new Headers({
-                    "Authorization": "Bearer " + accessToken
-                });
-
-                const url = Api.getURL(apiKey, params);
-                const response = await fetch(url, {
-                    method: "GET",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
-                    // headers: headers
-                });
-                const res = await this.apiResponse(response, isJSON);
-                return res.payload;
-            }
-        } catch (e) {
-            CommonUtils.showSnackbar("Services are not available at this time.", AlertType.error);
-            console.error(e);
-        }
-    }
-
-    static async post(apiKey, data, params = null, isJSON = true) {
         try {
             // const state = store.getState();
-            const accessToken = await this.getAccessToken(); //state.user.accessToken
-
-            // const state = store.getState();
-            if (accessToken) {
-                const headers = new Headers({
-                    // "Authorization": "Bearer " + accessToken,
-                    "Content-Type": "application/json"
-                });
-                const url = Api.getURL(apiKey, params);
+            // const refreshToken = state.auth.refreshToken;
+            const refreshToken = false;
+            if (refreshToken) {
+                const url = Api.getURL(APIs.API_REFRESH_TOKEN);
                 const response = await fetch(url, {
                     method: "POST",
                     mode: "cors",
                     cache: "no-cache",
                     credentials: "same-origin",
-                    headers: headers,
+                    headers: new Headers({
+                        "Content-Type": "application/json"
+                    }),
                     redirect: "follow", // manual, *follow, error
                     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                    body: JSON.stringify(data) // body data type must match "Content-Type" header
+                    body: JSON.stringify({
+                        refresh: refreshToken
+                    })
                 });
-                return await this.apiResponse(response, isJSON);
+                const data = await response.json();
+                // console.log("accessToken", data);
+                return data.access;
             }
+        } catch (e) {
+            CommonUtils.showSnackbar("Failed to contact to server. Please ask system administrator.");
+        }
+    }
+
+    static async get(apiKey, params = {}, isJSON = true) {
+        const accessToken = await this.getAccessToken(); //state.user.accessToken``
+        let headers = null;
+        if (accessToken) {
+            headers = new Headers({
+                "Authorization": "Bearer " + accessToken
+            });
+        } else {
+            headers = new Headers({
+                // "Authorization": "Bearer " + accessToken
+            });
+        }
+
+        const url = Api.getURL(apiKey, params);
+        const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: headers
+        });
+        const res = await this.apiResponse(response, isJSON);
+
+        return res && res.payload;
+    }
+
+    static async post(apiKey, data, params = {}, isJSON = true) {
+        try {
+            // const state = store.getState();
+            const accessToken = await this.getAccessToken(); //state.user.accessToken
+            CommonUtils.showSnackbar("Posting data on server...")
+            // const state = store.getState();
+            let headers = null
+            if (accessToken) {
+                headers = new Headers({
+                    "Authorization": "Bearer " + accessToken,
+                    "Content-Type": "application/json"
+                });
+            } else {
+                headers = new Headers({
+                    "Content-Type": "application/json"
+                });
+            }
+            const url = Api.getURL(apiKey, params);
+            const response = await fetch(url, {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: headers,
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return await this.apiResponse(response, isJSON);
+
         } catch (e) {
             CommonUtils.showSnackbar("Services are not available at this time.", AlertType.error);
             console.error(e);
@@ -153,7 +157,7 @@ export default class Api {
             });
             return await this.apiResponse(response, true);
         } catch (e) {
-            CommonUtils.showSnackbar("Failed to upload files", AlertType.error);
+            CommonUtils.showSnackbar("Failed to authenticate user", AlertType.error);
             console.error(e);
         }
     }
@@ -281,4 +285,3 @@ export default class Api {
     }
 
 }
-

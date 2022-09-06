@@ -12,7 +12,7 @@ interface LayerDesignerProps {
 
 const LayerDesigner = (props: LayerDesignerProps) => {
     const mapVM = new MapVM()
-    mapVM.initMap(designerRightDrawerRef, null);
+    mapVM.initMap(null, designerRightDrawerRef, null);
     useEffect(() => {
         mapVM.setTarget('map');
         designerRightDrawerRef.current.addContents(

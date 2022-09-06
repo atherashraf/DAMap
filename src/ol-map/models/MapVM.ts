@@ -18,6 +18,7 @@ import {RefObject} from "react";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import AbstractVectorLayer from "../layers/AbstractVectorLayer";
+import {DAFeatureStyle, ILayerInfo, IMapInfo} from "../utils/TypeDeclaration";
 
 export interface IDALayers {
     [key: string]: AbstractVectorLayer
@@ -35,7 +36,7 @@ class MapVM {
     ]
     isInit: Boolean = false;
 
-    initMap(rightDrawerRef: RefObject<RightDrawer>, leftDrawerRef: RefObject<LeftDrawer>) {
+    initMap(info: IMapInfo | null, rightDrawerRef: RefObject<RightDrawer>, leftDrawerRef: RefObject<LeftDrawer>) {
         this.map = new Map({
             controls: defaultControls().extend([
                 new FullScreen(),
@@ -47,6 +48,10 @@ class MapVM {
             }),
         });
         this.addBaseLayers()
+        const layers = info.layers;
+        info && info.layers.forEach((layer) => {
+            this.addVectorLayer(layer.uuid, layer.style, layer.visible)
+        })
         this.addSidebarController();
         this.addLayerSwitcher()
         this.isInit = true;
@@ -181,11 +186,17 @@ class MapVM {
     // }
 
 
-    addVectorLayer(uuid: string) {
-        Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid}).then((payload) => {
-            const mvtLayer = new MVTLayer(payload, this)
-            this.daLayer[payload.uuid] = mvtLayer
-        })
+    addVectorLayer(uuid: string, style: DAFeatureStyle = null, visible = true) {
+        Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
+            .then((payload: ILayerInfo) => {
+                if (style)
+                    payload["style"] = style
+                const mvtLayer = new MVTLayer(payload, this);
+
+                mvtLayer.getOlLayer().setVisible(visible)
+
+                this.daLayer[payload.uuid] = mvtLayer
+            })
     }
 
 
