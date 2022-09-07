@@ -32,6 +32,7 @@ export interface ILayerInfo {
     title?: string
     uuid: string
     style?: DAFeatureStyle
+    zoomRange: [number,number]
 }
 
 export interface IMapInfo {

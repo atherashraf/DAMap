@@ -50,7 +50,7 @@ class MapVM {
         this.addBaseLayers()
 
         info && info.layers.forEach((layer) => {
-            this.addVectorLayer(layer.uuid, layer.style, layer.visible)
+            this.addVectorLayer(layer)
         })
 
         this.addSidebarController();
@@ -187,13 +187,16 @@ class MapVM {
     // }
 
 
-    addVectorLayer(uuid: string, style: DAFeatureStyle = null, visible = true) {
+    addVectorLayer(info: { uuid: string, style?: DAFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
+        const {uuid, style, visible, zoomRange} = info
         Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
             .then((payload: ILayerInfo) => {
-                if (style)
-                    payload["style"] = style
+                if(style)
+                    payload.style = style
+                if(zoomRange)
+                    payload.zoomRange= zoomRange
                 const mvtLayer = new MVTLayer(payload, this);
-
+                const visible = info.visible != undefined ? info.visible : true
                 mvtLayer.getOlLayer().setVisible(visible)
 
                 this.daLayer[payload.uuid] = mvtLayer

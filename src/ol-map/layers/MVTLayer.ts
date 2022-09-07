@@ -44,25 +44,29 @@ class MVTLayer extends AbstractVectorLayer {
             format: new MVT(),
             url: `${url}{z}/{x}/{y}`,
             tileLoadFunction: (tile, url) => {
-                //@ts-ignore
-                tile.setLoader((extent, resolution, projection) => {
-                    fetch(url, {
-                        headers: new Headers({
-                            // "Authorization": "Bearer " + accessToken
-                        })
-                    }).then((response) => {
-                        response.arrayBuffer().then((data) => {
-                            //@ts-ignore
-                            const format = tile.getFormat(); // ol/format/MVT configured as source format
-                            const features = format.readFeatures(data, {
-                                extent: extent,
-                                featureProjection: projection
+                const z = tile.tileCoord[0];
+                const zoomRange = this.layerInfo.zoomRange || [0, 30]
+                if (zoomRange[0] <= z && z <= zoomRange[1]) {
+                    //@ts-ignore
+                    tile.setLoader((extent, resolution, projection) => {
+                        fetch(url, {
+                            headers: new Headers({
+                                // "Authorization": "Bearer " + accessToken
+                            })
+                        }).then((response) => {
+                            response.arrayBuffer().then((data) => {
+                                //@ts-ignore
+                                const format = tile.getFormat(); // ol/format/MVT configured as source format
+                                const features = format.readFeatures(data, {
+                                    extent: extent,
+                                    featureProjection: projection
+                                });
+                                //@ts-ignore
+                                tile.setFeatures(features);
                             });
-                            //@ts-ignore
-                            tile.setFeatures(features);
                         });
                     });
-                });
+                }
             }
         });
     }

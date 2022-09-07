@@ -11,7 +11,6 @@ import VectorSource from "ol/source/Vector";
 import {DAFeatureStyle, DAGeomStyle, ILayerInfo} from "../utils/TypeDeclaration";
 
 
-
 class AbstractVectorLayer {
     dataSource: VectorTile;
     layer: VectorLayer<any> | VectorTileLayer;
