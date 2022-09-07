@@ -19,9 +19,9 @@ const LayerDesigner = (props: LayerDesignerProps) => {
         mapVM.setTarget('map');
         // designerRightDrawerRef.current.addContents(
         //     <SymbologySetting key={"symbology-setting"} layerId={props.layerId} mapVM={mapVM}/>)
-        designerRightDrawerRef.current.addContents(<LayerSwitcherControl mapVM={mapVM} />)
+        // designerRightDrawerRef.current.addContents(<LayerSwitcherControl mapVM={mapVM} />)
         mapVM.addVectorLayer({uuid: props.layerId})
-        setTimeout(() => designerRightDrawerRef.current.toggleDrawer(), 1000)
+        // setTimeout(() => designerRightDrawerRef.current.toggleDrawer(), 1000)
 
     })
     return (
