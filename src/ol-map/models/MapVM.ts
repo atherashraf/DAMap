@@ -48,10 +48,11 @@ class MapVM {
             }),
         });
         this.addBaseLayers()
-        const layers = info.layers;
+
         info && info.layers.forEach((layer) => {
             this.addVectorLayer(layer.uuid, layer.style, layer.visible)
         })
+
         this.addSidebarController();
         this.addLayerSwitcher()
         this.isInit = true;
