@@ -23,7 +23,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <LayerDesigner layerId={"b75d4fa8-2dd1-11ed-bc0b-acde48001122"}/>
+            <LayerDesigner layerId={"b73338c6-2dd1-11ed-bc0b-acde48001122"}/>
         </ThemeProvider>
     );
 }
