@@ -14,6 +14,7 @@ interface LayerDesignerProps {
 const LayerDesigner = (props: LayerDesignerProps) => {
     const mapVM = new MapVM()
     mapVM.initMap(null, designerRightDrawerRef, null);
+    mapVM.setLayerOfInterest(props.layerId)
     useEffect(() => {
         mapVM.setTarget('map');
         // designerRightDrawerRef.current.addContents(

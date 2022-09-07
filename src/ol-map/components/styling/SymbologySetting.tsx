@@ -10,12 +10,13 @@ import CommonUtils from "../../utils/CommonUtils";
 import DensityStyleForm from "./forms/DensityStyleForm";
 
 export interface SymbologySettingProps {
-    layerId: string
+    // layerId: string
     mapVM: MapVM
 }
 
 const SymbologySetting = (props: SymbologySettingProps) => {
     const [styleType, setStyleType] = React.useState('');
+    const layerId = props.mapVM.getLayerOfInterest()
     const styleTypes = [{name: "Single", val: "single"}, {name: "Density", val: "density"}]
     // const [styleForm, setStyleForm] = React.useState<JSX.Element>(<></>);
     const styleFormRef = React.createRef<BaseStyleForm>()
@@ -27,13 +28,13 @@ const SymbologySetting = (props: SymbologySettingProps) => {
     const handleSetStyle = () => {
         // @ts-ignore
         const style: DAFeatureStyle = styleFormRef.current.getStyleParams()
-        const daLayer = props.mapVM.getDALayer(props.layerId)
+        const daLayer = props.mapVM.getDALayer(layerId)
         daLayer.setStyle(style)
     }
     const handleSaveStyle = () => {
         // @ts-ignore
         const style: DAFeatureStyle = styleFormRef.current.getStyleParams()
-        Api.post(APIs.DCH_SAVE_STYLE, style, {uuid: props.layerId}).then((payload) => {
+        Api.post(APIs.DCH_SAVE_STYLE, style, {uuid: layerId}).then((payload) => {
             // @ts-ignore
             CommonUtils.showSnackbar(payload.msg)
         });
@@ -58,11 +59,11 @@ const SymbologySetting = (props: SymbologySettingProps) => {
                 </FormControl>
 
                 {styleType == "single" ?
-                    <SingleStyleForm key={"single-style"} layerId={props.layerId}
+                    <SingleStyleForm key={"single-style"} layerId={layerId}
                         //@ts-ignore
                                      ref={styleFormRef}/>
                     : styleType == "density" ?
-                        <DensityStyleForm key={"density-style"} layerId={props.layerId}
+                        <DensityStyleForm key={"density-style"} layerId={layerId}
                             //@ts-ignore
                                           ref={styleFormRef}/>
                         : <></>

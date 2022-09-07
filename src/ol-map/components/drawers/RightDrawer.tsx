@@ -22,6 +22,10 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         }
     }
 
+    openDrawer() {
+        this.setState({open: true})
+    }
+
     toggleDrawer() {
         const value: boolean = !this.state.open;
         this.setState({open: value})

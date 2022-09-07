@@ -27,6 +27,7 @@ export interface IDALayers {
 class MapVM {
     map: Map = null
     daLayer: IDALayers = {}
+    private _layerOfInterest: string = null;
     // leftDrawerRef: any
     mapExtent: number[] = [
         7031250.271849444,
@@ -56,6 +57,13 @@ class MapVM {
         this.addSidebarController();
         // this.addLayerSwitcher(null)
         this.isInit = true;
+    }
+
+    getLayerOfInterest(): string {
+        return this._layerOfInterest;
+    }
+    setLayerOfInterest(value: string) {
+        this._layerOfInterest = value;
     }
 
     addBaseLayers() {

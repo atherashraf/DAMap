@@ -21,7 +21,10 @@ class LeftDrawer extends React.PureComponent<LeftDrawerProps, LeftDrawerState> {
             content: null
         }
     }
-
+    openDrawer() {
+        // const value: boolean = !this.state.open;
+        this.setState({open: true})
+    }
     toggleDrawer() {
         const value: boolean = !this.state.open;
         this.setState({open: value})
