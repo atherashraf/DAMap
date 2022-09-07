@@ -54,7 +54,7 @@ class MapVM {
         })
 
         this.addSidebarController();
-        this.addLayerSwitcher()
+        // this.addLayerSwitcher(null)
         this.isInit = true;
     }
 
@@ -72,14 +72,15 @@ class MapVM {
         // this.getMap().addControl(sidebar);
     }
 
-    addLayerSwitcher() {
+    addLayerSwitcher(target: HTMLElement) {
         this.map.addControl(
             new LayerSwitcher({
                 // target:$(".layerSwitcher").get(0),
+                target: target,
                 // displayInLayerSwitcher: function (l) { return false; },
                 show_progress: true,
                 // extent: true,
-                trash: true,
+                // trash: true,
                 // oninfo: function (l) { alert(l.get("title")); }
             })
         )
@@ -191,10 +192,10 @@ class MapVM {
         const {uuid, style, visible, zoomRange} = info
         Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
             .then((payload: ILayerInfo) => {
-                if(style)
+                if (style)
                     payload.style = style
-                if(zoomRange)
-                    payload.zoomRange= zoomRange
+                if (zoomRange)
+                    payload.zoomRange = zoomRange
                 const mvtLayer = new MVTLayer(payload, this);
                 const visible = info.visible != undefined ? info.visible : true
                 mvtLayer.getOlLayer().setVisible(visible)

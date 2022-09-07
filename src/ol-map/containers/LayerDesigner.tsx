@@ -3,6 +3,7 @@ import RightDrawer from "../components/drawers/RightDrawer";
 import MapVM from "../models/MapVM";
 import {RefObject, useEffect} from "react";
 import SymbologySetting from "../components/styling/SymbologySetting";
+import LayerSwitcherControl from "../components/controls/LayerSwitcherControl";
 
 const designerRightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
 
@@ -15,8 +16,9 @@ const LayerDesigner = (props: LayerDesignerProps) => {
     mapVM.initMap(null, designerRightDrawerRef, null);
     useEffect(() => {
         mapVM.setTarget('map');
-        designerRightDrawerRef.current.addContents(
-            <SymbologySetting key={"symbology-setting"} layerId={props.layerId} mapVM={mapVM}/>)
+        // designerRightDrawerRef.current.addContents(
+        //     <SymbologySetting key={"symbology-setting"} layerId={props.layerId} mapVM={mapVM}/>)
+        designerRightDrawerRef.current.addContents(<LayerSwitcherControl mapVM={mapVM} />)
         mapVM.addVectorLayer({uuid: props.layerId})
         setTimeout(() => designerRightDrawerRef.current.toggleDrawer(), 1000)
 
