@@ -4,12 +4,14 @@ import SymbologySetting from "../styling/SymbologySetting";
 import {IconButton, Tooltip} from "@mui/material";
 import LayerSwitcher from "../LayerSwitcher";
 import LayersIcon from '@mui/icons-material/Layers';
+import mapVM from "../../models/MapVM";
 
 const LayerSwitcherControl = (props: IControlProps) => {
     const {drawerRef} = props
     const handleClick =  () =>{
         drawerRef.current.addContents(<LayerSwitcher mapVM={props.mapVM} />)
-        drawerRef?.current?.openDrawer()
+        drawerRef?.current?.toggleDrawer()
+        props.mapVM.refreshMap();
     }
     return (
         <React.Fragment>

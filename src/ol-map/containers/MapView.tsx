@@ -23,7 +23,7 @@ const MapView = (props: MapVMProps) => {
                 .then((payload: IMapInfo) => {
                     console.log("payload", payload)
                     if (!mapVM.isInit) {
-                        mapVM.initMap(payload,rightDrawerRef, leftDrawerRef);
+                        mapVM.initMap(payload, rightDrawerRef, leftDrawerRef);
                     }
                     mapVM.setTarget('map');
                 })

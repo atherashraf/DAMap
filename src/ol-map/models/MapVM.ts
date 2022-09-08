@@ -49,11 +49,12 @@ class MapVM {
             }),
         });
         this.addBaseLayers()
-
-        info && info.layers.forEach((layer) => {
-            this.addVectorLayer(layer)
-        })
-
+        if (info) {
+            this.mapExtent = info.extent;
+            info.layers.forEach((layer) => {
+                this.addVectorLayer(layer)
+            });
+        }
         this.addSidebarController();
         // this.addLayerSwitcher(null)
         this.isInit = true;
@@ -62,6 +63,7 @@ class MapVM {
     getLayerOfInterest(): string {
         return this._layerOfInterest;
     }
+
     setLayerOfInterest(value: string) {
         this._layerOfInterest = value;
     }
@@ -96,8 +98,12 @@ class MapVM {
 
     setTarget(target: string) {
         this.map.setTarget(target);
+        this.zoomToFullExtent()
         setTimeout(() => this.map.updateSize(), 2000);
 
+    }
+    refreshMap(){
+        setTimeout(() => this.map.updateSize(), 500);
     }
 
     getMap(): Map {
