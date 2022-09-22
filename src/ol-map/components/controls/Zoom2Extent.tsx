@@ -1,7 +1,7 @@
 import * as React from "react";
 import {IconButton} from "@mui/material";
 import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
-import {IControlProps} from "../../utils/TypeDeclaration";
+import {IControlProps} from "../../TypeDeclaration";
 
 
 const Zoom2Extent = (props: IControlProps) => {

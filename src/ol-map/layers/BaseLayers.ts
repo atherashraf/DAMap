@@ -3,7 +3,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import {BingMaps} from "ol/source";
 import {Group} from "ol/layer";
-import {ILayerSources, ILayerSourcesInfo} from "../utils/TypeDeclaration";
+import {ILayerSources, ILayerSourcesInfo} from "../TypeDeclaration";
 
 
 

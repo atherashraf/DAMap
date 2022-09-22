@@ -2,22 +2,23 @@ import MapVM from "../models/MapVM";
 import VectorLayer from "ol/layer/Vector";
 import {Fill, Stroke, Style} from "ol/style";
 import autoBind from "auto-bind";
-import Api, {APIs} from "../../Api";
+import {APIs} from "../utils/Api";
 import {Feature} from "ol";
 import {styles} from "./styles";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTile from 'ol/source/VectorTile';
-import VectorSource from "ol/source/Vector";
-import {DAFeatureStyle, DAGeomStyle, ILayerInfo} from "../utils/TypeDeclaration";
+import {IFeatureStyle, IGeomStyle, ILayerInfo} from "../TypeDeclaration";
+import {getPointShapes} from "../components/styling/forms/symbolizer/PointSymbolizer";
 
 
 class AbstractVectorLayer {
     dataSource: VectorTile;
     layer: VectorLayer<any> | VectorTileLayer;
     layerInfo: ILayerInfo;
-    style: DAFeatureStyle;
+    style: IFeatureStyle;
     mapVM: MapVM;
     uuid: string;
+    extent?: number[]
     features: any[];
 
     constructor(info: ILayerInfo, mapVM: MapVM) {
@@ -28,6 +29,18 @@ class AbstractVectorLayer {
         this.style = info && "style" in info && info["style"];
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
+        console.log("layer info", this.layerInfo);
+    }
+
+    async getExtent(): Promise<number[]> {
+        if (!this.extent) {
+            this.extent = await this.mapVM.getApi().get(APIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
+        }
+        return this.extent
+    }
+
+    getGeomType(): string[] {
+        return this.layerInfo.geomType
     }
 
     getLayerTitle(): string {
@@ -42,11 +55,11 @@ class AbstractVectorLayer {
 
     }
 
-    async getLayerExtent() {
-        const extent = await Api.get(APIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
-        return extent;
-
-    }
+    // async getLayerExtent() {
+    //     const extent = await this.mapVM.getApi().get(APIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
+    //     return extent;
+    //
+    // }
 
     setDataSource() {
 
@@ -68,16 +81,20 @@ class AbstractVectorLayer {
         return this.dataSource;
     }
 
-    setStyle(style: DAFeatureStyle) {
+    setStyle(style: IFeatureStyle) {
         this.style = style;
         this.refreshLayer();
     }
 
-    createOLStyle(feature: Feature, style: DAGeomStyle = null) {
+    createOLStyle(feature: Feature, style: IGeomStyle = null) {
         const geomType = feature.getGeometry().getType();
         let featureStyle: Style
         if (style) {
             switch (geomType) {
+                case "Point":
+                case "MultiPoint":
+                    featureStyle = getPointShapes(style)
+                    break;
                 case "Polygon":
                 case"MultiPolygon":
                     featureStyle = new Style({
@@ -89,6 +106,7 @@ class AbstractVectorLayer {
                             color: style.fillColor   //"rgba(255, 255, 0, 0.1)"
                         })
                     });
+                    break;
                 case "MultiLineString":
                 case "LineString":
                     featureStyle = new Style({
@@ -97,6 +115,7 @@ class AbstractVectorLayer {
                             width: style.strokeWidth
                         })
                     });
+                    break;
             }
         } else {
             featureStyle = styles[geomType];

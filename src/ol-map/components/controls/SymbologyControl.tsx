@@ -1,7 +1,7 @@
 import * as React from "react";
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import {IconButton, Tooltip} from "@mui/material";
-import {IControlProps} from "../../utils/TypeDeclaration";
+import {IControlProps} from "../../TypeDeclaration";
 import SymbologySetting from "../styling/SymbologySetting";
 
 
@@ -10,7 +10,7 @@ const SymbologyControl = (props: IControlProps) => {
     const {drawerRef} = props
     const handleClick =  () =>{
         drawerRef.current.addContents(<SymbologySetting key={"symbology-setting"} mapVM={props.mapVM}/>)
-        drawerRef?.current?.openDrawer()
+        drawerRef.current?.openDrawer()
     }
     return (
         <React.Fragment>

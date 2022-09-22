@@ -13,20 +13,25 @@ import BaseLayers from "../layers/BaseLayers";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
-import Api, {APIs} from "../../Api";
+import Api, {APIs} from "../utils/Api";
 import {RefObject} from "react";
+import AbstractVectorLayer from "../layers/AbstractVectorLayer";
+import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
-import AbstractVectorLayer from "../layers/AbstractVectorLayer";
-import {DAFeatureStyle, ILayerInfo, IMapInfo} from "../utils/TypeDeclaration";
+import DADialogBox from "../components/common/DADialogBox";
+import DASnackbar from "../components/common/DASnackbar";
+
 
 export interface IDALayers {
     [key: string]: AbstractVectorLayer
 }
 
+
 class MapVM {
-    map: Map = null
+    private map: Map = null
     daLayer: IDALayers = {}
+    private _domRef: IDomRef = null
     private _layerOfInterest: string = null;
     // leftDrawerRef: any
     mapExtent: number[] = [
@@ -36,12 +41,23 @@ class MapVM {
         4922393.652534479
     ]
     isInit: Boolean = false;
+    private api: Api;
+    private isDesigner: boolean;
 
-    initMap(info: IMapInfo | null, rightDrawerRef: RefObject<RightDrawer>, leftDrawerRef: RefObject<LeftDrawer>) {
+    constructor(domRef: IDomRef, isDesigner: boolean) {
+        this._domRef = domRef
+        this.isDesigner = isDesigner
+        this.api = new Api(domRef.snackBarRef)
+    }
+
+    initMap(mapInfo?: IMapInfo) {
         this.map = new Map({
             controls: defaultControls().extend([
-                new FullScreen(),
-                new MapToolbar({mapVM: this, rightDrawerRef: rightDrawerRef, leftDrawerRef: leftDrawerRef})
+                new FullScreen({source: 'fullscreen'}),
+                new MapToolbar({
+                    mapVM: this,
+                    isDesigner: this.isDesigner
+                })
             ]),
             view: new View({
                 center: [7723464, 3569764],
@@ -49,15 +65,39 @@ class MapVM {
             }),
         });
         this.addBaseLayers()
-        if (info) {
-            this.mapExtent = info.extent;
-            info.layers.forEach((layer) => {
-                this.addVectorLayer(layer)
+        if (mapInfo) {
+            this.mapExtent = mapInfo.extent;
+            mapInfo.layers.forEach((layer) => {
+                this.addVectorLayer(layer).then(() => {})
             });
         }
         this.addSidebarController();
         // this.addLayerSwitcher(null)
         this.isInit = true;
+    }
+
+    setMapFullExtent(extent: number[]) {
+        this.mapExtent = extent
+    }
+
+    getApi() {
+        return this.api;
+    }
+
+    getRightDrawerRef(): RefObject<RightDrawer> {
+        return this._domRef.rightDrawerRef
+    }
+
+    getLeftDrawerRef(): RefObject<LeftDrawer> {
+        return this._domRef.leftDrawerRef
+    }
+
+    getDialogBoxRef(): RefObject<DADialogBox> {
+        return this._domRef.dialogBoxRef
+    }
+
+    getSnackbarRef(): RefObject<DASnackbar> {
+        return this._domRef.snackBarRef
     }
 
     getLayerOfInterest(): string {
@@ -102,7 +142,8 @@ class MapVM {
         setTimeout(() => this.map.updateSize(), 2000);
 
     }
-    refreshMap(){
+
+    refreshMap() {
         setTimeout(() => this.map.updateSize(), 500);
     }
 
@@ -202,25 +243,29 @@ class MapVM {
     // }
 
 
-    addVectorLayer(info: { uuid: string, style?: DAFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
-        const {uuid, style, visible, zoomRange} = info
-        Api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
-            .then((payload: ILayerInfo) => {
-                if (style)
-                    payload.style = style
-                if (zoomRange)
-                    payload.zoomRange = zoomRange
-                const mvtLayer = new MVTLayer(payload, this);
-                const visible = info.visible != undefined ? info.visible : true
-                mvtLayer.getOlLayer().setVisible(visible)
+    async addVectorLayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
+        const {uuid, style, zoomRange} = info
+        const payload: ILayerInfo = await this.api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
+        if (payload) {
+            if (style)
+                payload.style = style
+            if (zoomRange)
+                payload.zoomRange = zoomRange
+            const mvtLayer = new MVTLayer(payload, this);
+            const visible = info.visible != undefined ? info.visible : true
+            mvtLayer.getOlLayer().setVisible(visible)
 
-                this.daLayer[payload.uuid] = mvtLayer
-            })
+            this.daLayer[payload.uuid] = mvtLayer
+        }
     }
 
 
     getDALayer(layerId: string): AbstractVectorLayer {
         return this.daLayer[layerId]
+    }
+
+    showSnackbar(msg: string) {
+        this._domRef.snackBarRef.current.show(msg)
     }
 }
 

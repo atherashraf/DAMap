@@ -1,16 +1,19 @@
 import * as React from "react";
-import {DAStyle} from "../../../utils/TypeDeclaration";
+import {IFeatureStyle} from "../../../TypeDeclaration";
+import MapVM from "../../../models/MapVM";
 
-export interface BaseStyleFormProps{
+export interface BaseStyleFormProps {
     layerId: string
+    mapVM: MapVM
 }
 
-class BaseStyleForm extends React.PureComponent<BaseStyleFormProps, any>{
-    getStyleParams(): DAStyle{
+class BaseStyleForm<P = {}, S = {}, SS = any> extends React.PureComponent<BaseStyleFormProps, any> {
+    getFeatureStyle(): IFeatureStyle {
         return null
     }
-    render(){
-        return(
+
+    render() {
+        return (
             <React.Fragment>
             </React.Fragment>
         )
@@ -18,3 +21,5 @@ class BaseStyleForm extends React.PureComponent<BaseStyleFormProps, any>{
 }
 
 export default BaseStyleForm
+
+

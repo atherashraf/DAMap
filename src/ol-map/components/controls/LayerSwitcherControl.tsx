@@ -1,10 +1,8 @@
 import * as React from "react";
-import {IControlProps} from "../../utils/TypeDeclaration";
-import SymbologySetting from "../styling/SymbologySetting";
+import {IControlProps} from "../../TypeDeclaration";
 import {IconButton, Tooltip} from "@mui/material";
 import LayerSwitcher from "../LayerSwitcher";
 import LayersIcon from '@mui/icons-material/Layers';
-import mapVM from "../../models/MapVM";
 
 const LayerSwitcherControl = (props: IControlProps) => {
     const {drawerRef} = props

@@ -1,13 +1,13 @@
 import * as React from "react";
 import MapVM from "../models/MapVM";
-import {useEffect} from "react";
+import {RefObject, useEffect} from "react";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import RightDrawer from "../components/drawers/RightDrawer";
-import Api, {APIs} from "../../Api";
-import {DAFeatureStyle, IMapInfo} from "../utils/TypeDeclaration";
+import {APIs} from "../utils/Api";
+import {IDomRef, IMapInfo} from "../TypeDeclaration";
+import DADialogBox from "../components/common/DADialogBox";
+import DASnackbar from "../components/common/DASnackbar";
 
-export const leftDrawerRef = React.createRef<LeftDrawer>();
-export const rightDrawerRef = React.createRef<RightDrawer>();
 
 interface MapVMProps {
     height?: number,
@@ -15,15 +15,23 @@ interface MapVMProps {
 }
 
 const MapView = (props: MapVMProps) => {
-    const mapVM = new MapVM()
+    const leftDrawerRef = React.createRef<LeftDrawer>();
+    const rightDrawerRef = React.createRef<RightDrawer>();
+    const dialogBoxRef: RefObject<DADialogBox> = React.createRef<DADialogBox>();
+    const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
+    const domRefs: IDomRef = {
+        rightDrawerRef: rightDrawerRef,
+        dialogBoxRef: dialogBoxRef,
+        snackBarRef: snackbarRef
+    }
+    const mapVM = new MapVM(domRefs, false)
     useEffect(() => {
         const {uuid} = props
         if (uuid) {
-            Api.get(APIs.DCH_MAP_INFO, {"uuid": props.uuid})
+            mapVM.getApi().get(APIs.DCH_MAP_INFO, {"uuid": props.uuid})
                 .then((payload: IMapInfo) => {
-                    console.log("payload", payload)
                     if (!mapVM.isInit) {
-                        mapVM.initMap(payload, rightDrawerRef, leftDrawerRef);
+                        mapVM.initMap(payload);
                     }
                     mapVM.setTarget('map');
                 })
@@ -31,13 +39,14 @@ const MapView = (props: MapVMProps) => {
     }, [props])
     return (
         <React.Fragment>
-            <div style={{
+            <div id={"fullscreen"} style={{
                 display: "flex",
-                // padding: "50px",
+                padding: "20px",
                 width: "100%",
                 boxSizing: "border-box",
                 height: "100%"
             }}>
+
                 <LeftDrawer ref={leftDrawerRef}/>
                 <div id={"map"} style={{
                     width: "100%",

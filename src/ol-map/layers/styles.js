@@ -4,9 +4,9 @@ import {Fill, Stroke, Style, Text} from "ol/style";
 const selectedStrokeColor = "#28e0ee";
 const selectedFillColor =  "#c4def6";
 const image = new CircleStyle({
-    radius: 5,
-    fill: null,
-    stroke: new Stroke({color: "red", width: 1})
+    radius: 7,
+    fill: new Fill({color: "#fff5aa"}),
+    stroke: new Stroke({color: "red", width: 2})
 });
 export const clusterStyle = (features, selected = false) => {
     const colors = {
@@ -29,9 +29,7 @@ export const clusterStyle = (features, selected = false) => {
                 color: strokeColor,
                 width: strokeWidth
             }),
-            fill: new Fill({
-                color: color
-            })
+            fill: new Fill({color: color})
         }),
         text: new Text({
             text: featureCount,

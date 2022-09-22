@@ -2,42 +2,60 @@ import * as React from "react";
 import RightDrawer from "../components/drawers/RightDrawer";
 import MapVM from "../models/MapVM";
 import {RefObject, useEffect} from "react";
-import SymbologySetting from "../components/styling/SymbologySetting";
-import LayerSwitcherControl from "../components/controls/LayerSwitcherControl";
+import DADialogBox from "../components/common/DADialogBox";
+import {IDomRef} from "../TypeDeclaration";
+import DASnackbar from "../components/common/DASnackbar";
 
-const designerRightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
 
 interface LayerDesignerProps {
     layerId: string
 }
 
 const LayerDesigner = (props: LayerDesignerProps) => {
-    const mapVM = new MapVM()
-    mapVM.initMap(null, designerRightDrawerRef, null);
+    const rightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
+    const dialogBoxRef: RefObject<DADialogBox> = React.createRef<DADialogBox>();
+    const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
+    const domRefs: IDomRef = {
+        rightDrawerRef: rightDrawerRef,
+        dialogBoxRef: dialogBoxRef,
+        snackBarRef: snackbarRef
+    }
+
+    const mapVM = new MapVM(domRefs, true)
+    mapVM.initMap();
     mapVM.setLayerOfInterest(props.layerId)
     useEffect(() => {
         mapVM.setTarget('map');
-        // designerRightDrawerRef.current.addContents(
-        //     <SymbologySetting key={"symbology-setting"} layerId={props.layerId} mapVM={mapVM}/>)
-        // designerRightDrawerRef.current.addContents(<LayerSwitcherControl mapVM={mapVM} />)
-        mapVM.addVectorLayer({uuid: props.layerId})
-        // setTimeout(() => designerRightDrawerRef.current.toggleDrawer(), 1000)
+        initLayer().then(() => {});
 
-    })
+        // setTimeout(() => designerRightDrawerRef.current.toggleDrawer(), 1000)
+    }, [])
+    const initLayer = async () => {
+        await mapVM.addVectorLayer({uuid: props.layerId})
+        const extent = await mapVM.getDALayer(props.layerId).getExtent()
+        // console.log("extent", extent)
+        mapVM.setMapFullExtent(extent)
+        mapVM.zoomToFullExtent()
+    }
     return (
-        <div style={{
-            display: "flex",
-            padding: "50px",
-            width: "100%",
-            boxSizing: "border-box",
-            height: "100%"
-        }}>
-            <div id={"map"} style={{
+        <React.Fragment>
+            <div id={"fullscreen"} style={{
+                display: "flex",
+                padding: "20px",
                 width: "100%",
+                boxSizing: "border-box",
                 height: "100%"
-            }}/>
-            <RightDrawer ref={designerRightDrawerRef}/>
-        </div>
+            }}>
+
+                <div id={"map"} style={{
+                    width: "100%",
+                    height: "100%"
+                }}/>
+                <RightDrawer ref={rightDrawerRef}/>
+                <DADialogBox ref={dialogBoxRef}/>
+                <DASnackbar ref={snackbarRef}/>
+            </div>
+        </React.Fragment>
     )
 }
 

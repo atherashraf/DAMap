@@ -4,7 +4,7 @@ import React from "react";
 import {createRoot} from "react-dom/client";
 import MapVM from "../models/MapVM";
 import SymbologyControl from "./controls/SymbologyControl";
-import {IMapToolbarProps} from "../utils/TypeDeclaration";
+import {IMapToolbarProps} from "../TypeDeclaration";
 import Zoom2Extent from "./controls/Zoom2Extent";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 
@@ -29,9 +29,11 @@ class MapToolbar extends Control {
 
         const root = createRoot(element)
         root.render(<React.Fragment>
-                <LayerSwitcherControl mapVM={mapVM} drawerRef={optOptions.rightDrawerRef} />
-                <Zoom2Extent mapVM={mapVM} />
-                <SymbologyControl mapVM={mapVM} drawerRef={optOptions.rightDrawerRef}/>
+                <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
+                <Zoom2Extent mapVM={mapVM}/>
+                {optOptions.isDesigner &&
+                    <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
+                }
             </React.Fragment>
         );
     }

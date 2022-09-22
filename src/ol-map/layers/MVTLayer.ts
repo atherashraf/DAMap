@@ -2,9 +2,9 @@ import MVT from "ol/format/MVT";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import AbstractVectorLayer from "./AbstractVectorLayer";
-import Api, {APIs} from "../../Api";
+import Api, {APIs} from "../utils/Api";
 import {Feature} from "ol";
-import {DAGeomStyle} from "../utils/TypeDeclaration";
+import {IGeomStyle, IRule} from "../TypeDeclaration";
 
 
 /*****
@@ -39,6 +39,7 @@ class MVTLayer extends AbstractVectorLayer {
     }
 
     setDataSource() {
+
         const url = Api.getURL(APIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
         this.dataSource = new VectorTileSource({
             format: new MVT(),
@@ -47,6 +48,15 @@ class MVTLayer extends AbstractVectorLayer {
                 const z = tile.tileCoord[0];
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
+                    let cols: string[] = []
+                    if (this.style && this.style.type != "single") {
+                        this.style.style.rules.forEach((rule) => {
+                            cols.push(rule.filter.field)
+                        })
+                        cols = cols.filter((v, i, a) => a.indexOf(v) === i);
+                        if(cols.length > 0)
+                            url = url + "?cols=" + String(cols)
+                    }
                     //@ts-ignore
                     tile.setLoader((extent, resolution, projection) => {
                         fetch(url, {
@@ -73,33 +83,49 @@ class MVTLayer extends AbstractVectorLayer {
 
 
     styleFunction(feature: Feature, resolution: number) {
-        let style: DAGeomStyle;
+        let style: IGeomStyle;
+        let rules: IRule[]
+        let properties: any
         switch (this.style?.type) {
             case "single":
                 style = this.style["style"]["default"];
                 break;
+            case "multiple":
+                style = this.style["style"]["default"];
+                rules = this.style.style.rules
+                properties = feature.getProperties();
+                rules.forEach((rule: IRule) => {
+                    if (rule.filter.field in properties && properties[rule.filter.field] == rule.filter.value) {
+                        style = rule.style;
+                    }
+                });
+                break;
             case "density":
-                const properties = feature.getProperties();
-                const colName = this.style["style"]["columnName"];
-                const index = this.style["style"]["rules"].findIndex((rule) => rule.value === properties[colName]);
-                style = this.style["style"]["rules"][index];
+                // style = this.style["style"]["default"];
+                rules = this.style.style.rules
+                properties = feature.getProperties();
+                rules.forEach((rule: IRule) => {
+                    if (rule.filter.field in properties ) {
+                        const x = properties[rule.filter.field]
+                        if(rule.filter.value[0]<=x && rule.filter.value[1]>=x) {
+                            style = rule.style;
+                        }
+                    }
+                });
                 break;
             default:
                 break;
         }
 
-        const olStyle = this.createOLStyle(feature, style);
-        // console.log(feature, olStyle);
-        return olStyle;
+        return this.createOLStyle(feature, style);
+
     }
 
     getFeatures() {
         // @ts-ignore
-        this.layer.getFeatures().then(features => {
+        this.layer.getFeatures().then(() => {
             // console.log("feature", features);
         });
-        // console.log("features", features);
-        // return features;
     }
 
 }

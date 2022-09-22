@@ -1,39 +1,65 @@
 import autoBind from "auto-bind";
 import React from "react";
-import {Box, Button, TextField} from "@mui/material";
-import DAColorPicker from "../DAColorPicker";
-import {DAGeomStyle} from "../../../utils/TypeDeclaration";
-// import {Grid} from "@material-ui/core";
-// import {FieldSetStyle, StyledTextField} from "../../../../../../static/theme";
-// import {withTheme} from "@material-ui/styles";
-//
-// import CustomColorPicker from "../CustomColorPicker";
-// import AbstractStyleForm from "./AbstractStyleForm";
-// import * as PropTypes from "prop-types";
-// import Button from "@material-ui/core/Button";
+import {Box, TextField} from "@mui/material";
+import DAColorPicker from "../../DAColorPicker";
+import {IGeomStyle} from "../../../../TypeDeclaration";
+import PointSymbolizer from "./PointSymbolizer";
+import _ from "../../../../utils/lodash";
 
-class VectorStyleForm extends React.PureComponent<any, any> {
+interface IProp {
+    geomType: string[]
+    style?: IGeomStyle
+}
+
+interface IState {
+    strokeWidth: number
+    errorStrokeWidth: string
+    errorNoOfClasses: string
+    strokeColor: string
+    fillColor: string
+}
+
+class VectorSymbolizer extends React.PureComponent<IProp, IState> {
     minStrokeWidth = 1;
     maxStrokeWidth = 10;
     strokeColorRef = React.createRef<DAColorPicker>();
     fillColorRef = React.createRef<DAColorPicker>();
-    state = {
-        strokeWidth: 1,
-        errorStrokeWidth: "",
-        errorNoOfClasses: "",
-        strokeColor: "#404abf",
-        fillColor: "rgba(27,32,109,0.67)"
-    };
+    pointSymbolRef = React.createRef<PointSymbolizer>()
+
 
     constructor(props: any) {
         super(props);
         autoBind(this);
+        const {style} = this.props;
+        this.state = {
+            strokeWidth: style?.strokeWidth || 1,
+            errorStrokeWidth: "",
+            errorNoOfClasses: "",
+            strokeColor: style?.strokeColor || "#404abf",
+            fillColor: style?.fillColor || "rgba(27,32,109,0.67)"
+        };
     }
 
-    getStyleParams(): DAGeomStyle {
+    componentDidUpdate(prevProps: Readonly<IProp>, prevState: Readonly<IState>, snapshot?: any) {
+        if (!_.isEqual(prevProps.style, this.props.style)) {
+            const style = this.props.style
+            this.setState({
+                strokeWidth: style.strokeWidth,
+                strokeColor: style.strokeColor,
+                fillColor: style.fillColor
+            })
+        }
+    }
+
+    getStyleParams(): IGeomStyle {
         const isError = this.validateForm();
         if (!isError) {
-            const params: DAGeomStyle = {};
+            const params: IGeomStyle = {};
+            const ps = this.pointSymbolRef?.current?.getPointSymbolizer()
+            if (ps) {
+                params.pointSize = ps.pointSize
+                params.pointShape = ps.pointShape
+            }
             if (this.strokeColorRef?.current?.getColor()) {
                 params["strokeColor"] = this.strokeColorRef.current.getColor();
                 params["strokeWidth"] = this.state.strokeWidth;
@@ -52,7 +78,6 @@ class VectorStyleForm extends React.PureComponent<any, any> {
 
     validateStrokeWidth(val: number = 0) {
         val = val ? val : this.state?.strokeWidth;
-        console.log("value", val);
         let isError = false;
         if (val < this.minStrokeWidth || val > this.maxStrokeWidth) {
             this.setState({errorNoOfClasses: "classes must be between 1 to 10"});
@@ -65,37 +90,13 @@ class VectorStyleForm extends React.PureComponent<any, any> {
     }
 
     render() {
-        // const {vectorType} = this.props;
-        // const isPoint = vectorType.indexOf("Point") !== -1;
-        // const isPolyline = vectorType.indexOf("LineString") !== -1;
-        // const isPolygon = vectorType.indexOf("Polygon") !== -1;
+        // console.log("geomType", this.props.geomType)
         return (
             <React.Fragment>
-                {/*Point Style*/}
                 <Box sx={{flex: 1}}>
-                    <fieldset>
-                        <legend>Icon Style</legend>
-                        <Button
-                            variant="contained"
-                            component="label"
-                            fullWidth={true}
-                            color={"primary"}
-                            onClick={() => alert("working...")}
-                        >
-                            Upload
-                            <input
-                                type="file"
-                                hidden
-                            />
-                        </Button>
-                    </fieldset>
-
-                </Box>
-                {/*Stroke Color*/}
-                <Box sx={{flex: 1}}>
-                    <DAColorPicker ref={this.strokeColorRef} label={"Stroke Color"}
-                                   color={this.state.strokeColor}
-                                   isAlpha={false}/>
+                    <PointSymbolizer ref={this.pointSymbolRef}
+                                     pointSize={this.props.style?.pointSize}
+                                     pointShape={this.props.style?.pointShape}/>
                 </Box>
                 {/*Stroke Width*/}
                 <Box sx={{flex: 1}}>
@@ -106,7 +107,7 @@ class VectorStyleForm extends React.PureComponent<any, any> {
                             color={"primary"}
                             variant={"outlined"} fullWidth={true} value={this.state?.strokeWidth}
                             onChange={(e) => {
-                                this.setState({"strokeWidth": e.target.value});
+                                this.setState({strokeWidth: parseInt(e.target.value)});
                                 this.validateStrokeWidth(parseInt(e.target.value));
                             }}
                             onBlur={(e) => this.validateStrokeWidth(parseInt(e.target.value))}
@@ -121,6 +122,14 @@ class VectorStyleForm extends React.PureComponent<any, any> {
                         />
                     </fieldset>
                 </Box>
+
+                {/*Stroke Color*/}
+                <Box sx={{flex: 1}}>
+                    <DAColorPicker ref={this.strokeColorRef} label={"Stroke Color"}
+                                   color={this.state.strokeColor}
+                                   isAlpha={false}/>
+                </Box>
+
                 {/*Fill Color*/}
                 <Box sx={{flex: 1}}>
                     <DAColorPicker ref={this.fillColorRef} label={"Fill Color"} color={this.state.fillColor}
@@ -131,6 +140,6 @@ class VectorStyleForm extends React.PureComponent<any, any> {
     }
 }
 
-export default VectorStyleForm;
+export default VectorSymbolizer;
 
 // export default  VectorStyleForm;

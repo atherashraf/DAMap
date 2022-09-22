@@ -1,36 +1,37 @@
 import autoBind from "auto-bind";
-import React, {PureComponent} from "react";
-import {DAFeatureStyle, DAGeomStyle, ILayerInfo} from "../../../utils/TypeDeclaration";
-import VectorStyleForm from "./VectorStyleForm";
+import {IFeatureStyle, IGeomStyle} from "../../../TypeDeclaration";
+
 import BaseStyleForm, {BaseStyleFormProps} from "./BaseStyleForm";
+import VectorSymbolizer from "./symbolizer/VectorSymbolizer";
+import React from "react";
 
 
+class SingleStyleForm extends BaseStyleForm {
+    vectorStyleRef = React.createRef<VectorSymbolizer>();
 
-class SingleStyleForm extends BaseStyleForm{
-    vectorStyleRef = React.createRef<VectorStyleForm>();
-    constructor (props: BaseStyleFormProps) {
+    constructor(props: BaseStyleFormProps) {
         super(props);
         autoBind(this);
     }
-    getStyleParams () :DAFeatureStyle {
-        const style: DAGeomStyle = this.vectorStyleRef.current.getStyleParams()
-        if(style) {
-            const params: DAFeatureStyle = {
+
+    getFeatureStyle(): IFeatureStyle {
+        const style: IGeomStyle = this.vectorStyleRef.current.getStyleParams()
+        if (style) {
+            return  {
                 type: "single",
-                style:{
+                style: {
                     default: style
                 }
             };
-            return params
         }
         return null;
     }
 
-    render () {
-        // const{vector_type} = this.props?.layerInfo;
+    render() {
+        const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
         return (
             <React.Fragment>
-                <VectorStyleForm ref={this.vectorStyleRef} />
+                <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType}/>
             </React.Fragment>
         );
     }

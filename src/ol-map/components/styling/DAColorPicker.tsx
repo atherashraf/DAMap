@@ -6,9 +6,10 @@ import autoBind from "auto-bind";
 
 
 interface CustomColorPickerProps {
-    label: string,
+    label?: string,
     color: string,
-    isAlpha: boolean
+    isAlpha: boolean,
+    onChange?: Function
 }
 
 interface CustomColorPickerState {
@@ -25,14 +26,14 @@ class DAColorPicker extends React.PureComponent<CustomColorPickerProps, CustomCo
         autoBind(this);
     }
 
-    handleColorChange(color: ColorResult) {
-        if (this.props.isAlpha && color.rgb.a > 0.08) {
-            const hexColor = color.hex + (parseInt(String(color.rgb.a * 255))).toString(16);
-            // console.log("color", color, hexColor);
-            this.setState({color: hexColor});
-        } else
-            this.setState({color: color.hex});
 
+    handleColorChange(color: ColorResult) {
+        let hexColor = color.hex
+        if (this.props.isAlpha && color.rgb.a > 0.08) {
+            hexColor = color.hex + (parseInt(String(color.rgb.a * 255))).toString(16);
+        }
+        this.setState({color: hexColor});
+        this.props.onChange(hexColor)
 
     }
 
@@ -43,7 +44,7 @@ class DAColorPicker extends React.PureComponent<CustomColorPickerProps, CustomCo
     render() {
         return (
             <fieldset>
-                <legend>{this.props.label}</legend>
+                {this.props.label && <legend>{this.props.label}</legend>}
 
                 <SliderPicker
                     color={this.state.color}
