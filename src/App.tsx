@@ -3,6 +3,7 @@ import * as React from "react";
 import LayerDesigner from "./ol-map/containers/LayerDesigner";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {orange} from '@mui/material/colors';
+import MapView from "./ol-map/containers/MapView";
 
 
 const theme = createTheme({
@@ -24,7 +25,8 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             {/*<LayerDesigner layerId={"77635fc0-354a-11ed-82a7-acde48001122"}/>*/}
-            <LayerDesigner layerId={"f7de6208-3612-11ed-87df-acde48001122"} />
+            {/*<LayerDesigner layerId={"f7de6208-3612-11ed-87df-acde48001122"} />*/}
+            <MapView uuid={	"01345dd8-3f25-11ed-873f-acde48001122"} isMap={false} isDesigner={true}/>
         </ThemeProvider>
     );
 }
