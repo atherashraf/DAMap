@@ -8,7 +8,7 @@ interface LayerSwitcherProps {
 const LayerSwitcher = (props: LayerSwitcherProps) => {
     const {mapVM} = props
     React.useEffect(() => {
-        const elem = document.getElementById('div-layer-switcher')
+        const elem = document.getElementById('div-layer-switcher') as HTMLElement
         mapVM.addLayerSwitcher(elem)
     }, [])
     return (

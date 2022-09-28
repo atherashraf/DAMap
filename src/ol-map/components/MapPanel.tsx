@@ -1,7 +1,7 @@
 import React from "react";
 import {Box, Paper} from "@mui/material";
 import MapVM from "../models/MapVM";
-import RightDrawer from "./drawers/RightDrawer";
+
 
 interface IProps {
     mapVM: MapVM
@@ -23,7 +23,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         }
     }
 
-    toggleDrawer(height: number = 250, contents: JSX.Element=null) {
+    toggleDrawer(height: number = 250, contents: JSX.Element=<React.Fragment/>) {
         height = this.state.drawerHeight == 0 ? height : 0;
         const display = this.state.drawerHeight == 0 ? "none" : "block";
         contents = contents ? contents : <React.Fragment/>
@@ -32,7 +32,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeDrawer() {
-        this.setState({drawerHeight: 0, display: "none"})
+        this.setState(()=>({drawerHeight: 0, display: "none"}))
     }
 
     render() {

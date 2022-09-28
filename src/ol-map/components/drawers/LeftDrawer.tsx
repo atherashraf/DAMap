@@ -1,5 +1,5 @@
 import React from "react";
-import {Paper, Slide} from "@mui/material";
+import {Slide} from "@mui/material";
 import {DrawerPaper, SideDrawerDiv} from "../StyledMapComponent";
 
 
@@ -17,21 +17,23 @@ class LeftDrawer extends React.PureComponent<LeftDrawerProps, LeftDrawerState> {
     constructor(props: LeftDrawerProps) {
         super(props);
         this.state = {
-            open: props.initState,
-            content: null
+            open: props.initState || false,
+            content: <React.Fragment/>
         }
     }
+
     openDrawer() {
         // const value: boolean = !this.state.open;
-        this.setState({open: true})
+        this.setState(()=>({open: true}))
     }
+
     toggleDrawer() {
         const value: boolean = !this.state.open;
-        this.setState({open: value})
+        this.setState(()=>({open: value}))
     }
 
     addContents(content: JSX.Element) {
-        this.setState({content: content})
+        this.setState(()=>({content: content}))
     }
 
 

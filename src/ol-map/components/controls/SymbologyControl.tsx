@@ -9,9 +9,9 @@ import SymbologySetting from "../styling/SymbologySetting";
 const SymbologyControl = (props: IControlProps) => {
     const {drawerRef} = props
     const handleClick =  () =>{
-        drawerRef.current.addContents(<SymbologySetting key={"symbology-setting"} mapVM={props.mapVM}/>)
-        drawerRef.current?.toggleDrawer()
-        props.mapVM.refreshMap()
+        drawerRef?.current?.addContents(<SymbologySetting key={"symbology-setting"} mapVM={props.mapVM}/>)
+        drawerRef?.current?.toggleDrawer()
+        props.mapVM?.refreshMap()
     }
     return (
         <React.Fragment>

@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Drawer, IconButton, Paper, Slide} from "@mui/material";
+import {Box, Drawer, IconButton, Paper} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -10,7 +10,7 @@ interface BottomDrawerState {
 }
 
 interface BottomDrawerProps {
-    initState?: boolean
+    initState: boolean
     target: string
 }
 
@@ -19,7 +19,7 @@ class BottomDrawer extends React.PureComponent<BottomDrawerProps, BottomDrawerSt
     constructor(props: BottomDrawerProps) {
         super(props);
         this.state = {
-            open: props.initState,
+            open: props.initState || false,
             content: <div>Attribute Table</div>,
             container: null
         }
@@ -27,24 +27,24 @@ class BottomDrawer extends React.PureComponent<BottomDrawerProps, BottomDrawerSt
 
     openDrawer() {
         // const value: boolean = !this.state.open;
-        this.setState({open: true})
+        this.setState(() => ({open: true}))
     }
 
     closeDrawer() {
-        this.setState({open: false})
+        this.setState(() => ({open: false}))
     }
 
     toggleDrawer() {
         const value: boolean = !this.state.open;
-        this.setState({open: value})
+        this.setState(() => ({open: value}))
     }
 
     addContents(content: JSX.Element) {
-        this.setState({content: content})
+        this.setState(() => ({content: content}))
     }
 
     componentDidMount() {
-        this.setState({container: document.getElementById(this.props.target)})
+        this.setState(() => ({container: document.getElementById(this.props.target)}))
     }
 
     render() {

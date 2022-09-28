@@ -18,28 +18,28 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         super(props);
         this.state = {
             open: false,
-            content: null
+            content: <React.Fragment/>
         }
     }
 
     openDrawer() {
-        this.setState({open: true})
+        this.setState(()=>({open: true}))
     }
 
     toggleDrawer() {
         const value: boolean = !this.state.open;
-        this.setState({open: value})
+        this.setState(()=>({open: value}))
     }
 
     addContents(content: JSX.Element) {
-        this.setState({content: content})
+        this.setState(()=>({content: content}))
     }
 
 
     render() {
         return (
             <Slide direction="left" in={this.state.open} mountOnEnter unmountOnExit>
-                <SideDrawerDiv >
+                <SideDrawerDiv>
                     <DrawerPaper elevation={6}>
                         {this.state.content}
                     </DrawerPaper>

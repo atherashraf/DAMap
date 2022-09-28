@@ -69,7 +69,8 @@ class MapVM {
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
             mapInfo.layers.forEach((layer) => {
-                this.addVectorLayer(layer).then(() => {})
+                this.addVectorLayer(layer).then(() => {
+                })
             });
         }
         this.addSidebarController();
@@ -88,7 +89,7 @@ class MapVM {
     // getBottomDrawerRef(): RefObject<BottomDrawer>{
     //     return this._domRef.bottomDrawerRef
     // }
-    getMapBoxRef(): RefObject<MapPanel>{
+    getMapBoxRef(): RefObject<MapPanel> {
         return this._domRef.mapBoxRef
     }
 
@@ -268,8 +269,9 @@ class MapVM {
     }
 
 
-    getDALayer(layerId: string): AbstractVectorLayer {
-        return this.daLayer[layerId]
+    getDALayer(layerId: string | undefined): AbstractVectorLayer {
+        if (layerId)
+            return this.daLayer[layerId]
     }
 
     showSnackbar(msg: string) {

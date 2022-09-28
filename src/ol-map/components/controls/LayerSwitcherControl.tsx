@@ -7,7 +7,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 const LayerSwitcherControl = (props: IControlProps) => {
     const {drawerRef} = props
     const handleClick =  () =>{
-        drawerRef.current.addContents(<LayerSwitcher mapVM={props.mapVM} />)
+        drawerRef?.current?.addContents(<LayerSwitcher mapVM={props.mapVM} />)
         drawerRef?.current?.toggleDrawer()
         props.mapVM.refreshMap();
     }
