@@ -7,6 +7,7 @@ import SymbologyControl from "./controls/SymbologyControl";
 import {IMapToolbarProps} from "../TypeDeclaration";
 import Zoom2Extent from "./controls/Zoom2Extent";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
+import AttributeTable from "./controls/AttributeTable";
 
 
 class MapToolbar extends Control {
@@ -34,6 +35,7 @@ class MapToolbar extends Control {
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }
+                <AttributeTable mapVM={mapVM} />
             </React.Fragment>
         );
     }

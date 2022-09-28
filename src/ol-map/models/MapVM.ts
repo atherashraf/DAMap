@@ -21,6 +21,7 @@ import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
+import MapPanel from "../components/MapPanel";
 
 
 export interface IDALayers {
@@ -41,8 +42,8 @@ class MapVM {
         4922393.652534479
     ]
     isInit: Boolean = false;
-    private api: Api;
-    private isDesigner: boolean;
+    private readonly api: Api;
+    private readonly isDesigner: boolean;
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -82,6 +83,13 @@ class MapVM {
 
     getApi() {
         return this.api;
+    }
+
+    // getBottomDrawerRef(): RefObject<BottomDrawer>{
+    //     return this._domRef.bottomDrawerRef
+    // }
+    getMapBoxRef(): RefObject<MapPanel>{
+        return this._domRef.mapBoxRef
     }
 
     getRightDrawerRef(): RefObject<RightDrawer> {

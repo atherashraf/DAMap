@@ -7,10 +7,10 @@ export const APIs = Object.freeze({
     API_LOGIN: "api/jwt/auth/login/",
     DCH_LAYER_INFO: "api/dch/layer_info/{uuid}/",
     DCH_LAYER_EXTENT: "api/dch/layer_extent/{uuid}/",
-    // DCH_LAYER_MVT_ZXY: "api/dch/layer_mvt/{uuid}/{z}/{x}/{y}/",
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
     DCH_SAVE_STYLE: "api/dch/save_style/{uuid}",
     DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
+    DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",
     DCH_LAYER_FIELD_DISTINCT_VALUE: "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",
     DCH_MAP_INFO: "api/dch/get_map_info/{uuid}/",
 });
@@ -33,7 +33,6 @@ export default class Api {
                 url = url.replace(`{${key}}`, params[key]);
             } else {
                 if (getParamsCount == 0) {
-
                     url = `${url}?${key}=${params[key]}`
                 } else {
                     url = `${url}&${key}=${params[key]}`
