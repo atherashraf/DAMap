@@ -8,7 +8,7 @@ import DASnackbar from "./components/common/DASnackbar";
 import {pointShapeTypes} from "./components/styling/forms/symbolizer/PointSymbolizer";
 import BottomDrawer from "./components/drawers/BottomDrawer";
 import MapView from "./containers/MapView";
-import MapPanel from "./components/MapBox";
+import MapPanel from "./components/MapPanel";
 
 export interface IBaseMapProps{
     mapVM: MapVM
@@ -66,7 +66,7 @@ export interface IMapInfo {
 
 
 export interface IFeatureStyle {
-    type: "single" | "multiple" | "density"
+    type: "single" | "multiple" | "density" | "sld"
     style: {
         default?: IGeomStyle
         rules?: IRule[]

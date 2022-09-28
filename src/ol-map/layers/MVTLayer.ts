@@ -49,7 +49,11 @@ class MVTLayer extends AbstractVectorLayer {
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
                     let cols: string[] = []
-                    if (this.style && this.style.type != "single") {
+                    // if(this.style&& this.style.type=="sld"){
+                    //     console.log("in sld", this.style);
+                    //
+                    // }
+                    if (this.style && this.style.type !== "single" && this.style.type !== "sld" ) {
                         this.style.style.rules.forEach((rule) => {
                             cols.push(rule.filter.field)
                         })
@@ -73,6 +77,7 @@ class MVTLayer extends AbstractVectorLayer {
                                 });
                                 //@ts-ignore
                                 tile.setFeatures(features);
+                                console.log("features on loading...", features )
                             });
                         });
                     });
@@ -112,6 +117,8 @@ class MVTLayer extends AbstractVectorLayer {
                         }
                     }
                 });
+                break;
+            case "sld":
                 break;
             default:
                 break;
