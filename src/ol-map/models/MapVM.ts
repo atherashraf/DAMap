@@ -302,8 +302,9 @@ class MapVM {
     }
 
 
-    getDALayer(layerId: string): AbstractVectorLayer {
-        return this.daLayer[layerId]
+    getDALayer(layerId: string | undefined): AbstractVectorLayer {
+        if (layerId)
+            return this.daLayer[layerId]
     }
 
     showSnackbar(msg: string) {

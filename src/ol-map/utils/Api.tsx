@@ -70,7 +70,7 @@ export default class Api {
                 return data.access;
             }
         } catch (e) {
-            this.snackbarRef.current.show("Failed to contact to server. Please ask system administrator.");
+            this.snackbarRef.current?.show("Failed to contact to server. Please ask system administrator.");
         }
     }
 
@@ -128,7 +128,7 @@ export default class Api {
             return await this.apiResponse(response, isJSON);
 
         } catch (e) {
-            this.snackbarRef.current.show("Services are not available at this time.");
+            this.snackbarRef.current?.show("Services are not available at this time.");
             console.error(e);
         }
     }
@@ -287,14 +287,14 @@ export default class Api {
         if (response.ok)
             return isJSON ? await response.json() : await response.text();
         else if (response.status === 401)
-            this.snackbarRef.current.show("You are unauthorized to submit this request. Please contact project office.");
+            this.snackbarRef.current?.show("You are unauthorized to submit this request. Please contact project office.");
         // store.dispatch(setAuthentication(false));
         else if (response.status === 400)
-            this.snackbarRef.current.show("Bad Request. Please check your parameters...");
+            this.snackbarRef.current?.show("Bad Request. Please check your parameters...");
         else if (response.status === 204)
-            this.snackbarRef.current.show("No related data or content found");
+            this.snackbarRef.current?.show("No related data or content found");
         else
-            this.snackbarRef.current.show("Failed to post service. Please contact admin");
+            this.snackbarRef.current?.show("Failed to post service. Please contact admin");
         return null;
     }
 

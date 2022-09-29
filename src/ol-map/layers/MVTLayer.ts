@@ -92,7 +92,8 @@ class MVTLayer extends AbstractVectorLayer {
         let style: IGeomStyle;
         let rules: IRule[]
         let properties: any
-        switch (this.style?.type) {
+        const type= this.style?.type || ""
+        switch (type) {
             case "single":
                 style = this.style["style"]["default"];
                 break;

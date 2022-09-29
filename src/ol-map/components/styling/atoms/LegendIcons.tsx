@@ -24,7 +24,7 @@ export const LegendIcons = (props: SymbologyIconProps) => {
         setStyle(props.style)
     }, [props])
     const handleApplyStyle = () => {
-        const params = vectorStyleRef.current.getStyleParams();
+        const params = vectorStyleRef.current?.getStyleParams();
         // setStyle(params)
         props.updateStyle(props.index, params)
     }

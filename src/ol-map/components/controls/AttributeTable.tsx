@@ -25,9 +25,9 @@ const AttributeTable = (props: IControlProps) => {
                                                           tableHeight={height}
                                                           tableWidth={1500} />
 
-                                mapBoxRef.current.toggleDrawer(height, table)
+                                mapBoxRef.current?.toggleDrawer(height, table)
                             }else{
-                                props.mapVM.getSnackbarRef().current.show("No attribute found")
+                                props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
                             }
                         });
 

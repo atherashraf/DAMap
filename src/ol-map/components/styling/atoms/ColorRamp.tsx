@@ -48,20 +48,20 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
             backgroundColor += `, ${c} ${percent}%`
         })
         backgroundColor += ")"
-        this.setState({backgroundColor: backgroundColor})
-        this.props.mapVM.getDialogBoxRef().current.closeDialog();
+        this.setState(()=>({backgroundColor: backgroundColor}))
+        this.props.mapVM.getDialogBoxRef().current?.closeDialog();
     }
 
     async addColor() {
         const newColor = _.randomColor()
-        await this.setState({colors: [...this.state.colors, newColor]})
-        this.props.mapVM.getDialogBoxRef().current.updateContents(this.getDialogContent())
+        await this.setState(()=>({colors: [...this.state.colors, newColor]}))
+        this.props.mapVM.getDialogBoxRef().current?.updateContents(this.getDialogContent())
     }
 
     handleColorChange(index: number, color: string) {
         const colors = [...this.state.colors]
         colors[index] = color
-        this.setState({colors: colors})
+        this.setState(()=>({colors: colors}))
     }
 
     getDialogContent(): JSX.Element {
@@ -81,13 +81,13 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
 
     handleClick() {
         const dialogRef: RefObject<DADialogBox> = this.props.mapVM.getDialogBoxRef()
-        dialogRef.current.openDialog({
+        dialogRef.current?.openDialog({
             title: "Create Color Ramp",
             content: this.getDialogContent(),
             actions: <React.Fragment>
                 <Button key={"add-color"} onClick={this.addColor.bind(this)}>Add Color</Button>
                 <Button key={"create-ramp"} onClick={this.createColorRamp.bind(this)}>Create </Button>
-                <Button key={"close-ramp"} onClick={dialogRef.current.closeDialog}>Close </Button>
+                <Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>
             </React.Fragment>
         })
     }

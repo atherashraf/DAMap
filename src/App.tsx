@@ -26,7 +26,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             {/*<LayerDesigner layerId={"77635fc0-354a-11ed-82a7-acde48001122"}/>*/}
             {/*<LayerDesigner layerId={"f7de6208-3612-11ed-87df-acde48001122"} />*/}
-            <MapView uuid={	"01345dd8-3f25-11ed-873f-acde48001122"} isMap={false} isDesigner={true}/>
+            <MapView uuid={	"3250b4e4-3f88-11ed-8ef1-acde48001122"} isMap={false} isDesigner={true}/>
         </ThemeProvider>
     );
 }
