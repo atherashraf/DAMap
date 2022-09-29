@@ -5,6 +5,7 @@ import AbstractVectorLayer from "./AbstractVectorLayer";
 import Api, {APIs} from "../utils/Api";
 import {Feature} from "ol";
 import {IGeomStyle, IRule} from "../TypeDeclaration";
+import SLDStyleParser from "./SLDStyleParser";
 
 
 /*****
@@ -53,12 +54,12 @@ class MVTLayer extends AbstractVectorLayer {
                     //     console.log("in sld", this.style);
                     //
                     // }
-                    if (this.style && this.style.type !== "single" && this.style.type !== "sld" ) {
+                    if (this.style && this.style.type !== "single" && this.style.type !== "sld") {
                         this.style.style.rules.forEach((rule) => {
                             cols.push(rule.filter.field)
                         })
                         cols = cols.filter((v, i, a) => a.indexOf(v) === i);
-                        if(cols.length > 0)
+                        if (cols.length > 0)
                             url = url + "?cols=" + String(cols)
                     }
                     //@ts-ignore
@@ -77,7 +78,7 @@ class MVTLayer extends AbstractVectorLayer {
                                 });
                                 //@ts-ignore
                                 tile.setFeatures(features);
-                                console.log("features on loading...", features )
+                                console.log("features on loading...", features)
                             });
                         });
                     });
@@ -110,15 +111,18 @@ class MVTLayer extends AbstractVectorLayer {
                 rules = this.style.style.rules
                 properties = feature.getProperties();
                 rules.forEach((rule: IRule) => {
-                    if (rule.filter.field in properties ) {
+                    if (rule.filter.field in properties) {
                         const x = properties[rule.filter.field]
-                        if(rule.filter.value[0]<=x && rule.filter.value[1]>=x) {
+                        if (rule.filter.value[0] <= x && rule.filter.value[1] >= x) {
                             style = rule.style;
                         }
                     }
                 });
                 break;
             case "sld":
+                if (!this.layer.hasOwnProperty('legend')) {
+                    new SLDStyleParser(this)
+                }
                 break;
             default:
                 break;

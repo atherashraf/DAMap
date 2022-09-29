@@ -22,6 +22,10 @@ import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
+import '../static/css/custom_layerswitcher.css';
+import SLDStyleParser from "../layers/SLDStyleParser";
+import Legend from "ol-ext/legend/Legend";
+import {Group} from "ol/layer";
 
 
 export interface IDALayers {
@@ -69,7 +73,8 @@ class MapVM {
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
             mapInfo.layers.forEach((layer) => {
-                this.addVectorLayer(layer).then(() => {})
+                this.addVectorLayer(layer).then(() => {
+                })
             });
         }
         this.addSidebarController();
@@ -88,7 +93,7 @@ class MapVM {
     // getBottomDrawerRef(): RefObject<BottomDrawer>{
     //     return this._domRef.bottomDrawerRef
     // }
-    getMapBoxRef(): RefObject<MapPanel>{
+    getMapBoxRef(): RefObject<MapPanel> {
         return this._domRef.mapBoxRef
     }
 
@@ -131,17 +136,46 @@ class MapVM {
     }
 
     addLayerSwitcher(target: HTMLElement) {
-        this.map.addControl(
-            new LayerSwitcher({
-                // target:$(".layerSwitcher").get(0),
-                target: target,
-                // displayInLayerSwitcher: function (l) { return false; },
-                show_progress: true,
-                // extent: true,
-                // trash: true,
-                // oninfo: function (l) { alert(l.get("title")); }
-            })
-        )
+        let lswitcher = new LayerSwitcher({
+            // target:$(".layerSwitcher").get(0),
+            target: target,
+            // displayInLayerSwitcher: function (l) { return false; },
+            show_progress: true,
+            // extent: true,
+            // trash: true,
+            // oninfo: function (l) { alert(l.get("title")); }
+        });
+        lswitcher.on('drawlist', function (e) {
+            let layer = e.layer;
+            // console.log(layer);
+            if (!(layer instanceof Group) && !(layer.get('baseLayer'))) {
+                if (layer.hasOwnProperty('legend')) {
+                    //@ts-ignore
+                    layer.legend['graphic'].render(e.li);
+                } else {
+                    //@ts-ignore
+                    let tileGrid = layer.getSource().getTileGrid()
+                    //@ts-ignore
+                    let features = layer.getSource().getFeaturesInExtent(tileGrid.getExtent());
+                    if (features && features.length > 0) {
+                        let gType = features[0].getGeometry().getType()
+                        //@ts-ignore
+                        let img = Legend.getLegendImage({
+                            /* given a style  and a geom type*/
+                            //@ts-ignore
+                            style: layer.getStyle(),
+                            typeGeom: gType
+
+                        });
+                        e.li.appendChild(img)
+
+                    }
+
+                }
+            }
+            // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)
+        })
+        this.map.addControl(lswitcher)
     }
 
     setTarget(target: string) {

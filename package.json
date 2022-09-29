@@ -40,11 +40,14 @@
     "@mui/material": "^5.10.1",
     "@types/react-color": "^3.0.6",
     "auto-bind": "^5.0.1",
-    "d3": "^7.6.1",
+    "d3": "^6.7.0",
     "ol": "^6.15.1",
     "ol-ext": "^3.2.29",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "geostyler-sld-parser": "^3.2.2",
+    "geostyler-openlayers-parser": "^3.2.0",
+    "geostyler-legend": "^3.0.0"
   }
 }
