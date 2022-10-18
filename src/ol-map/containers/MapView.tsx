@@ -17,14 +17,17 @@ interface MapVMProps {
     isDesigner?: boolean
 }
 
+const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
+const rightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
+// const leftDrawerRef = React.createRef<LeftDrawer>();
+const dialogBoxRef: RefObject<DADialogBox> = React.createRef<DADialogBox>();
+const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
+// const bottomDrawerRef: RefObject<BottomDrawer> = React.createRef<BottomDrawer>();
+// const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
+
+
 const MapView = (props: MapVMProps) => {
     const mapDivId = 'map';
-    const rightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
-    // const leftDrawerRef = React.createRef<LeftDrawer>();
-    const dialogBoxRef: RefObject<DADialogBox> = React.createRef<DADialogBox>();
-    const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
-    // const bottomDrawerRef: RefObject<BottomDrawer> = React.createRef<BottomDrawer>();
-    const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
     const domRefs: IDomRef = {
         rightDrawerRef: rightDrawerRef,
         // leftDrawerRef: leftDrawerRef
@@ -34,7 +37,7 @@ const MapView = (props: MapVMProps) => {
     }
 
     const mapVM = new MapVM(domRefs, props.isDesigner)
-    mapVM.initMap();
+    // mapVM.initMap();
 
     useEffect(() => {
         if (props.isMap) {
@@ -45,7 +48,7 @@ const MapView = (props: MapVMProps) => {
                     }
                     mapVM.setTarget(mapDivId);
                 })
-        }else{
+        } else {
             (async () => {
                 await mapVM.addVectorLayer({uuid: props.uuid})
                 const extent = await mapVM.getDALayer(props.uuid).getExtent()
@@ -54,14 +57,15 @@ const MapView = (props: MapVMProps) => {
             })();
             mapVM.setLayerOfInterest(props.uuid)
             mapVM.setTarget(mapDivId);
+            mapVM.setDomRef(domRefs)
         }
-    }, [props])
+    }, [])
     return (
         <React.Fragment>
             <div id={"fullscreen"} style={{
                 display: "flex",
                 // direction: "column",
-                padding: "20px",
+                // padding: "20px",
                 width: "100%",
                 boxSizing: "border-box",
                 height: "100%"

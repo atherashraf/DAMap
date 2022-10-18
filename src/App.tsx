@@ -7,8 +7,8 @@ import MapView from "./ol-map/containers/MapView";
 
 
 const theme = createTheme({
+    // status: {danger: orange[500],},
     // @ts-ignore
-    status: {danger: orange[500],},
     palette: {
         primary: {
             main: '#234184'

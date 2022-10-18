@@ -76,9 +76,9 @@ class MVTLayer extends AbstractVectorLayer {
                                     extent: extent,
                                     featureProjection: projection
                                 });
+                                console.log("features", features)
                                 //@ts-ignore
                                 tile.setFeatures(features);
-                                console.log("features on loading...", features)
                             });
                         });
                     });
@@ -92,7 +92,7 @@ class MVTLayer extends AbstractVectorLayer {
         let style: IGeomStyle;
         let rules: IRule[]
         let properties: any
-        const type= this.style?.type || ""
+        const type = this.style?.type || ""
         switch (type) {
             case "single":
                 style = this.style["style"]["default"];

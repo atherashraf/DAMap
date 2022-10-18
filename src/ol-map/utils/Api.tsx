@@ -40,7 +40,7 @@ export default class Api {
                 getParamsCount++
             }
         }
-        console.log("url", url)
+        // console.log("url", url)
         return url;
     }
 

@@ -5,10 +5,11 @@ import LayerSwitcher from "../LayerSwitcher";
 import LayersIcon from '@mui/icons-material/Layers';
 
 const LayerSwitcherControl = (props: IControlProps) => {
-    const {drawerRef} = props
-    const handleClick =  () =>{
-        drawerRef?.current?.addContents(<LayerSwitcher mapVM={props.mapVM} />)
-        drawerRef?.current?.toggleDrawer()
+    // const {drawerRef} = props
+    const handleClick = () => {
+        console.log("click working...", props.drawerRef);
+        props.drawerRef?.current?.addContents(<LayerSwitcher mapVM={props.mapVM}/>)
+        props.drawerRef?.current?.toggleDrawer()
         props.mapVM.refreshMap();
     }
     return (

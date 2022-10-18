@@ -14,22 +14,25 @@ const AttributeTable = (props: IControlProps) => {
             <Tooltip title={"Open Attribute Table"}>
                 <IconButton sx={{padding: "3px"}} onClick={() => {
                     const uuid = props.mapVM.getLayerOfInterest();
-                    props.mapVM.getApi().get(APIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
-                        .then((payload) => {
-                            if(payload) {
-                                // console.log("attribute information", payload);
-                                const height = 350
-                                const table = <DADataGrid columns={payload.columns}
-                                                          data={payload.rows}
-                                                          title={""}
-                                                          tableHeight={height}
-                                                          tableWidth={1500} />
-
-                                mapBoxRef.current?.toggleDrawer(height, table)
-                            }else{
-                                props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
-                            }
-                        });
+                    // @ts-ignore
+                    const height = mapBoxRef.current?.getMapHeight() / 2;
+                    console.log(mapBoxRef)
+                    mapBoxRef.current?.toggleDrawer(height, <React.Fragment/>)
+                    // props.mapVM.getApi().get(APIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
+                    //     .then((payload) => {
+                    //         if (payload) {
+                    //             // console.log("attribute information", payload);
+                    //             const table = <DADataGrid columns={payload.columns}
+                    //                                       data={payload.rows}
+                    //                                       title={""}
+                    //                                       tableHeight={height}
+                    //                                       tableWidth={1500}/>
+                    //
+                    //             mapBoxRef.current?.toggleDrawer(height, table)
+                    //         } else {
+                    //             props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
+                    //         }
+                    //     });
 
 
                 }}>

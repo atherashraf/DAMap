@@ -29,7 +29,7 @@ class AbstractVectorLayer {
         this.style = info && "style" in info && info["style"];
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
-        console.log("layer info", this.layerInfo);
+        // console.log("layer info", this.layerInfo);
     }
 
     async getExtent(): Promise<number[]> {

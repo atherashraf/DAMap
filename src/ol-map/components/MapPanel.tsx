@@ -14,8 +14,11 @@ interface IState {
 }
 
 class MapPanel extends React.PureComponent<IProps, IState> {
+    private mapDivId: string;
+
     constructor(props: IProps) {
         super(props);
+        this.mapDivId = "map"
         this.state = {
             drawerHeight: 0,
             contents: <React.Fragment/>,
@@ -23,7 +26,15 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         }
     }
 
-    toggleDrawer(height: number = 250, contents: JSX.Element=<React.Fragment/>) {
+    getMapHeight(): number {
+        return document.getElementById(this.mapDivId)?.clientHeight || 0
+    }
+
+    getMapWidth(): number {
+        return document.getElementById(this.mapDivId)?.clientWidth || 0
+    }
+
+    toggleDrawer(height: number = 250, contents: JSX.Element = <React.Fragment/>) {
         height = this.state.drawerHeight == 0 ? height : 0;
         const display = this.state.drawerHeight == 0 ? "none" : "block";
         contents = contents ? contents : <React.Fragment/>
@@ -32,7 +43,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeDrawer() {
-        this.setState(()=>({drawerHeight: 0, display: "none"}))
+        this.setState(() => ({drawerHeight: 0, display: "none"}))
     }
 
     render() {
@@ -42,10 +53,10 @@ class MapPanel extends React.PureComponent<IProps, IState> {
                 // direction: "column",
                 width: "100%",
                 height: "100%",
-                overflow:"hidden",
-                m:1
+                // overflow:"hidden",
+                // m:1
             }} elevation={6}>
-                <div id={"map"} style={{
+                <div id={this.mapDivId} style={{
                     width: "100%",
                     height: `calc(100% - ${this.state.drawerHeight}px)`,
                 }}/>

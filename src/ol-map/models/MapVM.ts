@@ -55,6 +55,10 @@ class MapVM {
         this.api = new Api(domRef.snackBarRef)
     }
 
+    setDomRef(domRef: IDomRef) {
+        this._domRef = domRef
+    }
+
     initMap(mapInfo?: IMapInfo) {
         this.map = new Map({
             controls: defaultControls().extend([
@@ -73,6 +77,7 @@ class MapVM {
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
             mapInfo.layers.forEach((layer) => {
+                console.log("layer", layer)
                 this.addVectorLayer(layer).then(() => {
                 })
             });
