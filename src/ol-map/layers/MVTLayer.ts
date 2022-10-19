@@ -2,7 +2,7 @@ import MVT from "ol/format/MVT";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import AbstractVectorLayer from "./AbstractVectorLayer";
-import Api, {APIs} from "../utils/Api";
+import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {IGeomStyle, IRule} from "../TypeDeclaration";
 import SLDStyleParser from "./SLDStyleParser";
@@ -13,7 +13,6 @@ import SLDStyleParser from "./SLDStyleParser";
  */
 
 class MVTLayer extends AbstractVectorLayer {
-
     setLayer() {
         const me = this;
         const {title, uuid} = this.layerInfo || {};
@@ -22,26 +21,16 @@ class MVTLayer extends AbstractVectorLayer {
             name: uuid,
             title: title,
             visible: true,
-            // declutter: true,
-            // background: 'rgba(0,0,0,0.4)',
             source: this.getDataSource(),
-            style: this.styleFunction.bind(me)
-            // style: new Style({
-            //     stroke: new Stroke({
-            //         color: "yellow",
-            //         width: 4
-            //     }),
-            //     fill: new Fill({
-            //         color: "rgba(255, 255, 0, 0.8)"
-            //     })
-            // })
+            style: this.styleFunction.bind(me),
+            declutter: true
         });
 
     }
 
     setDataSource() {
 
-        const url = Api.getURL(APIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
+        const url = MapApi.getURL(MapAPIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
         this.dataSource = new VectorTileSource({
             format: new MVT(),
             url: `${url}{z}/{x}/{y}`,
@@ -50,10 +39,6 @@ class MVTLayer extends AbstractVectorLayer {
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
                     let cols: string[] = []
-                    // if(this.style&& this.style.type=="sld"){
-                    //     console.log("in sld", this.style);
-                    //
-                    // }
                     if (this.style && this.style.type !== "single" && this.style.type !== "sld") {
                         this.style.style.rules.forEach((rule) => {
                             cols.push(rule.filter.field)
@@ -76,7 +61,6 @@ class MVTLayer extends AbstractVectorLayer {
                                     extent: extent,
                                     featureProjection: projection
                                 });
-                                console.log("features", features)
                                 //@ts-ignore
                                 tile.setFeatures(features);
                             });

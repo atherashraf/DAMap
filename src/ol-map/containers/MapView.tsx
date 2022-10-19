@@ -3,7 +3,7 @@ import MapVM from "../models/MapVM";
 import {RefObject, useEffect} from "react";
 // import LeftDrawer from "../components/drawers/LeftDrawer";
 import RightDrawer from "../components/drawers/RightDrawer";
-import {APIs} from "../utils/Api";
+import {MapAPIs} from "../utils/MapApi";
 import {IDomRef, IMapInfo} from "../TypeDeclaration";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
@@ -41,7 +41,7 @@ const MapView = (props: MapVMProps) => {
 
     useEffect(() => {
         if (props.isMap) {
-            mapVM.getApi().get(APIs.DCH_MAP_INFO, {"uuid": props.uuid})
+            mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
                 .then((payload: IMapInfo) => {
                     if (!mapVM.isInit) {
                         mapVM.initMap(payload);

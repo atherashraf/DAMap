@@ -5,7 +5,7 @@ import SingleStyleForm from "./forms/SingleStyleForm";
 import BaseStyleForm from "./forms/BaseStyleForm";
 import MapVM from "../../models/MapVM";
 import {IFeatureStyle} from "../../TypeDeclaration";
-import {APIs} from "../../utils/Api";
+import {MapAPIs} from "../../utils/MapApi";
 import DensityStyleForm from "./forms/DensityStyleForm";
 import MultipleStyleForm from "./forms/MultipleStyleForm";
 
@@ -47,7 +47,7 @@ const SymbologySetting = (props: SymbologySettingProps) => {
     }
     const handleSaveStyle = () => {
         const style: IFeatureStyle = styleFormRef.current?.getFeatureStyle()
-        props.mapVM.getApi().post(APIs.DCH_SAVE_STYLE, style, {uuid: layerId}).then(() => {
+        props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId}).then(() => {
             props.mapVM.showSnackbar("Style save successfully")
         });
     }

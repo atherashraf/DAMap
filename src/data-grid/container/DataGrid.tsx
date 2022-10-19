@@ -1,30 +1,46 @@
 import * as React from "react";
-import {Box, Paper, Table, TableBody, TableContainer} from "@mui/material";
-import {EnhancedTableToolbar} from "../components/toolbar";
+import {Box, Paper, Table} from "@mui/material";
+import {GridToolbar} from "../components/toolbar";
 import {useState} from "react";
 import {EnhancedTableHead} from "../components/Header";
 import {
-    DataGridProps,
+    Column,
     Order,
     Row,
 } from "../TypeDeclaration";
-import TablePagination from "@mui/material/TablePagination";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import EnhancedBody from "../components/Body";
 
+
 export const enhancedTableBodyRef = React.createRef<EnhancedBody>();
+
+interface DataGridProps {
+    columns: Column[];
+    data: Row[];
+    title: string
+    tableHeight: number,
+    tableWidth: number | 'auto'
+}
+
 const DADataGrid = (props: DataGridProps) => {
-
-
-    const [dense, setDense] = React.useState(false);
+    const [dense, setDense] = React.useState(true);
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
-    const initData: Row[] = props.data.map((row, index) => ({rowId: index + 1, ...row}))
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<string>('title');
+    const [orderBy, setOrderBy] = React.useState<string>('rowId');
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [rowCount, setRowCount] = useState<number>(0)
+
+    React.useEffect(() => {
+        setRowsPerPage(props.data.length)
+    }, [props.data])
+    // const dateColumns = props.columns.filter((c) => c.type === "date")
+    const initData: Row[] = props.data.map((row, index) => {
+        // console.log("row", row)
+        // dateColumns.forEach((c)=> {
+        //     row[c.id] = new Date(row[c.id])
+        // })
+        return Object.assign(row, {rowId: index + 1})
+    });
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: string,) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -74,74 +90,59 @@ const DADataGrid = (props: DataGridProps) => {
         setDense(event.target.checked);
     };
 
-    // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.data.length) : 0;
-    // const isSelected = (rowId: any) => selected.indexOf(rowId) !== -1;
-
     const paperWidth = props.tableWidth//for adjusting scrollbar for table
-    const tableHeight = props.tableHeight - 195;
-
+    const toolbarHeight = 30
+    const tableHeight = props.tableHeight - toolbarHeight; //- 155;
     return (
         <React.Fragment>
             <Box sx={{width: '100%'}}>
-                <Paper elevation={2}>
-
-                    <EnhancedTableToolbar numSelected={selected?.length || 0}
-                                          columns={props.columns}
-                                          tableName={props.title}
-                                          data={initData}
-                                          selectedRowIds={selected || []}/>
-                </Paper>
+                <GridToolbar numSelected={selected?.length || 0}
+                             columns={props.columns}
+                             tableName={props.title}
+                             data={initData} height={toolbarHeight}
+                             selectedRowIds={selected || []}
+                />
                 <Box sx={{width: '100%', height: tableHeight, overflow: "auto"}}>
                     <Paper sx={{width: paperWidth, boxSizing: "border-box"}}>
-                        <TableContainer>
-                            <Table
-                                stickyHeader
-                                sx={{width: '!00%'}}
-                                aria-labelledby="tableTitle"
-                                size={dense ? 'small' : 'medium'}
-                            >
-                                <EnhancedTableHead
-                                    numSelected={selected?.length || 0}
-                                    order={order || 'asc'}
-                                    orderBy={orderBy || 'title'}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    onRequestSort={handleRequestSort}
-                                    rowCount={rowCount}
-                                    columns={props.columns}
-                                />
-                                <EnhancedBody
-                                    ref={enhancedTableBodyRef}
-                                    initData={initData}
-                                    rowsPerPage={rowsPerPage}
-                                    order={order}
-                                    orderBy={orderBy}
-                                    page={page}
-                                    columns={props.columns}
-                                    dense={dense}
-                                    selected={selected}
-                                    setRowCount={setRowCount}
-                                    handleRowClick={handleRowClick}
-                                />
-                            </Table>
-                        </TableContainer>
+
+                        <Table
+                            // stickyHeader={true}
+                            sx={{width: '!00%'}}
+                            size={dense ? 'small' : 'medium'}
+                        >
+                            <EnhancedTableHead
+                                numSelected={selected?.length || 0}
+                                order={order || 'asc'}
+                                orderBy={orderBy || 'title'}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rowCount}
+                                columns={props.columns}
+                            />
+                            <EnhancedBody
+                                ref={enhancedTableBodyRef}
+                                initData={initData}
+                                rowsPerPage={rowsPerPage}
+                                order={order}
+                                orderBy={orderBy}
+                                page={page}
+                                columns={props.columns}
+                                dense={dense}
+                                selected={selected}
+                                setRowCount={setRowCount}
+                                handleRowClick={handleRowClick}
+                            />
+                        </Table>
+
                     </Paper>
                 </Box>
-                <Paper elevation={2} sx={{paddingLeft: 2, paddingRight: 2, margin: 0}}>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, 50, 100]}
-                        component="div"
-                        count={rowCount}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                    <FormControlLabel
-                        control={<Switch checked={dense} onChange={handleChangeDense}/>}
-                        sx={{padding: 0}}
-                        label="Dense padding"
-                    />
-                </Paper>
+                {/*<GridFooter*/}
+                {/*    dense={dense} page={page} rowCount={rowCount}*/}
+                {/*    rowsPerPage={rowsPerPage}*/}
+                {/*    handleChangeDense={handleChangeDense}*/}
+                {/*    handleChangePage={handleChangePage}*/}
+                {/*    handleChangeRowsPerPage={handleChangeRowsPerPage}*/}
+                {/*/>*/}
             </Box>
         </React.Fragment>
     );

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box, Checkbox, TableCell, TableHead, TableRow, TableSortLabel} from "@mui/material";
+import {Box, Checkbox, TableHead, TableSortLabel} from "@mui/material";
 import {visuallyHidden} from '@mui/utils';
 import {StyledTableCell, StyledTableRow, EnhancedTableHeadProps} from "../TypeDeclaration";
 

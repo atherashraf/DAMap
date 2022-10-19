@@ -50,13 +50,13 @@ export const styles = {
     }),
     "LineString": new Style({
         stroke: new Stroke({
-            color: "green",
+            color: "blue",
             width: 1
         })
     }),
     "MultiLineString": new Style({
         stroke: new Stroke({
-            color: "green",
+            color: "blue",
             width: 1
         })
     }),
@@ -74,12 +74,12 @@ export const styles = {
     }),
     "Polygon": new Style({
         stroke: new Stroke({
-            color: "blue",
+            color: "green",
             lineDash: [4],
             width: 3
         }),
         fill: new Fill({
-            color: "rgba(0, 0, 255,0.3)"
+            color: "rgba(0, 255, 0,0.3)"
         })
     }),
     "LinearRing": new Style({

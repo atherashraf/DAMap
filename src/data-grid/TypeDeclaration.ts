@@ -4,7 +4,7 @@ import {styled, TableCell, tableCellClasses, TableRow} from "@mui/material";
 export type Order = 'asc' | 'desc';
 
 export interface Row {
-    // rowId?: number
+    rowId: number
     [key: string]: any
 }
 export interface Column {
@@ -12,19 +12,13 @@ export interface Column {
     id: string;
     label: string;
     // isNumeric: boolean;
-    type?: "string" | "number" | "date"
+    type: "string" | "number" | "date"
 }
 export interface Filter{
     key:string
-    value: string | number | Date
+    value: string | number[] | Date[]
 }
-export interface DataGridProps {
-    columns: Column[];
-    data: Row[];
-    title: string
-    tableHeight: number,
-    tableWidth: number
-}
+
 export interface EnhancedTableHeadProps {
     numSelected: number;
     onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
@@ -41,6 +35,8 @@ export interface EnhancedTableToolbarProps {
     data: Row[];
     columns: Column[]
     selectedRowIds: readonly number[];
+    height: number,
+    // handleHeightChange: Function
 }
 
 export interface FilterMenuProps{

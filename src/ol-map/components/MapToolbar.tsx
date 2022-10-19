@@ -8,6 +8,7 @@ import {IMapToolbarProps} from "../TypeDeclaration";
 import Zoom2Extent from "./controls/Zoom2Extent";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 import AttributeTable from "./controls/AttributeTable";
+import LOISelector from "./controls/LOISelector";
 
 
 class MapToolbar extends Control {
@@ -36,6 +37,8 @@ class MapToolbar extends Control {
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }
                 <AttributeTable mapVM={mapVM} />
+                <LOISelector mapVM={mapVM} />
+
             </React.Fragment>
         );
     }

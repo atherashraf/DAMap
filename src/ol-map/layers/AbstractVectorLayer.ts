@@ -2,7 +2,7 @@ import MapVM from "../models/MapVM";
 import VectorLayer from "ol/layer/Vector";
 import {Fill, Stroke, Style} from "ol/style";
 import autoBind from "auto-bind";
-import {APIs} from "../utils/Api";
+import {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {styles} from "./styles";
 import VectorTileLayer from "ol/layer/VectorTile";
@@ -29,12 +29,11 @@ class AbstractVectorLayer {
         this.style = info && "style" in info && info["style"];
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
-        // console.log("layer info", this.layerInfo);
     }
 
     async getExtent(): Promise<number[]> {
         if (!this.extent) {
-            this.extent = await this.mapVM.getApi().get(APIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
+            this.extent = await this.mapVM.getApi().get(MapAPIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
         }
         return this.extent
     }

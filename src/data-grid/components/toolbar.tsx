@@ -3,16 +3,16 @@ import {alpha} from '@mui/material/styles';
 import {IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
 
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import PinDropIcon from '@mui/icons-material/PinDrop';
-import {EnhancedTableToolbarProps, Row} from "../TypeDeclaration";
+import {EnhancedTableToolbarProps} from "../TypeDeclaration";
 // import {useNavigate} from "react-router-dom";
 // import {olMapCtrl} from "../../ol-map/containers/DAMaps";
 import FilterMenu from "./FilterMenu";
 
 
-export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+export const GridToolbar = (props: EnhancedTableToolbarProps) => {
     const {numSelected} = props;
+    const toolbarRef = React.useRef();
     // const navigate = useNavigate()
     const handleSearch = () => {
         const rows = props.data.filter((d: any) => props.selectedRowIds.indexOf(d.rowId) >= 0);
@@ -22,19 +22,21 @@ export const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 
     }
     const handleLocation = () => {
-        const rows = props.data.filter((d: any) => props.selectedRowIds.indexOf(d.rowId) >= 0);
+        // const rows = props.data.filter((d: any) => props.selectedRowIds.indexOf(d.rowId) >= 0);
         // console.log("selected rows", rows)
         // olMapCtrl.clearSelectedFeatures();
-        rows.forEach((r: Row) => {
-            // olMapCtrl.selectFeature(r.id);
-        })
+        // rows.forEach((r: Row) => {
+        //     olMapCtrl.selectFeature(r.id);
+        // })
         // olMapCtrl.zoomToSelectedFeatures();
     }
     return (
         <Toolbar
+            ref={toolbarRef}
             sx={{
-                pl: {sm: 2},
-                pr: {xs: 1, sm: 1},
+                height: props.height,
+                // pl: {sm: 2},
+                // pr: {xs: 1, sm: 1},
                 ...(numSelected > 0 && {
                     bgcolor: (theme) =>
                         alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),

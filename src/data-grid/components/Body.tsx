@@ -22,6 +22,7 @@ interface EnhancedBodyProps {
 interface EnhancedBodyState {
     data: Row[]
     // selected: number[]
+    isFilterApplied: boolean
 
 }
 
@@ -30,17 +31,18 @@ class EnhancedBody extends React.PureComponent<EnhancedBodyProps, EnhancedBodySt
         super(props);
         autoBind(this);
         this.state = {
-            data: props.initData
+            data: props.initData,
+            isFilterApplied: false
         }
     }
 
     setData(data: Row[]) {
-        this.setState({data: data})
+        this.setState(() => ({data: data}))
         this.props.setRowCount(data.length)
     }
 
     componentDidUpdate(prevProps: Readonly<EnhancedBodyProps>, prevState: Readonly<EnhancedBodyState>, snapshot?: any) {
-        if (prevProps.initData.length != this.props.initData.length) {
+        if (prevProps.initData.length !== this.props.initData.length) {
             this.setData(this.props.initData)
         }
     }
@@ -50,27 +52,56 @@ class EnhancedBody extends React.PureComponent<EnhancedBodyProps, EnhancedBodySt
     }
 
 
-    applyFilter(filters: Filter[]) {
-        let data = this.props.initData;
+    applyFilter(filters: Filter[], selectionType: string) {
+        let selectedData = [...this.props.initData];
         filters.forEach((filter: Filter) => {
-            data = data.filter((r: Row) => {
-                // const values = (typeof filter.value === 'string') ? filter.value.toString().split(',') : [filter.value]
-                // @ts-ignore
-                // return values.reduce((previous: any, current: any) => previous &&
-                return Array.isArray(r[filter.key]) ? r[filter.key].findIndex((v: string) => v == filter.value) != -1 : r[filter.key] == filter.value
+            selectedData = selectedData.filter((r: Row) => {
+                if (typeof filter.value === 'string') {
+                    return r[filter.key] === filter.value
+                } else if (Array.isArray(filter.value) && typeof filter.value[0] === 'number') {
+                    return r[filter.key] >= filter.value[0] && r[filter.key] <= filter.value[1]
+                }
+                return null
             })
         });
-        this.setData(data);
+        switch (selectionType) {
+            case "New":
+                // await this.setData(selectedData);
+                break
+            case "Add":
+                if (this.state.isFilterApplied) {
+                    selectedData = [...this.state.data, ...selectedData]
+                }
+                // await this.setData(selectedData);
+                break;
+            case "Remove":
+                const selectedIds: number[] = selectedData.map((d) => d.rowId)
+                selectedData = this.state.data.filter((d) => selectedIds.findIndex((id) => d.rowId === id) === -1)
+                // await this.setData(selectedData)
+                break;
+            default:
+                break;
+        }
+
+        this.setData(selectedData)
+        this.setState(() => ({isFilterApplied: true}))
+
+
         // olMapCtrl.clearSelectedFeatures();
-        // data.forEach((r: Row) => {
-        //     olMapCtrl.selectFeature(r.id);
-        // })
-        // olMapCtrl.zoomToSelectedFeatures();
+        // setTimeout(() => {
+        //     selectedData.forEach((r: Row) => {
+        //         olMapCtrl.selectFeature(r.id);
+        //     })
+        //     olMapCtrl.zoomToSelectedFeatures();
+        // }, 500)
+
+
     }
 
     clearFilter() {
         // olMapCtrl.clearSelectedFeatures();
         this.setData(this.props.initData)
+        this.setState(() => ({isFilterApplied: false}))
     }
 
 
@@ -115,7 +146,7 @@ class EnhancedBody extends React.PureComponent<EnhancedBodyProps, EnhancedBodySt
                                         padding="none"
                                         align={info.type !== 'string' ? "center" : "left"}
                                     >
-                                        {Array.isArray(row[info.id])? row[info.id].toString(): row[info.id]}
+                                        {Array.isArray(row[info.id]) ? row[info.id].toString() : row[info.id]}
                                     </StyledTableCell>
                                 )}
 

@@ -11,7 +11,7 @@ import {
     TableRow
 } from "@mui/material";
 import React from "react";
-import {APIs} from "../../../utils/Api";
+import {MapAPIs} from "../../../utils/MapApi";
 import {DASelect} from "../../StyledMapComponent";
 import {IFeatureStyle, IGeomStyle, IRule} from "../../../TypeDeclaration";
 import PointSymbolizer, {IPointSymbolizerState} from "./symbolizer/PointSymbolizer";
@@ -70,8 +70,8 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
             })
             this.setState(() => ({styleList: styleList}))
         }
-        this.props.mapVM.getApi().get(APIs.DCH_LAYER_FIELDS, {uuid: this.props.layerId})
-            .then((payload) => {
+        this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELDS, {uuid: this.props.layerId})
+            .then((payload:any) => {
                 // console.log("fields", payload)
                 this.setState({fields: payload})
             });
@@ -91,10 +91,10 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     getFieldName(fieldInfo: any) {
-        this.props.mapVM.getApi().get(APIs.DCH_LAYER_FIELD_DISTINCT_VALUE, {
+        this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELD_DISTINCT_VALUE, {
             uuid: this.props.layerId,
             field_name: fieldInfo.name, field_type: fieldInfo.d_type
-        }).then((payload) =>
+        }).then((payload:any) =>
             this.setState({fieldValues: payload}))
     }
 

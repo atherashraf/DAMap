@@ -7,7 +7,7 @@ import {
     TextField
 } from "@mui/material";
 import React, {RefObject} from "react";
-import {APIs} from "../../../utils/Api";
+import {MapAPIs} from "../../../utils/MapApi";
 import PointSymbolizer, {IPointSymbolizerState} from "./symbolizer/PointSymbolizer";
 import {IFeatureStyle, IFilter, IGeomStyle, IRule} from "../../../TypeDeclaration";
 import LegendGrid from "../atoms/LegendGrid";
@@ -58,8 +58,8 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
             })
             this.setState(() => ({styleList: styleList}))
         }
-        this.props.mapVM.getApi().get(APIs.DCH_LAYER_FIELDS, {uuid: this.props.layerId})
-            .then((payload) => {
+        this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELDS, {uuid: this.props.layerId})
+            .then((payload: any) => {
                 this.setState({fields: payload})
             });
     }
@@ -75,14 +75,14 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
         } else if (!selectedMethod) {
             this.props.mapVM.showSnackbar("Please select classification method...")
         } else {
-            this.props.mapVM.getApi().get(APIs.DCH_LAYER_FIELD_DISTINCT_VALUE, {
+            this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELD_DISTINCT_VALUE, {
                 uuid: this.props.layerId,
                 field_name: selectedField.name,
                 field_type: selectedField.d_type,
                 classification: selectedMethod,
                 no_of_classes: noOfClasses
             })
-                .then((payload) => {
+                .then((payload: any) => {
                     this.setState({fieldValues: payload})
                     if (payload) {
                         const styleList: IRule[] = []
@@ -146,8 +146,10 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
             let c;
             if (mod == 0) {
                 c = colors[index]
-                console.log("color", {"value Index": valueIndex,
-                    "color index": index, "c": c})
+                console.log("color", {
+                    "value Index": valueIndex,
+                    "color index": index, "c": c
+                })
             } else {
                 const f = Math.floor(index)
                 const x1 = f / (colors.length - 1) * (this.state.noOfClasses - 1)

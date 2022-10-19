@@ -13,7 +13,7 @@ import BaseLayers from "../layers/BaseLayers";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
-import Api, {APIs} from "../utils/Api";
+import MapApi, {MapAPIs} from "../utils/MapApi";
 import {RefObject} from "react";
 import AbstractVectorLayer from "../layers/AbstractVectorLayer";
 import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
@@ -23,7 +23,6 @@ import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
 import '../static/css/custom_layerswitcher.css';
-import SLDStyleParser from "../layers/SLDStyleParser";
 import Legend from "ol-ext/legend/Legend";
 import {Group} from "ol/layer";
 
@@ -38,6 +37,7 @@ class MapVM {
     daLayer: IDALayers = {}
     private _domRef: IDomRef = null
     private _layerOfInterest: string = null;
+    private _vectorLayerAddedEvent = new Event('VectorLayerAdded');
     // leftDrawerRef: any
     mapExtent: number[] = [
         7031250.271849444,
@@ -46,13 +46,13 @@ class MapVM {
         4922393.652534479
     ]
     isInit: Boolean = false;
-    private readonly api: Api;
+    private readonly api: MapApi;
     private readonly isDesigner: boolean;
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
         this.isDesigner = isDesigner
-        this.api = new Api(domRef.snackBarRef)
+        this.api = new MapApi(domRef.snackBarRef)
     }
 
     setDomRef(domRef: IDomRef) {
@@ -77,7 +77,6 @@ class MapVM {
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
             mapInfo.layers.forEach((layer) => {
-                console.log("layer", layer)
                 this.addVectorLayer(layer).then(() => {
                 })
             });
@@ -152,7 +151,6 @@ class MapVM {
         });
         lswitcher.on('drawlist', function (e) {
             let layer = e.layer;
-            // console.log(layer);
             if (!(layer instanceof Group) && !(layer.get('baseLayer'))) {
                 if (layer.hasOwnProperty('legend')) {
                     //@ts-ignore
@@ -292,7 +290,7 @@ class MapVM {
 
     async addVectorLayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
         const {uuid, style, zoomRange} = info
-        const payload: ILayerInfo = await this.api.get(APIs.DCH_LAYER_INFO, {uuid: uuid})
+        const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
         if (payload) {
             if (style)
                 payload.style = style
@@ -303,6 +301,7 @@ class MapVM {
             mvtLayer.getOlLayer().setVisible(visible)
 
             this.daLayer[payload.uuid] = mvtLayer
+            window.dispatchEvent(this._vectorLayerAddedEvent)
         }
     }
 

@@ -34,11 +34,20 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         return document.getElementById(this.mapDivId)?.clientWidth || 0
     }
 
-    toggleDrawer(height: number = 250, contents: JSX.Element = <React.Fragment/>) {
-        height = this.state.drawerHeight == 0 ? height : 0;
-        const display = this.state.drawerHeight == 0 ? "none" : "block";
-        contents = contents ? contents : <React.Fragment/>
-        this.setState({drawerHeight: height, display: display, contents: contents})
+    isBottomDrawerOpen() {
+        return (this.state.drawerHeight !== 0)
+    }
+
+    closeBottomDrawer() {
+        this.setState({drawerHeight: 0, display: "none", contents: <React.Fragment/>})
+        this.props.mapVM.refreshMap();
+    }
+
+    openBottomDrawer(height: number, contents: JSX.Element = <React.Fragment/>) {
+        // height = this.state.drawerHeight == 0 ? height : 0;
+        // const display = this.state.drawerHeight == 0 ? "none" : "block";
+        // contents = contents ? contents : <React.Fragment/>
+        this.setState({drawerHeight: height, display: "block", contents: contents})
         this.props.mapVM.refreshMap();
     }
 

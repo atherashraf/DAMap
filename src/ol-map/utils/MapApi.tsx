@@ -1,7 +1,7 @@
 import {RefObject} from "react";
 import DASnackbar from "../components/common/DASnackbar";
 
-export const APIs = Object.freeze({
+export const MapAPIs = Object.freeze({
     API_OAUTH_LOGIN: "api/jwt/oauth/login/{type}/",
     API_REFRESH_TOKEN: "api/jwt/refresh/",
     API_LOGIN: "api/jwt/auth/login/",
@@ -16,7 +16,7 @@ export const APIs = Object.freeze({
 });
 
 
-export default class Api {
+export default class MapApi {
     private snackbarRef: RefObject<DASnackbar>;
 
     constructor(snackbarRef: RefObject<DASnackbar>) {
@@ -50,7 +50,7 @@ export default class Api {
             // const refreshToken = state.auth.refreshToken;
             const refreshToken = false;
             if (refreshToken) {
-                const url = Api.getURL(APIs.API_REFRESH_TOKEN);
+                const url = MapApi.getURL(MapAPIs.API_REFRESH_TOKEN);
                 const response = await fetch(url, {
                     method: "POST",
                     mode: "cors",
@@ -87,7 +87,7 @@ export default class Api {
             });
         }
 
-        const url = Api.getURL(apiKey, params);
+        const url = MapApi.getURL(apiKey, params);
         const response = await fetch(url, {
             method: "GET",
             mode: "cors",
@@ -114,7 +114,7 @@ export default class Api {
                     "Content-Type": "application/json"
                 });
             }
-            const url = Api.getURL(apiKey, params);
+            const url = MapApi.getURL(apiKey, params);
             const response = await fetch(url, {
                 method: "POST",
                 mode: "cors",
