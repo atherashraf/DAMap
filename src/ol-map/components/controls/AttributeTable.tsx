@@ -18,7 +18,7 @@ const AttributeTable = (props: IControlProps) => {
                         const uuid = props.mapVM.getLayerOfInterest();
                         // @ts-ignore
                         let height = mapBoxRef.current?.getMapHeight() / 2;
-                        height = height < 300 ? 400 : height
+                        height = height < 250 ? 400 : height
                         props.mapVM.getSnackbarRef()?.current?.show("Getting attribute information...")
                         props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                             .then((payload) => {
