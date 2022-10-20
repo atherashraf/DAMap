@@ -1,6 +1,6 @@
 import * as React from "react";
 import {IconButton, Tooltip} from "@mui/material";
-import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
+import IdentifierIcon from '@mui/icons-material/ZoomInMap';
 import {IControlProps} from "../../TypeDeclaration";
 
 
@@ -9,7 +9,7 @@ const Zoom2Extent = (props: IControlProps) => {
         <React.Fragment>
             <Tooltip title={"Zoom to Map Extent"}>
                 <IconButton sx={{padding: "3px"}} onClick={() => props.mapVM.zoomToFullExtent()}>
-                    <ZoomInMapIcon/>
+                    <IdentifierIcon/>
                 </IconButton>
             </Tooltip>
         </React.Fragment>

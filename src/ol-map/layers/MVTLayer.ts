@@ -124,6 +124,7 @@ class MVTLayer extends AbstractVectorLayer {
         });
     }
 
+
 }
 
 export default MVTLayer;

@@ -14,7 +14,7 @@ import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
-import {RefObject} from "react";
+import React, {RefObject} from "react";
 import AbstractVectorLayer from "../layers/AbstractVectorLayer";
 import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
@@ -25,6 +25,12 @@ import MapPanel from "../components/MapPanel";
 import '../static/css/custom_layerswitcher.css';
 import Legend from "ol-ext/legend/Legend";
 import {Group} from "ol/layer";
+import MapControls from "../layers/MapControls";
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from "ol/source/Vector";
+import {Fill, Stroke, Style} from "ol/style";
+import CircleStyle from "ol/style/Circle";
+import Button from "@mui/material/Button";
 
 
 export interface IDALayers {
@@ -38,6 +44,8 @@ class MapVM {
     private _domRef: IDomRef = null
     private _layerOfInterest: string = null;
     private _vectorLayerAddedEvent = new Event('VectorLayerAdded');
+    // @ts-ignore
+    mapControls = null;
     // leftDrawerRef: any
     mapExtent: number[] = [
         7031250.271849444,
@@ -49,6 +57,8 @@ class MapVM {
     private readonly api: MapApi;
     private readonly isDesigner: boolean;
     private fullScreen: FullScreen;
+    // @ts-ignore
+    overlayLayers = []
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -57,6 +67,7 @@ class MapVM {
         this.fullScreen = new FullScreen({source: 'fullscreen'})
         this.fullScreen.on('enterfullscreen', this.handleFullScreen.bind(this))
         this.fullScreen.on('leavefullscreen', this.handleFullScreen.bind(this))
+        this.mapControls = new MapControls(this);
     }
 
     handleFullScreen() {
@@ -92,6 +103,7 @@ class MapVM {
         this.addSidebarController();
         // this.addLayerSwitcher(null)
         this.isInit = true;
+        this.addSelectionLayer();
     }
 
     setMapFullExtent(extent: number[]) {
@@ -210,29 +222,74 @@ class MapVM {
         this.map.getView().fit(this.mapExtent, this.map.getSize());
     }
 
-    // addSelectionLayer() {
-    //     const title = "sel_layer";
-    //     const vectorLayer = new VectorLayer({
-    //         // @ts-ignore
-    //         title: title,
-    //         source: new VectorSource(),
-    //         style: new Style({
-    //             image: new CircleStyle({
-    //                 radius: 10,
-    //                 fill: new Fill({color: 'yellow'}),
-    //                 stroke: new Stroke({
-    //                     color: [0, 0, 0], width: 3
-    //                 })
-    //             })
-    //         })
-    //     });
-    //     this.addOverlayLayer(vectorLayer, title)
-    // }
-    //
-    // getSelectionLayer(): VectorLayer<VectorSource> {
-    //     // @ts-ignore
-    //     return this.overlayLayers["sel_layer"]
-    // }
+    identifyFeature() {
+        let me = this;
+        me.mapControls.setCurserDisplay('help');
+        this.map.on('click', function (evt) {
+            me.mapControls.displayFeatureInfo(evt.pixel, me);
+        });
+    }
+
+    addSelectionLayer() {
+        let me = this;
+        const title = "sel_layer";
+        const vectorLayer = new VectorLayer({
+            // @ts-ignore
+            title: title,
+            source: new VectorSource(),
+            style: function (feature) {
+                return me.getSelectStyle(feature)
+            }
+        });
+        this.addOverlayLayer(vectorLayer, title)
+    }
+
+    getSelectionLayer(): VectorLayer<VectorSource> {
+        // @ts-ignore
+        return this.overlayLayers["sel_layer"]
+    }
+
+    // @ts-ignore
+    getSelectStyle(feature) {
+        let g_type = feature.getGeometry().getType();
+        let selStyle = null;
+        if (!g_type) g_type = feature.f;
+        if (g_type.indexOf('Point') !== -1) {
+            selStyle = new Style({
+                image: new CircleStyle({
+                    radius: 7,
+                    fill: new Fill({color: 'rgba(0, 0, 0, 0.33)'}),
+                    stroke: new Stroke({
+                        color: [0, 0, 0], width: 1.5
+                    })
+                })
+                // image: new ol.style.Icon({
+                //     anchor: [0.5, 0.5],
+                //     opacity: 1,
+                //     src: '/static/assets/img/icons/flashing_circle.gif'
+                // })
+            });
+        } else if (g_type.indexOf('LineString') !== -1) {
+            selStyle = new Style({
+                stroke: new Stroke({
+                    color: '#d17114',
+                    width: 5
+                }),
+            });
+        } else {
+            selStyle = new Style({
+                fill: new Fill({
+                    color: 'rgba(209, 113, 20, 0)'
+                }),
+                stroke: new Stroke({
+                    color: '#d17114',
+                    width: 3
+                })
+            });
+        }
+        return selStyle;
+    }
+
     //
     // getIconStyle() {
     //     return new Style({
@@ -260,11 +317,12 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
-    // addOverlayLayer(layer: VectorLayer<any>, title: string) {
-    //     // @ts-ignore
-    //     this.overlayLayers[title] = layer
-    //     this.map.addLayer(layer)
-    // }
+    addOverlayLayer(layer: VectorLayer<any>, title: string) {
+        // @ts-ignore
+        this.overlayLayers[title] = layer
+        this.map.addLayer(layer)
+    }
+
     //
     // selectFeature(id: any) {
     //     // console.log("feature " + id)
@@ -322,6 +380,11 @@ class MapVM {
     showSnackbar(msg: string) {
         this._domRef.snackBarRef.current.show(msg)
     }
+
+    showDialog(data: []) {
+
+    }
+
 }
 
 export default MapVM;
