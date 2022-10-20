@@ -9,6 +9,7 @@ import {
     Row,
 } from "../TypeDeclaration";
 import EnhancedBody from "../components/Body";
+import {GridFooter} from "../components/Footer";
 
 
 export const enhancedTableBodyRef = React.createRef<EnhancedBody>();
@@ -106,7 +107,7 @@ const DADataGrid = (props: DataGridProps) => {
                     <Paper sx={{width: paperWidth, boxSizing: "border-box"}}>
 
                         <Table
-                            // stickyHeader={true}
+                            stickyHeader={true}
                             sx={{width: '!00%'}}
                             size={dense ? 'small' : 'medium'}
                         >
@@ -136,13 +137,13 @@ const DADataGrid = (props: DataGridProps) => {
 
                     </Paper>
                 </Box>
-                {/*<GridFooter*/}
-                {/*    dense={dense} page={page} rowCount={rowCount}*/}
-                {/*    rowsPerPage={rowsPerPage}*/}
-                {/*    handleChangeDense={handleChangeDense}*/}
-                {/*    handleChangePage={handleChangePage}*/}
-                {/*    handleChangeRowsPerPage={handleChangeRowsPerPage}*/}
-                {/*/>*/}
+                <GridFooter
+                    dense={dense} page={page} rowCount={rowCount}
+                    rowsPerPage={rowsPerPage}
+                    handleChangeDense={handleChangeDense}
+                    handleChangePage={handleChangePage}
+                    handleChangeRowsPerPage={handleChangeRowsPerPage}
+                />
             </Box>
         </React.Fragment>
     );

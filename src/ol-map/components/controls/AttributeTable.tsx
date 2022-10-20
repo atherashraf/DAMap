@@ -8,7 +8,7 @@ import DADataGrid from "../../../data-grid/container/DataGrid";
 
 const AttributeTable = (props: IControlProps) => {
     // const bottomDrawerRef = props.mapVM.getBottomDrawerRef();
-    const mapBoxRef = props.mapVM.getMapBoxRef()
+    const mapBoxRef = props.mapVM.getMapPanelRef()
     return (
         <React.Fragment>
             <Tooltip title={"Open Attribute Table"}>
@@ -17,7 +17,8 @@ const AttributeTable = (props: IControlProps) => {
                     if (!open) {
                         const uuid = props.mapVM.getLayerOfInterest();
                         // @ts-ignore
-                        const height = mapBoxRef.current?.getMapHeight() / 2;
+                        let height = mapBoxRef.current?.getMapHeight() / 2;
+                        height = height < 300 ? 400 : height
                         props.mapVM.getSnackbarRef()?.current?.show("Getting attribute information...")
                         props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                             .then((payload) => {

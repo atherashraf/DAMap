@@ -9,6 +9,7 @@ interface IProps {
 
 interface IState {
     drawerHeight: number,
+    mapPadding: number,
     display: "none" | "block"
     contents: JSX.Element
 }
@@ -21,6 +22,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.mapDivId = "map"
         this.state = {
             drawerHeight: 0,
+            mapPadding: 0,
             contents: <React.Fragment/>,
             display: "none"
         }
@@ -39,7 +41,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeBottomDrawer() {
-        this.setState({drawerHeight: 0, display: "none", contents: <React.Fragment/>})
+        this.setState({drawerHeight: 0, mapPadding: 0, display: "none", contents: <React.Fragment/>})
         this.props.mapVM.refreshMap();
     }
 
@@ -47,7 +49,12 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         // height = this.state.drawerHeight == 0 ? height : 0;
         // const display = this.state.drawerHeight == 0 ? "none" : "block";
         // contents = contents ? contents : <React.Fragment/>
-        this.setState({drawerHeight: height, display: "block", contents: contents})
+        const mapPadding = height > this.getMapHeight() / 2 ? this.getMapHeight() / 4 : this.getMapHeight() / 2
+        // const mapPadding = this.getMapHeight() / 2
+        this.setState({
+            drawerHeight: height, mapPadding: mapPadding,
+            display: "block", contents: contents
+        })
         this.props.mapVM.refreshMap();
     }
 
@@ -58,33 +65,30 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     render() {
         return (
             <Paper sx={{
-                // display: "block",
-                // direction: "column",
+
                 width: "100%",
                 height: "100%",
-                // overflow:"hidden",
-                // m:1
             }} elevation={6}>
                 <div id={this.mapDivId} style={{
                     width: "100%",
-                    height: `calc(100% - ${this.state.drawerHeight}px)`,
+                    height: `calc(100% - ${this.state.mapPadding}px)`,
                 }}/>
                 <div style={{
-                    // display: this.state.display,
+                    display: this.state.display,
                     width: "100%",
                     height: this.state.drawerHeight
                 }}>
                     <Box style={{boxSizing: "border-box"}} sx={{
                         // display: 'flex', flexDirection: 'column',
-                        margin: '10px', bgcolor: 'background.paper',
-                        mx: 1, p: 0
+                        height: this.state.drawerHeight,
+                        bgcolor: 'background.paper',
+                        mx: 0, pb: 3
                     }}>
                         <Paper sx={{height: `calc(${this.state.drawerHeight}px - 10px)`,}} elevation={6}>
                             {this.state.contents}
                         </Paper>
                     </Box>
                 </div>
-                {/*<RightDrawer ref={rightDrawerRef}/>*/}
             </Paper>
         );
     }

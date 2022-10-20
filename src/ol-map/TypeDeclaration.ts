@@ -27,7 +27,7 @@ export interface IDomRef {
     // bottomDrawerRef?: RefObject<BottomDrawer>
     dialogBoxRef: RefObject<DADialogBox>
     snackBarRef: RefObject<DASnackbar>
-    mapBoxRef: RefObject<MapPanel>
+    mapPanelRef: RefObject<MapPanel>
 }
 
 export interface IMapToolbarProps {

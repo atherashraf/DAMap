@@ -33,7 +33,7 @@ const MapView = (props: MapVMProps) => {
         // leftDrawerRef: leftDrawerRef
         dialogBoxRef: dialogBoxRef,
         snackBarRef: snackbarRef,
-        mapBoxRef: mapBoxRef
+        mapPanelRef: mapBoxRef
     }
 
     const mapVM = new MapVM(domRefs, props.isDesigner)

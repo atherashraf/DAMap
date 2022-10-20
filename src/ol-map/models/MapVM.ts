@@ -48,11 +48,19 @@ class MapVM {
     isInit: Boolean = false;
     private readonly api: MapApi;
     private readonly isDesigner: boolean;
+    private fullScreen: FullScreen;
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
         this.isDesigner = isDesigner
         this.api = new MapApi(domRef.snackBarRef)
+        this.fullScreen = new FullScreen({source: 'fullscreen'})
+        this.fullScreen.on('enterfullscreen', this.handleFullScreen.bind(this))
+        this.fullScreen.on('leavefullscreen', this.handleFullScreen.bind(this))
+    }
+
+    handleFullScreen() {
+        this.getMapPanelRef().current?.closeBottomDrawer();
     }
 
     setDomRef(domRef: IDomRef) {
@@ -62,7 +70,7 @@ class MapVM {
     initMap(mapInfo?: IMapInfo) {
         this.map = new Map({
             controls: defaultControls().extend([
-                new FullScreen({source: 'fullscreen'}),
+                this.fullScreen,
                 new MapToolbar({
                     mapVM: this,
                     isDesigner: this.isDesigner
@@ -97,8 +105,8 @@ class MapVM {
     // getBottomDrawerRef(): RefObject<BottomDrawer>{
     //     return this._domRef.bottomDrawerRef
     // }
-    getMapBoxRef(): RefObject<MapPanel> {
-        return this._domRef.mapBoxRef
+    getMapPanelRef(): RefObject<MapPanel> {
+        return this._domRef.mapPanelRef
     }
 
     getRightDrawerRef(): RefObject<RightDrawer> {
