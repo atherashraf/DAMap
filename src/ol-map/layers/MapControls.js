@@ -19,17 +19,18 @@ class MapControls {
 
     displayFeatureInfo(pixel, mapVm) {
         let me = this;
-        let dialogRef = this.dialogRef;
-        dialogRef.current?.openDialog({
-            title: "Create Color Ramp",
-            content: "shakir",
-            // actions: <React.Fragment>
-            //     <Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>
-            // </React.Fragment>
-        })
+        // let dialogRef = this.dialogRef;
+        // dialogRef.current?.openDialog({
+        //     title: "Create Color Ramp",
+        //     content: "shakir",
+        //     // actions: <React.Fragment>
+        //     //     <Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>
+        //     // </React.Fragment>
+        // })
         let map = mapVm.map;
         const features = [];
-        map.forEachFeatureAtPixel(pixel, function (feature) {
+        map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
+            feature['layer_name'] = lyr.get('name');
             features.push(feature);
         });
         if (features.length > 0) {
@@ -64,12 +65,28 @@ class MapControls {
             for (let key in feature.getProperties()) {
                 row = row + key + ":  " + feature.get(key) + " , "
             }
-            me.dialogRef.current?.show();
+            me.getFeatureDetailFromDB(row, feature['layer_name']);
             alert(row || '&nbsp');
         } else {
             alert('&nbsp;');
         }
     };
+
+    getFeatureDetailFromDB(row, layer_name) {
+        let url = '/get_feature_detail/?fid=' + row.id + "&layer_name=" + layer_name;
+        // $.ajax({
+        //     url: url,
+        //     type: "GET",
+        //     cors: true,
+        //     crossDomain: true,
+        //     success: function (data) {
+        //         data = JSON.parse(data);
+        //     },
+        //     error: function (xhr, status, error) {
+        //         alert(error);
+        //     },
+        // });
+    }
 }
 
 export default MapControls;
