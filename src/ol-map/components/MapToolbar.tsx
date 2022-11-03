@@ -6,9 +6,11 @@ import MapVM from "../models/MapVM";
 import SymbologyControl from "./controls/SymbologyControl";
 import {IMapToolbarProps} from "../TypeDeclaration";
 import Zoom2Extent from "./controls/Zoom2Extent";
+import Identifier from "./controls/Identifier";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 import AttributeTable from "./controls/AttributeTable";
 import LOISelector from "./controls/LOISelector";
+import AddClassificationSurface from "./controls/AddClassificationSurface";
 
 
 class MapToolbar extends Control {
@@ -31,13 +33,15 @@ class MapToolbar extends Control {
 
         const root = createRoot(element)
         root.render(<React.Fragment>
+                <AddClassificationSurface mapVM={mapVM} />
                 <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <Zoom2Extent mapVM={mapVM}/>
+                <Identifier mapVM={mapVM}/>
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }
-                <AttributeTable mapVM={mapVM} />
-                <LOISelector mapVM={mapVM} />
+                <AttributeTable mapVM={mapVM}/>
+                <LOISelector mapVM={mapVM}/>
 
             </React.Fragment>
         );

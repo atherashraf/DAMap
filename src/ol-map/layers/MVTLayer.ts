@@ -5,7 +5,7 @@ import AbstractDALayer from "./AbstractDALayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {IGeomStyle, IRule} from "../TypeDeclaration";
-import SLDStyleParser from "./SLDStyleParser";
+import SLDStyleParser from "./styling/SLDStyleParser";
 
 
 /*****

@@ -4,7 +4,7 @@ import {Fill, Stroke, Style} from "ol/style";
 import autoBind from "auto-bind";
 import {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
-import {styles} from "./styles";
+import {styles} from "./styling/styles";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import {IFeatureStyle, IGeomStyle, ILayerInfo} from "../TypeDeclaration";
