@@ -8,6 +8,7 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_INFO: "api/dch/layer_info/{uuid}/",
     DCH_LAYER_EXTENT: "api/dch/layer_extent/{uuid}/",
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
+    DCH_LAYER_RASTER: "api/dch/raster_tile/{uuid}",
     DCH_SAVE_STYLE: "api/dch/save_style/{uuid}",
     DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
     DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",

@@ -1,7 +1,7 @@
 import MVT from "ol/format/MVT";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
-import AbstractVectorLayer from "./AbstractVectorLayer";
+import AbstractDALayer from "./AbstractDALayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {IGeomStyle, IRule} from "../TypeDeclaration";
@@ -12,7 +12,7 @@ import SLDStyleParser from "./SLDStyleParser";
  *  url format for MVT
  */
 
-class MVTLayer extends AbstractVectorLayer {
+class MVTLayer extends AbstractDALayer {
     setLayer() {
         const me = this;
         const {title, uuid} = this.layerInfo || {};
@@ -28,8 +28,12 @@ class MVTLayer extends AbstractVectorLayer {
 
     }
 
-    setDataSource() {
+    getDataSource(): VectorTileSource {
+        // @ts-ignore
+        return super.getDataSource();
+    }
 
+    setDataSource() {
         const url = MapApi.getURL(MapAPIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
         this.dataSource = new VectorTileSource({
             format: new MVT(),

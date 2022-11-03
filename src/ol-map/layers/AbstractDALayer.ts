@@ -6,14 +6,16 @@ import {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {styles} from "./styles";
 import VectorTileLayer from "ol/layer/VectorTile";
-import VectorTile from 'ol/source/VectorTile';
+import VectorTileSource from "ol/source/VectorTile";
 import {IFeatureStyle, IGeomStyle, ILayerInfo} from "../TypeDeclaration";
 import {getPointShapes} from "../components/styling/forms/symbolizer/PointSymbolizer";
+import TileLayer from "ol/layer/Tile";
+import XYZ from 'ol/source/XYZ'
 
 
-class AbstractVectorLayer {
-    dataSource: VectorTile;
-    layer: VectorLayer<any> | VectorTileLayer;
+class AbstractDALayer {
+    dataSource: VectorTileSource | XYZ
+    layer: VectorLayer<any> | VectorTileLayer | TileLayer<any>;
     layerInfo: ILayerInfo;
     style: IFeatureStyle;
     mapVM: MapVM;
@@ -40,6 +42,14 @@ class AbstractVectorLayer {
 
     getGeomType(): string[] {
         return this.layerInfo.geomType
+    }
+
+    getDataModel(): string {
+        return this.layerInfo.dataModel
+    }
+
+    getCategory(): string {
+        return this.layerInfo.category
     }
 
     getLayerTitle(): string {
@@ -183,4 +193,4 @@ class AbstractVectorLayer {
     // }
 }
 
-export default AbstractVectorLayer;
+export default AbstractDALayer;

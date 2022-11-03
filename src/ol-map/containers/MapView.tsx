@@ -1,13 +1,12 @@
 import * as React from "react";
 import MapVM from "../models/MapVM";
-import {RefObject, useEffect} from "react";
-// import LeftDrawer from "../components/drawers/LeftDrawer";
 import RightDrawer from "../components/drawers/RightDrawer";
 import {MapAPIs} from "../utils/MapApi";
 import {IDomRef, IMapInfo} from "../TypeDeclaration";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
+import {RefObject} from "react";
 
 
 interface MapVMProps {
@@ -15,6 +14,10 @@ interface MapVMProps {
     uuid: string
     isMap: boolean
     isDesigner?: boolean
+}
+
+interface MapVMState {
+
 }
 
 const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
@@ -25,59 +28,73 @@ const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
 // const bottomDrawerRef: RefObject<BottomDrawer> = React.createRef<BottomDrawer>();
 // const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
 
-
-const MapView = (props: MapVMProps) => {
-    const mapDivId = 'map';
-    const domRefs: IDomRef = {
+class MapView extends React.PureComponent<MapVMProps, MapVMState> {
+    private mapDivId = 'map';
+    private domRefs: IDomRef = {
         rightDrawerRef: rightDrawerRef,
         // leftDrawerRef: leftDrawerRef
         dialogBoxRef: dialogBoxRef,
         snackBarRef: snackbarRef,
         mapPanelRef: mapBoxRef
     }
+    private readonly mapVM: MapVM = null
 
-    const mapVM = new MapVM(domRefs, props.isDesigner)
-    // mapVM.initMap();
+    constructor(props: MapVMProps) {
+        super(props);
+        this.mapVM = new MapVM(this.domRefs, props.isDesigner)
+    }
 
-    useEffect(() => {
-        if (props.isMap) {
-            mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
+    getMapVM() {
+        return this.mapVM
+    }
+
+    getMapDivId() {
+        return this.mapDivId
+    }
+
+    componentDidMount() {
+        if (this.props.isMap) {
+            this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": this.props.uuid})
                 .then((payload: IMapInfo) => {
-                    if (!mapVM.isInit) {
-                        mapVM.initMap(payload);
+                    if (!this.mapVM.isInit) {
+                        this.mapVM.initMap(payload);
                     }
-                    mapVM.setTarget(mapDivId);
+                    this.mapVM.setTarget(this.mapDivId);
                 })
         } else {
             (async () => {
-                await mapVM.addVectorLayer({uuid: props.uuid})
-                const extent = await mapVM.getDALayer(props.uuid).getExtent()
-                mapVM.setMapFullExtent(extent)
-                mapVM.zoomToFullExtent()
+                await this.mapVM.addLayer({uuid: this.props.uuid})
+                const extent = await this.mapVM.getDALayer(this.props.uuid).getExtent()
+                this.mapVM.setMapFullExtent(extent)
+                this.mapVM.zoomToFullExtent()
             })();
-            mapVM.setLayerOfInterest(props.uuid)
-            mapVM.setTarget(mapDivId);
-            mapVM.setDomRef(domRefs)
+            this.mapVM.setLayerOfInterest(this.props.uuid)
+            this.mapVM.setTarget(this.mapDivId);
+            this.mapVM.setDomRef(this.domRefs)
         }
-    }, [])
-    return (
-        <React.Fragment>
-            <div id={"fullscreen"} style={{
-                display: "flex",
-                // direction: "column",
-                // padding: "20px",
-                width: "100%",
-                boxSizing: "border-box",
-                height: "100%"
-            }}>
+    }
 
-                <MapPanel ref={mapBoxRef} mapVM={mapVM}/>
-                <RightDrawer ref={rightDrawerRef}/>
-                <DADialogBox ref={dialogBoxRef}/>
-                <DASnackbar ref={snackbarRef}/>
-            </div>
-        </React.Fragment>
-    )
+    render() {
+        return (
+            <React.Fragment>
+                <div id={"fullscreen"} style={{
+                    display: "flex",
+                    // direction: "column",
+                    // padding: "20px",
+                    width: "100%",
+                    boxSizing: "border-box",
+                    height: "100%"
+                }}>
+
+                    <MapPanel ref={mapBoxRef} mapVM={this.mapVM}/>
+                    <RightDrawer ref={rightDrawerRef}/>
+                    <DADialogBox ref={dialogBoxRef}/>
+                    <DASnackbar ref={snackbarRef}/>
+                </div>
+            </React.Fragment>
+        )
+    }
 }
+
 
 export default MapView;

@@ -15,7 +15,7 @@ import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {RefObject} from "react";
-import AbstractVectorLayer from "../layers/AbstractVectorLayer";
+import AbstractDALayer from "../layers/AbstractDALayer";
 import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
@@ -25,10 +25,11 @@ import MapPanel from "../components/MapPanel";
 import '../static/css/custom_layerswitcher.css';
 import Legend from "ol-ext/legend/Legend";
 import {Group} from "ol/layer";
+import RasterTileLayer from "../layers/RasterTileLayer";
 
 
 export interface IDALayers {
-    [key: string]: AbstractVectorLayer
+    [key: string]: AbstractDALayer
 }
 
 
@@ -84,9 +85,8 @@ class MapVM {
         this.addBaseLayers()
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
-            mapInfo.layers.forEach((layer) => {
-                this.addVectorLayer(layer).then(() => {
-                })
+            mapInfo.layers.forEach(async (layer) => {
+                await this.addLayer(layer)
             });
         }
         this.addSidebarController();
@@ -295,8 +295,7 @@ class MapVM {
     //
     // }
 
-
-    async addVectorLayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
+    async addLayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
         const {uuid, style, zoomRange} = info
         const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
         if (payload) {
@@ -304,17 +303,25 @@ class MapVM {
                 payload.style = style
             if (zoomRange)
                 payload.zoomRange = zoomRange
-            const mvtLayer = new MVTLayer(payload, this);
+            console.log("layer info", payload);
+            let daLayer: AbstractDALayer = null
+            this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
+            if (payload?.dataModel === 'V') {
+                daLayer = new MVTLayer(payload, this);
+                window.dispatchEvent(this._vectorLayerAddedEvent)
+            } else {
+                daLayer = new RasterTileLayer(payload, this)
+            }
             const visible = info.visible != undefined ? info.visible : true
-            mvtLayer.getOlLayer().setVisible(visible)
+            daLayer.getOlLayer().setVisible(visible)
+            this.daLayer[payload.uuid] = daLayer
 
-            this.daLayer[payload.uuid] = mvtLayer
-            window.dispatchEvent(this._vectorLayerAddedEvent)
+
         }
     }
 
 
-    getDALayer(layerId: string | undefined): AbstractVectorLayer {
+    getDALayer(layerId: string | undefined): AbstractDALayer {
         if (layerId)
             return this.daLayer[layerId]
     }
@@ -322,6 +329,7 @@ class MapVM {
     showSnackbar(msg: string) {
         this._domRef.snackBarRef.current.show(msg)
     }
+
 }
 
 export default MapVM;

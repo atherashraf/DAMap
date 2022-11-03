@@ -53,6 +53,8 @@ export interface ILayerInfo {
     style?: IFeatureStyle
     zoomRange: number[]
     geomType: string[]
+    dataModel: string
+    category?: string
 }
 
 export interface IMapInfo {
