@@ -178,11 +178,12 @@ class MapVM {
                     layer.legend['graphic'].render(e.li);
                 } else {
                     //@ts-ignore
-                    let tileGrid = layer.getSource().getTileGrid();
-                    //@ts-ignore
                     let features = [];
                     //@ts-ignore
                     if (layer.getSource() instanceof VectorSource) {
+                        //@ts-ignore
+                        let tileGrid = layer.getSource().getTileGrid();
+                        //@ts-ignore
                         features = layer.getSource().getFeaturesInExtent(tileGrid.getExtent());
                     }
                     if (features && features.length > 0) {
