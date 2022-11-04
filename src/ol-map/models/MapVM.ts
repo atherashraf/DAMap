@@ -28,6 +28,7 @@ import RasterTileLayer from "../layers/RasterTileLayer";
 import MapControls from "../layers/MapControls";
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from "ol/source/Vector";
+import VectorTileSource from "ol/source/VectorTile";
 import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
@@ -180,7 +181,7 @@ class MapVM {
                     //@ts-ignore
                     let features = [];
                     //@ts-ignore
-                    if (layer.getSource() instanceof VectorSource) {
+                    if (layer.getSource() instanceof VectorTileSource) {
                         //@ts-ignore
                         let tileGrid = layer.getSource().getTileGrid();
                         //@ts-ignore
