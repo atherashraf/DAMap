@@ -17,18 +17,16 @@ class MapControls {
         document.getElementById("da-map").style.cursor = curserStyle;
     }
 
-    displayFeatureInfo(pixel, mapVm) {
+    displayFeatureInfo(pixel, mapVm, targetElem) {
         let me = this;
-        // let dialogRef = this.dialogRef;
-        // dialogRef.current?.openDialog({
-        //     title: "Create Color Ramp",
-        //     content: "shakir",
-        //     // actions: <React.Fragment>
-        //     //     <Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>
-        //     // </React.Fragment>
-        // })
         let map = mapVm.map;
         const features = [];
+        // map.forEachLayerAtPixel(pixel, function (layer, pxl) {
+        //     let height = (-10000 + ((pxl[0] * 256 * 256 + pxl[1] * 256 + pxl[2]) * 0.01));
+        //     console.log(height);
+        // }, undefined, function (layer) {
+        //     return layer.getSource() == raster;
+        // });
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
             feature['layer_name'] = lyr.get('name');
             features.push(feature);
@@ -63,8 +61,10 @@ class MapControls {
             for (let key in feature.getProperties()) {
                 row = row + key + ":  " + feature.get(key) + " , "
             }
+            // alert(row || '&nbsp');
             me.getFeatureDetailFromDB(row, feature['layer_name']);
-            alert(row || '&nbsp');
+            me.showJsonDataInHTMLTable(feature.getProperties(), targetElem);
+
         } else {
             alert('&nbsp;');
         }
@@ -84,6 +84,15 @@ class MapControls {
         //         alert(error);
         //     },
         // });
+    }
+
+    showJsonDataInHTMLTable(myObj, htmlElem) {
+            let text = "<table style='color: black; width: 100%;padding: 5px'> <caption><h2>FEATURE DETAIL</h2></caption>"
+        for (let key in myObj) {
+            text += "<tr><td style='border: 1px solid black;font-weight: normal; padding: 2px'>" + key.toUpperCase() + "</td> <td style='border: 1px solid black'>" + myObj[key] + "</td></tr>";
+        }
+        text += "</table>"
+        htmlElem.innerHTML = text;
     }
 }
 

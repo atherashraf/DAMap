@@ -229,11 +229,11 @@ class MapVM {
         this.map.getView().fit(this.mapExtent, this.map.getSize());
     }
 
-    identifyFeature() {
+    identifyFeature(target: HTMLElement) {
         let me = this;
         me.mapControls.setCurserDisplay('help');
         this.map.on('click', function (evt) {
-            me.mapControls.displayFeatureInfo(evt.pixel, me);
+            me.mapControls.displayFeatureInfo(evt.pixel, me, target);
         });
     }
 

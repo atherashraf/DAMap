@@ -36,7 +36,7 @@ class MapToolbar extends Control {
                 <AddClassificationSurface mapVM={mapVM} />
                 <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <Zoom2Extent mapVM={mapVM}/>
-                <Identifier mapVM={mapVM}/>
+                <Identifier mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }
