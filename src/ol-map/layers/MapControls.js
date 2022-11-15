@@ -2,6 +2,9 @@ import {inflateCoordinatesArray} from "ol/geom/flat/inflate";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import LineString from "ol/geom/LineString";
+import XYZ from 'ol/source/XYZ'
+import {MapAPIs} from "../utils/MapApi";
+import {transform} from 'ol/proj';
 
 class MapControls {
     mapVm = null;
@@ -17,16 +20,24 @@ class MapControls {
         document.getElementById("da-map").style.cursor = curserStyle;
     }
 
-    displayFeatureInfo(pixel, mapVm, targetElem) {
+    displayFeatureInfo(evt, mapVm, targetElem) {
         let me = this;
         let map = mapVm.map;
+        let pixel = evt.pixel;
+        let coord = evt.coordinate;
         const features = [];
-        // map.forEachLayerAtPixel(pixel, function (layer, pxl) {
-        //     let height = (-10000 + ((pxl[0] * 256 * 256 + pxl[1] * 256 + pxl[2]) * 0.01));
-        //     console.log(height);
-        // }, undefined, function (layer) {
-        //     return layer.getSource() == raster;
-        // });
+        let projCode = map.getView().getProjection().getCode();
+        if (projCode === 'EPSG:3857') {
+            coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
+        }
+        let rasterLayers = [];
+        map.forEachLayerAtPixel(pixel, function (layer, pxl) {
+            if (layer.getSource() instanceof XYZ)
+                rasterLayers.push(layer);
+        });
+        if (rasterLayers.length > 0) {
+            me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
+        }
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
             feature['layer_name'] = lyr.get('name');
             features.push(feature);
@@ -62,32 +73,43 @@ class MapControls {
                 row = row + key + ":  " + feature.get(key) + " , "
             }
             // alert(row || '&nbsp');
-            me.getFeatureDetailFromDB(row, feature['layer_name']);
+            // me.getFeatureDetailFromDB(row, feature['layer_name'], mapVm);
             me.showJsonDataInHTMLTable(feature.getProperties(), targetElem);
 
         } else {
-            alert('&nbsp;');
+            // alert('&nbsp;');
         }
     };
 
-    getFeatureDetailFromDB(row, layer_name) {
-        // let url = '/get_feature_detail/?fid=' + row.id + "&layer_name=" + layer_name;
-        // $.ajax({
-        //     url: url,
-        //     type: "GET",
-        //     cors: true,
-        //     crossDomain: true,
-        //     success: function (data) {
-        //         data = JSON.parse(data);
-        //     },
-        //     error: function (xhr, status, error) {
-        //         alert(error);
-        //     },
-        // });
+    // getFeatureDetailFromDB(row, layer_name, mapVm) {
+    //     mapVm.getApi().get(MapAPIs.DCH_FEATURE_DETAIL, {uuid: layer_name, col_name: '', col_val: ''})
+    //         .then((payload) => {
+    //             if (payload) {
+    //                 console.log("Feature information", payload);
+    //             } else {
+    //
+    //             }
+    //         });
+    //
+    // }
+
+    getPixelValueFromDB(coord, rasterLayers, mapVM, targetElem) {
+        let me = this;
+        let layer_name = rasterLayers[0].get('name');
+        let layer_title = rasterLayers[0].get('title');
+        mapVM.getApi().get(MapAPIs.DCH_LAYER_PIXEL_VALUE, {uuid: layer_name, long: coord[0], lat: coord[1]})
+            .then((payload) => {
+                if (payload) {
+                    let obj = {'layer': layer_title, 'value': payload}
+                    me.showJsonDataInHTMLTable(obj, targetElem);
+                } else {
+
+                }
+            });
     }
 
     showJsonDataInHTMLTable(myObj, htmlElem) {
-            let text = "<table style='color: black; width: 100%;padding: 5px'> <caption><h2>FEATURE DETAIL</h2></caption>"
+        let text = "<table style='color: black; width: 100%;padding: 5px'> <caption><h2>FEATURE DETAIL</h2></caption>"
         for (let key in myObj) {
             text += "<tr><td style='border: 1px solid black;font-weight: normal; padding: 2px'>" + key.toUpperCase() + "</td> <td style='border: 1px solid black'>" + myObj[key] + "</td></tr>";
         }

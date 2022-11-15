@@ -233,7 +233,7 @@ class MapVM {
         let me = this;
         me.mapControls.setCurserDisplay('help');
         this.map.on('click', function (evt) {
-            me.mapControls.displayFeatureInfo(evt.pixel, me, target);
+            me.mapControls.displayFeatureInfo(evt, me, target);
         });
     }
 
@@ -381,8 +381,6 @@ class MapVM {
             this.daLayer[payload.uuid] = daLayer
         }
     }
-
-
     getDALayer(layerId: string | undefined): AbstractDALayer {
         if (layerId)
             return this.daLayer[layerId]
