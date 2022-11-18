@@ -5,6 +5,7 @@ import LineString from "ol/geom/LineString";
 import XYZ from 'ol/source/XYZ'
 import {MapAPIs} from "../utils/MapApi";
 import {transform} from 'ol/proj';
+import "../static/css/SideDrawer.css";
 
 class MapControls {
     mapVm = null;
@@ -22,6 +23,7 @@ class MapControls {
 
     displayFeatureInfo(evt, mapVm, targetElem) {
         let me = this;
+        me.addAccordiansToRightDraw(targetElem);
         let map = mapVm.map;
         let pixel = evt.pixel;
         let coord = evt.coordinate;
@@ -40,6 +42,7 @@ class MapControls {
         }
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
             feature['layer_name'] = lyr.get('name');
+            feature['layer_title'] = lyr.get('title');
             features.push(feature);
         });
         if (features.length > 0) {
@@ -73,25 +76,30 @@ class MapControls {
                 row = row + key + ":  " + feature.get(key) + " , "
             }
             // alert(row || '&nbsp');
-            // me.getFeatureDetailFromDB(row, feature['layer_name'], mapVm);
-            me.showJsonDataInHTMLTable(feature.getProperties(), targetElem);
-
+            me.showJsonDataInHTMLTable(feature.getProperties(), 'v');
+            me.getFeatureDetailFromDB(feature, mapVm, targetElem);
         } else {
             // alert('&nbsp;');
         }
     };
 
-    // getFeatureDetailFromDB(row, layer_name, mapVm) {
-    //     mapVm.getApi().get(MapAPIs.DCH_FEATURE_DETAIL, {uuid: layer_name, col_name: '', col_val: ''})
-    //         .then((payload) => {
-    //             if (payload) {
-    //                 console.log("Feature information", payload);
-    //             } else {
-    //
-    //             }
-    //         });
-    //
-    // }
+    getFeatureDetailFromDB(feature, mapVm, targetElem) {
+        let me = this;
+        let row = feature.getProperties()
+        mapVm.getApi().get(MapAPIs.DCH_FEATURE_DETAIL, {
+            uuid: feature['layer_name'],
+            col_name: 'id',
+            col_val: row['id']
+        }).then((payload) => {
+            if (payload) {
+                payload['layer'] = feature['layer_title'];
+                me.showJsonDataInHTMLTable(payload, 'v');
+            } else {
+                me.showJsonDataInHTMLTable(row, 'v');
+            }
+        });
+
+    }
 
     getPixelValueFromDB(coord, rasterLayers, mapVM, targetElem) {
         let me = this;
@@ -101,20 +109,54 @@ class MapControls {
             .then((payload) => {
                 if (payload) {
                     let obj = {'layer': layer_title, 'value': payload}
-                    me.showJsonDataInHTMLTable(obj, targetElem);
+                    me.showJsonDataInHTMLTable(obj, 'raster');
                 } else {
 
                 }
             });
     }
 
-    showJsonDataInHTMLTable(myObj, htmlElem) {
-        let text = "<table style='color: black; width: 100%;padding: 5px'> <caption><h2>FEATURE DETAIL</h2></caption>"
+    showJsonDataInHTMLTable(myObj, lyrType) {
+        let table = "<table> "
         for (let key in myObj) {
-            text += "<tr><td style='border: 1px solid black;font-weight: normal; padding: 2px'>" + key.toUpperCase() + "</td> <td style='border: 1px solid black'>" + myObj[key] + "</td></tr>";
+            table += "<tr><td>" + key.toUpperCase() + "</td> <td>" + myObj[key] + "</td></tr>";
         }
-        text += "</table>"
-        htmlElem.innerHTML = text;
+        table += "</table>"
+        let acc = document.getElementsByClassName("accordion");
+        let index = 1;
+        if (lyrType === 'raster') {
+            index = 0
+        }
+        acc[index].innerHTML = myObj['layer']
+        acc[index].nextElementSibling.innerHTML = table
+    }
+
+    addAccordiansToRightDraw(htmlElem) {
+        let div = document.createElement("div");
+        let accordian1 = "<button class=\"accordion\">Raster Layer</button>\n" +
+            "<div class=\"panel\">No Raster Layer Clicked</div>";
+        div.append(accordian1)
+        let accordian2 = "<button class=\"accordion\"> Vector Layer</button>\n" +
+            "<div class=\"panel\">For values clcik on feature, please</div>";
+        div.append(accordian2)
+        // div.append(accordian)
+        htmlElem.innerHTML = div.innerText;
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                /* Toggle between adding and removing the "active" class,
+                to highlight the button that controls the panel */
+                this.classList.toggle("active");
+                /* Toggle between hiding and showing the active panel */
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
     }
 }
 

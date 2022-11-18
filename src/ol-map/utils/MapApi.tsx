@@ -15,6 +15,8 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_FIELD_DISTINCT_VALUE: "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",
     DCH_MAP_INFO: "api/dch/get_map_info/{uuid}/",
     DCH_LAYER_PIXEL_VALUE: "api/dch/get_pixel_value/{uuid}/{long}/{lat}/",
+    DCH_FEATURE_DETAIL: "api/dch/get_feature_detail/{uuid}/{col_name}/{col_val}/",
+
 });
 
 
