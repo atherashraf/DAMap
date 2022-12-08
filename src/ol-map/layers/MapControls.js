@@ -18,7 +18,7 @@ class MapControls {
     }
 
     setCurserDisplay(curserStyle) {
-        document.getElementById("da-map").style.cursor = curserStyle;
+        // document.getElementById("da-map").style.cursor = curserStyle;
     }
 
     displayFeatureInfo(evt, mapVm, targetElem) {
