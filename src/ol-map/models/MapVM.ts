@@ -32,6 +32,7 @@ import VectorTileSource from "ol/source/VectorTile";
 import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
+import Draw from 'ol/interaction/Draw';
 
 
 export interface IDALayers {
@@ -51,6 +52,8 @@ class MapVM {
     private _vectorLayerAddedEvent = new Event('VectorLayerAdded');
     // @ts-ignore
     mapControls = null;
+    // @ts-ignore
+    currentMapInteraction = null;
     // leftDrawerRef: any
     mapExtent: number[] = [
         7031250.271849444,
@@ -231,9 +234,35 @@ class MapVM {
 
     identifyFeature(target: HTMLElement) {
         let me = this;
+        me.map.removeInteraction(me.currentMapInteraction);
         me.mapControls.setCurserDisplay('help');
         this.map.on('click', function (evt) {
+            me.map.removeInteraction(me.currentMapInteraction);
             me.mapControls.displayFeatureInfo(evt, me, target);
+        });
+    }
+
+    // @ts-ignore
+    addDrawInteraction(drawType) {
+        let me = this;
+        let source = this.getSelectionLayer().getSource();
+        if (this.currentMapInteraction !== null) {
+            this.map.removeInteraction(this.currentMapInteraction);
+        }
+        this.currentMapInteraction = new Draw({
+            source: source,
+            type: drawType,
+        });
+        this.map.addInteraction(this.currentMapInteraction);
+        // @ts-ignore
+        this.currentMapInteraction.on('drawstart', function (e) {
+            // console.log("draw start...")
+            source.clear();
+        });
+        // @ts-ignore
+        this.currentMapInteraction.on('drawend', function (e) {
+            // console.log("draw start...")
+            me.mapControls.getRasterAreaFromPolygon(me, e.feature);
         });
     }
 
@@ -246,7 +275,8 @@ class MapVM {
             source: new VectorSource(),
             style: function (feature) {
                 return me.getSelectStyle(feature)
-            }
+            },
+            zIndex: 1000
         });
         this.addOverlayLayer(vectorLayer, title)
     }
@@ -381,6 +411,7 @@ class MapVM {
             this.daLayer[payload.uuid] = daLayer
         }
     }
+
     getDALayer(layerId: string | undefined): AbstractDALayer {
         if (layerId)
             return this.daLayer[layerId]
@@ -390,6 +421,9 @@ class MapVM {
         this._domRef.snackBarRef.current.show(msg)
     }
 
+    drawPolygonForRasterArea() {
+        this.addDrawInteraction("Polygon")
+    }
 }
 
 export default MapVM;

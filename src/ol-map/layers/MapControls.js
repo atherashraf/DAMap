@@ -5,6 +5,8 @@ import LineString from "ol/geom/LineString";
 import XYZ from 'ol/source/XYZ'
 import {MapAPIs} from "../utils/MapApi";
 import {transform} from 'ol/proj';
+import GeoJSON from 'ol/format/GeoJSON';
+
 import "../static/css/SideDrawer.css";
 
 class MapControls {
@@ -116,6 +118,21 @@ class MapControls {
             });
     }
 
+    getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM) {
+        let me = this;
+        let layer_name = rasterLayers[0].get('name');
+        mapVM.getApi().get(MapAPIs.DCH_RASTER_AREA, {uuid: layer_name, geojson_str: polygonJsonStr})
+            .then((payload) => {
+                if (payload) {
+                    alert(payload)
+                    // let obj = {'layer': layer_title, 'value': payload}
+                    // me.showJsonDataInHTMLTable(obj, 'raster');
+                } else {
+
+                }
+            });
+    }
+
     showJsonDataInHTMLTable(myObj, lyrType) {
         let table = "<table> "
         for (let key in myObj) {
@@ -158,6 +175,31 @@ class MapControls {
             });
         }
     }
+
+
+    getRasterAreaFromPolygon(mapVm, feature) {
+        let me = this;
+        let map = mapVm.map;
+        let extent = feature.getGeometry().getExtent();
+        let X = extent[0] + (extent[2] - extent[0]) / 2;
+        let Y = extent[1] + (extent[3] - extent[1]) / 2;
+        let centroid = [X, Y];
+        let pixel = map.getPixelFromCoordinate(centroid);
+        let rasterLayers = [];
+        map.forEachLayerAtPixel(pixel, function (layer, pxl) {
+            if (layer.getSource() instanceof XYZ)
+                rasterLayers.push(layer);
+        });
+        let src = 'EPSG:3857'
+        let dest = 'EPSG:4326'
+        // feature.getGeometry().transform(src, dest)
+        let writer = new GeoJSON();
+        let polygonJsonStr = writer.writeFeatures([feature]);
+        console.log(polygonJsonStr);
+        if (rasterLayers.length > 0) {
+            me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVm)
+        }
+    };
 }
 
 export default MapControls;
