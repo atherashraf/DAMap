@@ -12,6 +12,7 @@ import AttributeTable from "./controls/AttributeTable";
 import LOISelector from "./controls/LOISelector";
 import AddClassificationSurface from "./controls/AddClassificationSurface";
 import RasterArea from "./controls/RasterArea";
+import AddLayer from "./controls/AddLayer";
 
 
 class MapToolbar extends Control {
@@ -34,10 +35,11 @@ class MapToolbar extends Control {
 
         const root = createRoot(element)
         root.render(<React.Fragment>
-                <AddClassificationSurface mapVM={mapVM}/>
+                {/*<AddClassificationSurface mapVM={mapVM}/>*/}
+                <AddLayer mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <Zoom2Extent mapVM={mapVM}/>
-                <RasterArea mapVM={mapVM}/>
+                <RasterArea mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <Identifier mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>

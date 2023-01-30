@@ -4,10 +4,13 @@ import Polygon from "ol/geom/Polygon";
 import LineString from "ol/geom/LineString";
 import XYZ from 'ol/source/XYZ'
 import {MapAPIs} from "../utils/MapApi";
-import {transform} from 'ol/proj';
+import {fromLonLat, transform} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON';
 
 import "../static/css/SideDrawer.css";
+import DAChart from "../components/common/DACharts";
+import {Point} from "ol/geom";
+import {Circle, Fill, Stroke, Style} from "ol/style";
 
 class MapControls {
     mapVm = null;
@@ -25,7 +28,7 @@ class MapControls {
 
     displayFeatureInfo(evt, mapVm, targetElem) {
         let me = this;
-        me.addAccordiansToRightDraw(targetElem);
+        me.addAccordionsToRightDraw(targetElem);
         let map = mapVm.map;
         let pixel = evt.pixel;
         let coord = evt.coordinate;
@@ -78,7 +81,7 @@ class MapControls {
                 row = row + key + ":  " + feature.get(key) + " , "
             }
             // alert(row || '&nbsp');
-            me.showJsonDataInHTMLTable(feature.getProperties(), 'v');
+            me.showJsonDataInHTMLTable(feature.getProperties(), 'v', targetElem);
             me.getFeatureDetailFromDB(feature, mapVm, targetElem);
         } else {
             // alert('&nbsp;');
@@ -95,9 +98,9 @@ class MapControls {
         }).then((payload) => {
             if (payload) {
                 payload['layer'] = feature['layer_title'];
-                me.showJsonDataInHTMLTable(payload, 'v');
+                me.showJsonDataInHTMLTable(payload, 'v', targetElem);
             } else {
-                me.showJsonDataInHTMLTable(row, 'v');
+                me.showJsonDataInHTMLTable(row, 'v', targetElem);
             }
         });
 
@@ -111,20 +114,22 @@ class MapControls {
             .then((payload) => {
                 if (payload) {
                     let obj = {'layer': layer_title, 'value': payload}
-                    me.showJsonDataInHTMLTable(obj, 'raster');
+                    me.showJsonDataInHTMLTable(obj, 'raster', targetElem);
                 } else {
 
                 }
             });
     }
 
-    getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM) {
+    getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM, targetElem) {
         let me = this;
         let layer_name = rasterLayers[0].get('name');
         mapVM.getApi().get(MapAPIs.DCH_RASTER_AREA, {uuid: layer_name, geojson_str: polygonJsonStr})
             .then((payload) => {
                 if (payload) {
-                    alert(payload)
+                    // payload = JSON.parse(payload);
+                    me.showAreaInRightDraw(payload, targetElem)
+                    // alert(payload)
                     // let obj = {'layer': layer_title, 'value': payload}
                     // me.showJsonDataInHTMLTable(obj, 'raster');
                 } else {
@@ -133,7 +138,7 @@ class MapControls {
             });
     }
 
-    showJsonDataInHTMLTable(myObj, lyrType) {
+    showJsonDataInHTMLTable(myObj, lyrType, targetElem) {
         let table = "<table> "
         for (let key in myObj) {
             table += "<tr><td>" + key.toUpperCase() + "</td> <td>" + myObj[key] + "</td></tr>";
@@ -144,11 +149,16 @@ class MapControls {
         if (lyrType === 'raster') {
             index = 0
         }
-        acc[index].innerHTML = myObj['layer']
-        acc[index].nextElementSibling.innerHTML = table
+        if (acc.length > 0) {
+            acc[index].innerHTML = myObj['layer']
+            acc[index].nextElementSibling.innerHTML = table
+        } else {
+            targetElem.innerHTML = table;
+        }
+
     }
 
-    addAccordiansToRightDraw(htmlElem) {
+    addAccordionsToRightDraw(htmlElem) {
         let div = document.createElement("div");
         let accordian1 = "<button class=\"accordion\">Raster Layer</button>\n" +
             "<div class=\"panel\">No Raster Layer Clicked</div>";
@@ -176,8 +186,7 @@ class MapControls {
         }
     }
 
-
-    getRasterAreaFromPolygon(mapVm, feature) {
+    getRasterAreaFromPolygon(mapVm, targetElem, feature) {
         let me = this;
         let map = mapVm.map;
         let extent = feature.getGeometry().getExtent();
@@ -197,9 +206,36 @@ class MapControls {
         let polygonJsonStr = writer.writeFeatures([feature]);
         console.log(polygonJsonStr);
         if (rasterLayers.length > 0) {
-            me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVm)
+            me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVm, targetElem)
         }
     };
+
+    showAreaInRightDraw(arrData, targetElem) {
+        let me = this;
+        let div = document.createElement("div");
+        let table = "<table><tr><th>Class</th><th>Area (m^2)</th></tr> "
+        for (let i = 0; i < arrData.length; i++) {
+            let obj = arrData[i];
+            table += "<tr><td>" + obj['pixel'] + "</td> <td>" + obj['area'] + "</td></tr>";
+        }
+        table += "</table>"
+        div.append(table)
+        let footr = '<div class="footer_div"><button id="btnShowChart" type="button" class="myButton">Show Chart</button></div>'
+        div.append(footr)
+        targetElem.innerHTML = div.innerText;
+        // targetElem.innerHTML = table;
+        const data = arrData.map((row) => ({
+            name: row.pixel,
+            y: row.area
+        }))
+        document.getElementById("btnShowChart").onclick = function (e) {
+            me.mapVm.getDialogBoxRef().current.openDialog({
+                "title": "Area Chart",
+                "content": <div style={{width: 600}}><DAChart chartData={data}/></div>,
+                "actions": <p></p>
+            })
+        };
+    }
 }
 
 export default MapControls;
