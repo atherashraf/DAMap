@@ -14,7 +14,7 @@ import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
-import React, {RefObject} from "react";
+import {RefObject} from "react";
 import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
@@ -33,7 +33,6 @@ import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
-import Button from "@mui/material/Button";
 
 
 export interface IDALayers {
@@ -45,10 +44,10 @@ interface IOverlays {
 }
 
 class MapVM {
-    private map: Map = null
+    private map: Map
     daLayer: IDALayers = {}
     overlayLayers: IOverlays = {}
-    private _domRef: IDomRef = null
+    private _domRef: IDomRef
     private _layerOfInterest: string = null;
     private _vectorLayerAddedEvent = new Event('VectorLayerAdded');
     // @ts-ignore
