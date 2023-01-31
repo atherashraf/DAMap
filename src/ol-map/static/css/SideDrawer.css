@@ -60,6 +60,14 @@ table {
     width: 100%;
 }
 
+th {
+    border: 1px solid #000505;
+    text-align: left;
+    padding: 8px;
+    font-size: large;
+    font-weight: bold;
+}
+
 td, th {
     border: 1px solid #000505;
     text-align: left;
@@ -95,4 +103,27 @@ tr:nth-child(even) {
     background-color: white;
     overflow: hidden;
     color: #000505;
+}
+
+.footer_div {
+    position: relative;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    color: #000505;
+    /*text-align: center;*/
+}
+
+.myButton {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    background-color: #008CBA;
 }

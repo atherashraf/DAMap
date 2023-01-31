@@ -14,7 +14,7 @@ import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
-import {RefObject} from "react";
+import React, {RefObject} from "react";
 import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
@@ -33,6 +33,7 @@ import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
+import Button from "@mui/material/Button";
 
 
 export interface IDALayers {
@@ -62,7 +63,7 @@ class MapVM {
         4922393.652534479
     ]
     isInit: Boolean = false;
-    private readonly api: MapApi;
+    public readonly api: MapApi;
     private readonly isDesigner: boolean;
     private fullScreen: FullScreen;
 
@@ -234,16 +235,20 @@ class MapVM {
 
     identifyFeature(target: HTMLElement) {
         let me = this;
+        // me.mapControls.add_lbdc_discharge_head_tail(me); //fo layer test
         me.map.removeInteraction(me.currentMapInteraction);
+        me.currentMapInteraction = null;
         me.mapControls.setCurserDisplay('help');
         this.map.on('click', function (evt) {
-            me.map.removeInteraction(me.currentMapInteraction);
-            me.mapControls.displayFeatureInfo(evt, me, target);
+            // me.map.removeInteraction(me.currentMapInteraction);
+            if (!(me.currentMapInteraction instanceof Draw)) {
+                me.mapControls.displayFeatureInfo(evt, me, target);
+            }
         });
     }
 
     // @ts-ignore
-    addDrawInteraction(drawType) {
+    addDrawInteraction(drawType, target) {
         let me = this;
         let source = this.getSelectionLayer().getSource();
         if (this.currentMapInteraction !== null) {
@@ -262,7 +267,7 @@ class MapVM {
         // @ts-ignore
         this.currentMapInteraction.on('drawend', function (e) {
             // console.log("draw start...")
-            me.mapControls.getRasterAreaFromPolygon(me, e.feature);
+            me.mapControls.getRasterAreaFromPolygon(me, target, e.feature);
         });
     }
 
@@ -281,9 +286,15 @@ class MapVM {
         this.addOverlayLayer(vectorLayer, title)
     }
 
+
     getSelectionLayer(): VectorLayer<VectorSource> {
         // @ts-ignore
         return this.overlayLayers["sel_layer"]
+    }
+
+    getOverlayLayer(layer_name: string): VectorLayer<VectorSource> {
+        // @ts-ignore
+        return this.overlayLayers[layer_name]
     }
 
     // @ts-ignore
@@ -421,8 +432,9 @@ class MapVM {
         this._domRef.snackBarRef.current.show(msg)
     }
 
-    drawPolygonForRasterArea() {
-        this.addDrawInteraction("Polygon")
+    drawPolygonForRasterArea(target: HTMLElement) {
+
+        this.addDrawInteraction("Polygon", target);
     }
 }
 
