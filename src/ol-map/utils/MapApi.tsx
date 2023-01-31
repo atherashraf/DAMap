@@ -18,7 +18,7 @@ export const MapAPIs = Object.freeze({
     DCH_FEATURE_DETAIL: "api/dch/get_feature_detail/{uuid}/{col_name}/{col_val}/",
     DCH_RASTER_AREA: "api/dch/get_raster_area/{uuid}/{geojson_str}",
     DCH_GET_ALL_LAYERS: "api/dch/get_all_layers/",
-    LBDC_DISCHARGE:"https://irrigation.punjab.gov.pk/admin/api/fetch_LBDC_Discharge.php?"
+    // LBDC_DISCHARGE:"https://irrigation.punjab.gov.pk/admin/api/fetch_LBDC_Discharge.php?"
 
 });
 
