@@ -37,21 +37,17 @@ class MapControls {
             coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
         }
         let rasterLayers = [];
-        // map.forEachLayerAtPixel(pixel, function (layer, pxl) {
-        //     if (layer.getSource() instanceof XYZ)
-        //         rasterLayers.push(layer);
-        // });
-        // if (rasterLayers.length > 0) {
-        //     me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
-        // }
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
             if (lyr.getSource() instanceof XYZ) {
-                me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
+                rasterLayers.push(layer);
             }
             feature['layer_name'] = lyr.get('name');
             feature['layer_title'] = lyr.get('title');
             features.push(feature);
         });
+        if (rasterLayers.length > 0) {
+            me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
+        }
         if (features.length > 0) {
             let vectorSource = mapVm.getSelectionLayer().getSource();
             vectorSource.clear();
