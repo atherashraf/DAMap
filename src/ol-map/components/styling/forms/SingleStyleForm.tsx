@@ -3,7 +3,7 @@ import {IFeatureStyle, IGeomStyle} from "../../../TypeDeclaration";
 
 import BaseStyleForm, {BaseStyleFormProps} from "./BaseStyleForm";
 import VectorSymbolizer from "./symbolizer/VectorSymbolizer";
-import React from "react";
+import * as React from "react";
 
 
 class SingleStyleForm extends BaseStyleForm {

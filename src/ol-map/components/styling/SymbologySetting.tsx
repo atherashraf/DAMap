@@ -1,4 +1,5 @@
-import React, {useEffect} from "react"
+import * as React from "react";
+import {useEffect} from "react"
 import {Box, Button, FormControl, InputLabel, MenuItem, SelectChangeEvent} from "@mui/material";
 import {DAFieldSet, DASelect} from "../StyledMapComponent";
 import SingleStyleForm from "./forms/SingleStyleForm";

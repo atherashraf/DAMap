@@ -1,11 +1,9 @@
 import * as React from "react"
-import Highcharts from 'highcharts';
+import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import HighchartsExporting from 'highcharts/modules/exporting'
-import {useEffect, useState} from "react";
 // import Api, {APIs} from "../../../../Api";
 
-import {useNavigate} from "react-router-dom";
 
 
 interface IPorps {
@@ -20,7 +18,7 @@ const DAChart = (props: IPorps) => {
     if (typeof Highcharts === 'object') {
         HighchartsExporting(Highcharts)
     }
-    const [chartData, setDAChart] = useState([]);
+    // const [chartData, setDAChart] = useState([]);
     // useEffect(() => {
     //     Api.get(APIs.EAD_DONOR_DIST, params).then((payload: any) => {
     //         if (payload) {

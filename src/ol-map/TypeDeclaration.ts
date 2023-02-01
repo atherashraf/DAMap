@@ -6,8 +6,6 @@ import LeftDrawer from "./components/drawers/LeftDrawer";
 import DADialogBox from "./components/common/DADialogBox";
 import DASnackbar from "./components/common/DASnackbar";
 import {pointShapeTypes} from "./components/styling/forms/symbolizer/PointSymbolizer";
-import BottomDrawer from "./components/drawers/BottomDrawer";
-import MapView from "./containers/MapView";
 import MapPanel from "./components/MapPanel";
 
 export interface IBaseMapProps{

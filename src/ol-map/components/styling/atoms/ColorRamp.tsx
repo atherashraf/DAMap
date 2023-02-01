@@ -1,4 +1,5 @@
-import React, {RefObject} from "react";
+import * as React from "react";
+import {RefObject} from "react";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {Box, IconButton} from "@mui/material";
@@ -30,6 +31,7 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
 
         }
     }
+
     componentDidMount() {
         this.createColorRamp()
     }
@@ -48,20 +50,20 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
             backgroundColor += `, ${c} ${percent}%`
         })
         backgroundColor += ")"
-        this.setState(()=>({backgroundColor: backgroundColor}))
+        this.setState(() => ({backgroundColor: backgroundColor}))
         this.props.mapVM.getDialogBoxRef().current?.closeDialog();
     }
 
     async addColor() {
         const newColor = _.randomColor()
-        await this.setState(()=>({colors: [...this.state.colors, newColor]}))
+        await this.setState(() => ({colors: [...this.state.colors, newColor]}))
         this.props.mapVM.getDialogBoxRef().current?.updateContents(this.getDialogContent())
     }
 
     handleColorChange(index: number, color: string) {
         const colors = [...this.state.colors]
         colors[index] = color
-        this.setState(()=>({colors: colors}))
+        this.setState(() => ({colors: colors}))
     }
 
     getDialogContent(): JSX.Element {

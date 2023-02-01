@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {Box, FormControl, InputLabel, MenuItem, TextField} from "@mui/material";
 import {DASelect} from "../../../StyledMapComponent";
 import {Style, Icon} from "ol/style";

@@ -10,7 +10,7 @@ import {
     TableCell, TableContainer,
     TableRow
 } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import {MapAPIs} from "../../../utils/MapApi";
 import {DASelect} from "../../StyledMapComponent";
 import {IFeatureStyle, IGeomStyle, IRule} from "../../../TypeDeclaration";

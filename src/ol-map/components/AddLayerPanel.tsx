@@ -1,4 +1,5 @@
-import React, {useState} from "react"
+import * as React from "react";
+import {useState} from "react"
 import MapVM from "../models/MapVM";
 import {Button, FormControl, InputLabel, MenuItem, Select} from '@mui/material';
 

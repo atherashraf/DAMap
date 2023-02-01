@@ -6,7 +6,8 @@ import {
     MenuItem, Select,
     TextField
 } from "@mui/material";
-import React, {RefObject} from "react";
+import * as React from "react";
+import {RefObject} from "react";
 import {MapAPIs} from "../../../utils/MapApi";
 import PointSymbolizer, {IPointSymbolizerState} from "./symbolizer/PointSymbolizer";
 import {IFeatureStyle, IFilter, IGeomStyle, IRule} from "../../../TypeDeclaration";

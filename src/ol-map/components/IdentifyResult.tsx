@@ -1,4 +1,4 @@
-import React from "react"
+import * as React from "react"
 import MapVM from "../models/MapVM";
 
 interface IdentifyResultProps {

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {Dialog, DialogActions, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import Paper, {PaperProps} from '@mui/material/Paper';

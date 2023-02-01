@@ -1,6 +1,6 @@
 import "../static/css/OlControl.css"
 import {Control} from "ol/control";
-import React from "react";
+import * as React from "react";
 import {createRoot} from "react-dom/client";
 import MapVM from "../models/MapVM";
 import SymbologyControl from "./controls/SymbologyControl";
@@ -10,7 +10,6 @@ import Identifier from "./controls/Identifier";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 import AttributeTable from "./controls/AttributeTable";
 import LOISelector from "./controls/LOISelector";
-import AddClassificationSurface from "./controls/AddClassificationSurface";
 import RasterArea from "./controls/RasterArea";
 import AddLayer from "./controls/AddLayer";
 

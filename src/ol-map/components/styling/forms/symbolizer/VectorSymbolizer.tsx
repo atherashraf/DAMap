@@ -1,5 +1,5 @@
 import autoBind from "auto-bind";
-import React from "react";
+import * as React from "react";
 import {Box, TextField} from "@mui/material";
 import DAColorPicker from "../../DAColorPicker";
 import {IGeomStyle} from "../../../../TypeDeclaration";

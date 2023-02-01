@@ -1,7 +1,6 @@
+import * as React from "react";
 import {ColorResult, SliderPicker} from "react-color";
 import Alpha from "react-color/lib/components/alpha/Alpha";
-
-import React from "react";
 import autoBind from "auto-bind";
 
 

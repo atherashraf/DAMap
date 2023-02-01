@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {Box, Paper} from "@mui/material";
 import MapVM from "../models/MapVM";
 
