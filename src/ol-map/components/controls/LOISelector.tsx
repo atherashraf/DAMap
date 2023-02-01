@@ -5,7 +5,7 @@ import {IControlProps} from "../../TypeDeclaration";
 const LOISelector = (props: IControlProps) => {
     const [layerIds, setLayerIds] = React.useState<string[]>([])
     window.addEventListener('VectorLayerAdded', () => {
-        const k = Object.keys(props.mapVM.daLayer)
+        const k = Object.keys(props.mapVM.daLayers)
         setLayerIds(k)
         props.mapVM.setLayerOfInterest(k[0])
     })

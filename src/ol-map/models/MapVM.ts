@@ -45,7 +45,7 @@ interface IOverlays {
 
 class MapVM {
     private map: Map
-    daLayer: IDALayers = {}
+    daLayers: IDALayers = {}
     overlayLayers: IOverlays = {}
     private _domRef: IDomRef
     private _layerOfInterest: string = null;
@@ -259,7 +259,7 @@ class MapVM {
         });
         this.map.addInteraction(this.currentMapInteraction);
         // @ts-ignore
-        this.currentMapInteraction.on('drawstart', function (e) {
+        this.currentMapInteraction.on('drawstart', () => {
             // console.log("draw start...")
             source.clear();
         });
@@ -418,13 +418,13 @@ class MapVM {
             }
             const visible = info.visible != undefined ? info.visible : true
             daLayer.getOlLayer().setVisible(visible)
-            this.daLayer[payload.uuid] = daLayer
+            this.daLayers[payload.uuid] = daLayer
         }
     }
 
     getDALayer(layerId: string | undefined): AbstractDALayer {
         if (layerId)
-            return this.daLayer[layerId]
+            return this.daLayers[layerId]
     }
 
     showSnackbar(msg: string) {

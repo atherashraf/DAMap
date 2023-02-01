@@ -1,3 +1,4 @@
+import * as React from "react";
 import {inflateCoordinatesArray} from "ol/geom/flat/inflate";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
@@ -36,18 +37,12 @@ class MapControls {
         if (projCode === 'EPSG:3857') {
             coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
         }
-        let rasterLayers = [];
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
-            if (lyr.getSource() instanceof XYZ) {
-                rasterLayers.push(lyr);
-            }
             feature['layer_name'] = lyr.get('name');
             feature['layer_title'] = lyr.get('title');
             features.push(feature);
         });
-        if (rasterLayers.length > 0) {
-            me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
-        }
+        me.getRasterPixelValue(coord, mapVm, targetElem)
         if (features.length > 0) {
             let vectorSource = mapVm.getSelectionLayer().getSource();
             vectorSource.clear();
@@ -104,19 +99,23 @@ class MapControls {
 
     }
 
-    getPixelValueFromDB(coord, rasterLayers, mapVM, targetElem) {
+    getRasterPixelValue(coord, mapVM, targetElem) {
         let me = this;
-        let layer_name = rasterLayers[0].get('name');
-        let layer_title = rasterLayers[0].get('title');
-        mapVM.getApi().get(MapAPIs.DCH_LAYER_PIXEL_VALUE, {uuid: layer_name, long: coord[0], lat: coord[1]})
-            .then((payload) => {
-                if (payload) {
-                    let obj = {'layer': layer_title, 'value': payload}
-                    me.showJsonDataInHTMLTable(obj, 'raster', targetElem);
-                } else {
+        Object.keys(mapVM.daLayers).forEach((key) => {
+            const lyr = mapVM.daLayers[key].layer
+            if (lyr.getSource() instanceof XYZ) {
+                let layer_name = lyr.get('name');
+                let layer_title = lyr.get('title');
+                mapVM.getApi().get(MapAPIs.DCH_LAYER_PIXEL_VALUE, {uuid: layer_name, long: coord[0], lat: coord[1]})
+                    .then((payload) => {
+                        if (payload) {
+                            let obj = {'layer': layer_title, 'value': payload}
+                            me.showJsonDataInHTMLTable(obj, 'raster', targetElem);
+                        }
+                    });
+            }
+        });
 
-                }
-            });
     }
 
     getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM, targetElem) {
@@ -184,27 +183,25 @@ class MapControls {
         }
     }
 
-    getRasterAreaFromPolygon(mapVm, targetElem, feature) {
-        let me = this;
-        let map = mapVm.map;
-        let extent = feature.getGeometry().getExtent();
-        let X = extent[0] + (extent[2] - extent[0]) / 2;
-        let Y = extent[1] + (extent[3] - extent[1]) / 2;
-        let centroid = [X, Y];
-        let pixel = map.getPixelFromCoordinate(centroid);
-        let rasterLayers = [];
-        map.forEachLayerAtPixel(pixel, function (layer, pxl) {
-            if (layer.getSource() instanceof XYZ)
-                rasterLayers.push(layer);
+    getRasterLayers(mapVM) {
+        const rasterLayers = [];
+        Object.keys(mapVM.daLayers).forEach((key) => {
+            const lyr = mapVM.daLayers[key].layer
+            if (lyr.getSource() instanceof XYZ) {
+                rasterLayers.push(lyr)
+            }
         });
-        let src = 'EPSG:3857'
-        let dest = 'EPSG:4326'
-        // feature.getGeometry().transform(src, dest)
+        return rasterLayers;
+    }
+
+    getRasterAreaFromPolygon(mapVM, targetElem, feature) {
+        const me = this;
+        const rasterLayers = me.getRasterLayers(mapVM);
         let writer = new GeoJSON();
         let polygonJsonStr = writer.writeFeatures([feature]);
         console.log(polygonJsonStr);
         if (rasterLayers.length > 0) {
-            me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVm, targetElem)
+            me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM, targetElem)
         }
     };
 
@@ -226,11 +223,11 @@ class MapControls {
             name: row.pixel,
             y: row.area
         }))
-        document.getElementById("btnShowChart").onclick = function (e) {
+        document.getElementById("btnShowChart").onclick = () => {
             me.mapVm.getDialogBoxRef().current.openDialog({
                 "title": "Area Chart",
                 "content": <div style={{width: 600}}><DAChart chartData={data}/></div>,
-                "actions": <p></p>
+                "actions": <p/>
             })
         };
     }
