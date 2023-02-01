@@ -4,13 +4,12 @@ import Polygon from "ol/geom/Polygon";
 import LineString from "ol/geom/LineString";
 import XYZ from 'ol/source/XYZ'
 import {MapAPIs} from "../utils/MapApi";
-import {fromLonLat, transform} from 'ol/proj';
+import {transform} from 'ol/proj';
 import GeoJSON from 'ol/format/GeoJSON';
 
 import "../static/css/SideDrawer.css";
 import DAChart from "../components/common/DACharts";
-import {Point} from "ol/geom";
-import {Circle, Fill, Stroke, Style} from "ol/style";
+
 
 class MapControls {
     mapVm = null;
@@ -38,14 +37,17 @@ class MapControls {
             coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
         }
         let rasterLayers = [];
-        map.forEachLayerAtPixel(pixel, function (layer, pxl) {
-            if (layer.getSource() instanceof XYZ)
-                rasterLayers.push(layer);
-        });
-        if (rasterLayers.length > 0) {
-            me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
-        }
+        // map.forEachLayerAtPixel(pixel, function (layer, pxl) {
+        //     if (layer.getSource() instanceof XYZ)
+        //         rasterLayers.push(layer);
+        // });
+        // if (rasterLayers.length > 0) {
+        //     me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
+        // }
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
+            if (lyr.getSource() instanceof XYZ) {
+                me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
+            }
             feature['layer_name'] = lyr.get('name');
             feature['layer_title'] = lyr.get('title');
             features.push(feature);
