@@ -39,7 +39,7 @@ class MapControls {
         let rasterLayers = [];
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
             if (lyr.getSource() instanceof XYZ) {
-                rasterLayers.push(layer);
+                rasterLayers.push(lyr);
             }
             feature['layer_name'] = lyr.get('name');
             feature['layer_title'] = lyr.get('title');
