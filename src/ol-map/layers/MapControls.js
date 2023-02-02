@@ -69,7 +69,10 @@ class MapControls {
                 vectorSource.addFeatures([lineFeature]);
             }
             me.showJsonDataInHTMLTable(feature.getProperties(), 'v', targetElem);
-            me.getFeatureDetailFromDB(feature, mapVm, targetElem);
+            if (feature.hasOwnProperty('layer_name')) {
+                me.getFeatureDetailFromDB(feature, mapVm, targetElem);
+            }
+
         } else {
             // alert('&nbsp;');
         }
@@ -197,8 +200,8 @@ class MapControls {
                 }
             }
         });
-        let src = 'EPSG:3857'
-        let dest = 'EPSG:4326'
+        // let src = 'EPSG:3857'
+        // let dest = 'EPSG:4326'
         // feature.getGeometry().transform(src, dest)
         let writer = new GeoJSON();
         let polygonJsonStr = writer.writeFeatures([feature]);
