@@ -36,18 +36,12 @@ class MapControls {
         if (projCode === 'EPSG:3857') {
             coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
         }
-        let rasterLayers = [];
         map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
-            if (lyr.getSource() instanceof XYZ) {
-                rasterLayers.push(lyr);
-            }
             feature['layer_name'] = lyr.get('name');
             feature['layer_title'] = lyr.get('title');
             features.push(feature);
         });
-        if (rasterLayers.length > 0) {
-            me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
-        }
+        me.getRasterPixelValue(coord, mapVm, targetElem)
         if (features.length > 0) {
             let vectorSource = mapVm.getSelectionLayer().getSource();
             vectorSource.clear();
@@ -99,19 +93,23 @@ class MapControls {
 
     }
 
-    getPixelValueFromDB(coord, rasterLayers, mapVM, targetElem) {
+    getRasterPixelValue(coord, mapVM, targetElem) {
         let me = this;
-        let layer_name = rasterLayers[0].get('name');
-        let layer_title = rasterLayers[0].get('title');
-        mapVM.getApi().get(MapAPIs.DCH_LAYER_PIXEL_VALUE, {uuid: layer_name, long: coord[0], lat: coord[1]})
-            .then((payload) => {
-                if (payload) {
-                    let obj = {'layer': layer_title, 'value': payload}
-                    me.showJsonDataInHTMLTable(obj, 'raster', targetElem);
-                } else {
+        Object.keys(mapVM.daLayers).forEach((key) => {
+            const lyr = mapVM.daLayers[key].layer
+            if (lyr.getSource() instanceof XYZ) {
+                let layer_name = lyr.get('name');
+                let layer_title = lyr.get('title');
+                mapVM.getApi().get(MapAPIs.DCH_LAYER_PIXEL_VALUE, {uuid: layer_name, long: coord[0], lat: coord[1]})
+                    .then((payload) => {
+                        if (payload) {
+                            let obj = {'layer': layer_title, 'value': payload}
+                            me.showJsonDataInHTMLTable(obj, 'raster', targetElem);
+                        }
+                    });
+            }
+        });
 
-                }
-            });
     }
 
     getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVM, targetElem) {
@@ -208,8 +206,7 @@ class MapControls {
         if (rasterLayers.length > 0) {
             me.getRasterAreaFromDB(polygonJsonStr, rasterLayers, mapVm, targetElem)
         }
-    }
-    ;
+    };
 
     showAreaInRightDraw(arrData, targetElem) {
         let me = this;
@@ -229,11 +226,11 @@ class MapControls {
             name: row.pixel,
             y: row.area
         }))
-        document.getElementById("btnShowChart").onclick = function (e) {
+        document.getElementById("btnShowChart").onclick = () => {
             me.mapVm.getDialogBoxRef().current.openDialog({
                 "title": "Area Chart",
                 "content": <div style={{width: 600}}><DAChart chartData={data}/></div>,
-                "actions": <p></p>
+                "actions": <p/>
             })
         };
     }
