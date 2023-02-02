@@ -9,7 +9,6 @@ import GeoJSON from 'ol/format/GeoJSON';
 import * as React from "react";
 import "../static/css/SideDrawer.css";
 import DAChart from "../components/common/DACharts";
-import {VectorTile} from "ol/source";
 
 
 class MapControls {
@@ -32,54 +31,23 @@ class MapControls {
         let map = mapVm.map;
         let pixel = evt.pixel;
         let coord = evt.coordinate;
-        // const features = [];
+        const features = [];
         let projCode = map.getView().getProjection().getCode();
         if (projCode === 'EPSG:3857') {
             coord = transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
         }
         let rasterLayers = [];
-        let vectorLayers = [];
-        let features = map.getFeaturesAtPixel(pixel, {
-            layerFilter: function (lyr) {
-                if (lyr.getSource() instanceof XYZ) {
-                    // console.log(lyr.getData(pixel));
-                    if (!rasterLayers.includes(lyr)) {
-                        rasterLayers.push(lyr);
-                    }
-                    return false;
-                } else {
-                    if (lyr.getSource() instanceof VectorTile) {
-                        if (!vectorLayers.includes(lyr)) {
-                            vectorLayers.push(lyr);
-                            return true;
-                        }
-                        return false
-                    }
-                    return false
-                }
+        map.forEachFeatureAtPixel(pixel, function (feature, lyr) {
+            if (lyr.getSource() instanceof XYZ) {
+                rasterLayers.push(lyr);
             }
+            feature['layer_name'] = lyr.get('name');
+            feature['layer_title'] = lyr.get('title');
+            features.push(feature);
         });
         if (rasterLayers.length > 0) {
             me.getPixelValueFromDB(coord, rasterLayers, mapVm, targetElem)
         }
-        if (vectorLayers.length > 0) {
-            let lyr = vectorLayers[0];
-            lyr.getFeatures(pixel).then(function (lyrFeatures) {
-                const feature = lyrFeatures.length ? lyrFeatures[0] : undefined;
-                if (lyrFeatures.length) {
-                    feature['layer_name'] = lyr.get('name');
-                    feature['layer_title'] = lyr.get('title');
-                    features.push(feature);
-                }
-                me.showFeatureInfoInPanel(features, mapVm, targetElem)
-            })
-        }
-
-    }
-    ;
-
-    showFeatureInfoInPanel = function (features, mapVm, targetElem) {
-        let me = this;
         if (features.length > 0) {
             let vectorSource = mapVm.getSelectionLayer().getSource();
             vectorSource.clear();
