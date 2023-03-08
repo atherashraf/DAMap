@@ -229,7 +229,7 @@ class MapVM {
     zoomToFullExtent() {
         // const extent = [7031250.271849444, 2217134.3474655207, 8415677.728150556, 4922393.652534479]
         // @ts-ignore
-        this.map.getView().fit(this.mapExtent, this.map.getSize());
+        this.mapExtent && this.map.getView().fit(this.mapExtent, this.map.getSize());
     }
 
     identifyFeature(target: HTMLElement) {

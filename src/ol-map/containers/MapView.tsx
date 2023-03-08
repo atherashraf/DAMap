@@ -2,7 +2,7 @@ import * as React from "react";
 import MapVM from "../models/MapVM";
 import RightDrawer from "../components/drawers/RightDrawer";
 import {MapAPIs} from "../utils/MapApi";
-import {IDomRef, IMapInfo} from "../TypeDeclaration";
+import {IDomRef, IFeatureStyle, IMapInfo} from "../TypeDeclaration";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
@@ -62,6 +62,12 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
                     this.mapVM.setTarget(this.mapDivId);
                 })
         } else {
+            if (!this.mapVM.isInit) {
+                const info: IMapInfo = {
+                    layers: [{ uuid: this.props.uuid, style: null, visible: true }],
+                }
+                this.mapVM.initMap(info);
+            }
             (async () => {
                 await this.mapVM.addDALayer({uuid: this.props.uuid})
                 const extent = await this.mapVM.getDALayer(this.props.uuid).getExtent()
