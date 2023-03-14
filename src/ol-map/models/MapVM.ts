@@ -101,6 +101,7 @@ class MapVM {
         this.addBaseLayers()
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
+            // console.log(mapInfo.layers)
             mapInfo.layers.forEach(async (layer) => {
                 await this.addDALayer(layer)
             });
@@ -148,6 +149,11 @@ class MapVM {
 
     setLayerOfInterest(value: string) {
         this._layerOfInterest = value;
+        const mapBoxRef = this.getMapPanelRef();
+        let open = mapBoxRef.current?.isBottomDrawerOpen();
+        if(open){
+            mapBoxRef.current?.closeBottomDrawer()
+        }
     }
 
     addBaseLayers() {
@@ -412,13 +418,15 @@ class MapVM {
             this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
             if (payload?.dataModel === 'V') {
                 daLayer = new MVTLayer(payload, this);
+                this.daLayers[payload.uuid] = daLayer
                 window.dispatchEvent(this._vectorLayerAddedEvent)
             } else {
                 daLayer = new RasterTileLayer(payload, this)
+                this.daLayers[payload.uuid] = daLayer
             }
             const visible = info.visible != undefined ? info.visible : true
             daLayer.getOlLayer().setVisible(visible)
-            this.daLayers[payload.uuid] = daLayer
+
         }
     }
 

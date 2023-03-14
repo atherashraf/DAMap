@@ -8,6 +8,7 @@ import {EnhancedTableToolbarProps} from "../TypeDeclaration";
 // import {useNavigate} from "react-router-dom";
 // import {olMapCtrl} from "../../ol-map/containers/DAMaps";
 import FilterMenu from "./FilterMenu";
+import MVTLayer from "../../ol-map/layers/MVTLayer";
 
 
 export const GridToolbar = (props: EnhancedTableToolbarProps) => {
@@ -16,12 +17,15 @@ export const GridToolbar = (props: EnhancedTableToolbarProps) => {
     // const navigate = useNavigate()
     const handleSearch = () => {
         const rows = props.data.filter((d: any) => props.selectedRowIds.indexOf(d.rowId) >= 0);
-        if (rows.length> 0) {
-            // navigate("/projectInfo?id="+ rows[0].id);
-        }
-
+        console.log("rows", rows)
+        // rows.forEach((r,index)=>{
+        //     const uuid = props.mapVM.getLayerOfInterest();
+        //     const daLayer: MVTLayer = props.mapVM.getDALayer(uuid) as MVTLayer
+        //     daLayer.getFeature(r.id)
+        // })
     }
     const handleLocation = () => {
+
         // const rows = props.data.filter((d: any) => props.selectedRowIds.indexOf(d.rowId) >= 0);
         // console.log("selected rows", rows)
         // olMapCtrl.clearSelectedFeatures();
@@ -64,11 +68,11 @@ export const GridToolbar = (props: EnhancedTableToolbarProps) => {
             )}
             {numSelected > 0 ? (
                 <React.Fragment>
-                    <Tooltip title="Project Location">
-                        <IconButton onClick={handleLocation}>
-                            <PinDropIcon/>
-                        </IconButton>
-                    </Tooltip>
+                    {/*<Tooltip title="Project Location">*/}
+                    {/*    <IconButton onClick={handleLocation}>*/}
+                    {/*        <PinDropIcon/>*/}
+                    {/*    </IconButton>*/}
+                    {/*</Tooltip>*/}
                     <Tooltip title="Search">
                         <IconButton onClick={handleSearch}>
                             <SavedSearchIcon/>

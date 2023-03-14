@@ -10,6 +10,7 @@ import {
 } from "../TypeDeclaration";
 import EnhancedBody from "../components/Body";
 import {GridFooter} from "../components/Footer";
+import MapVM from "../../ol-map/models/MapVM";
 
 
 export const enhancedTableBodyRef = React.createRef<EnhancedBody>();
@@ -20,6 +21,7 @@ interface DataGridProps {
     title: string
     tableHeight: number,
     tableWidth: number | 'auto'
+    mapVM: MapVM
 }
 
 const DADataGrid = (props: DataGridProps) => {
@@ -102,6 +104,7 @@ const DADataGrid = (props: DataGridProps) => {
                              tableName={props.title}
                              data={initData} height={toolbarHeight}
                              selectedRowIds={selected || []}
+                             mapVM={props.mapVM}
                 />
                 <Box sx={{width: '100%', height: tableHeight, overflow: "auto"}}>
                     <Paper sx={{width: paperWidth, boxSizing: "border-box"}}>

@@ -1,5 +1,6 @@
 import * as React from "react";
 import {styled, TableCell, tableCellClasses, TableRow} from "@mui/material";
+import MapVM from "../ol-map/models/MapVM";
 
 export type Order = 'asc' | 'desc';
 
@@ -36,6 +37,7 @@ export interface EnhancedTableToolbarProps {
     columns: Column[]
     selectedRowIds: readonly number[];
     height: number,
+    mapVM: MapVM
     // handleHeightChange: Function
 }
 

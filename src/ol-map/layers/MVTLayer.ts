@@ -33,6 +33,10 @@ class MVTLayer extends AbstractDALayer {
         return super.getDataSource();
     }
 
+    getFeature(id){
+// ````    this.layer.
+    }
+
     setDataSource() {
         const url = MapApi.getURL(MapAPIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
         this.dataSource = new VectorTileSource({

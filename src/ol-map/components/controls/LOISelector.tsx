@@ -12,7 +12,7 @@ const LOISelector = (props: IControlProps) => {
     return (
         <React.Fragment>
             <select style={{
-                backgroundColor: "transparent",
+                backgroundColor: "white",
                 border: "2px solid #000",
                 width: "200px"
             }} onChange={(e) =>

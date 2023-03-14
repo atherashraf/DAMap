@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box, Paper} from "@mui/material";
+import {Box, CircularProgress, Paper} from "@mui/material";
 import MapVM from "../models/MapVM";
 
 
@@ -45,14 +45,20 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.props.mapVM.refreshMap();
     }
 
-    openBottomDrawer(height: number, contents: JSX.Element = <React.Fragment/>) {
+    openBottomDrawer(height: number, contents: JSX.Element = <CircularProgress />) {
         // height = this.state.drawerHeight == 0 ? height : 0;
         // const display = this.state.drawerHeight == 0 ? "none" : "block";
         // contents = contents ? contents : <React.Fragment/>
         const mapPadding = height > this.getMapHeight() / 2 ? this.getMapHeight() / 4 : this.getMapHeight() / 2
-        // const mapPadding = this.getMapHeight() / 2
         this.setState({
             drawerHeight: height, mapPadding: mapPadding,
+        })
+        this.setContent(contents)
+
+    }
+    setContent(contents: JSX.Element = <React.Fragment/>){
+        // const mapPadding = this.getMapHeight() / 2
+        this.setState({
             display: "block", contents: contents
         })
         this.props.mapVM.refreshMap();
