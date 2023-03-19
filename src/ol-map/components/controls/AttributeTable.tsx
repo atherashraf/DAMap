@@ -5,6 +5,7 @@ import {IControlProps} from "../../TypeDeclaration";
 import {MapAPIs} from "../../utils/MapApi";
 import DADataGrid from "../../../data-grid/container/DataGrid";
 import {useState} from "react";
+import DAGrid from "../../../widgets/grid";
 
 
 const AttributeTable = (props: IControlProps) => {
@@ -39,14 +40,19 @@ const AttributeTable = (props: IControlProps) => {
                             .then((payload) => {
                                 if (payload) {
                                     // console.log("attribute information", payload);
-                                    const table = <DADataGrid columns={payload.columns}
-                                                              data={payload.rows}
-                                                              title={""}
-                                                              tableHeight={height - 60}
-                                                              tableWidth={'auto'}
-                                                              mapVM={props.mapVM}
-                                    />
-
+                                    // const table = <DADataGrid columns={payload.columns}
+                                    //                           data={payload.rows}
+                                    //                           title={""}
+                                    //                           tableHeight={height - 60}
+                                    //                           tableWidth={'auto'}
+                                    //                           mapVM={props.mapVM}
+                                    // />
+                                    const table = <DAGrid columns={payload.columns}
+                                                          data={payload.rows}
+                                                          title={""}
+                                                          tableHeight={height - 10}
+                                                          tableWidth={'auto'}
+                                                          mapVM={props.mapVM}/>
                                     mapBoxRef.current?.setContent(table)
                                 } else {
                                     mapBoxRef.current?.closeBottomDrawer()
