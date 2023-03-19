@@ -18,9 +18,9 @@ const LOISelector = (props: IControlProps) => {
             }} onChange={(e) =>
                 props.mapVM.setLayerOfInterest(e.target.value as string)}>
                 {layerIds.map(
-                    (layerId) => {
+                    (layerId, index) => {
                         const layer = props.mapVM.getDALayer(layerId)
-                        return <option value={layerId}>{layer.getLayerTitle()}</option>
+                        return <option key={"opt-" + index} value={layerId}>{layer.getLayerTitle()}</option>
                     })}
             </select>
         </React.Fragment>

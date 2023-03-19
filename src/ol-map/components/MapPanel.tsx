@@ -45,7 +45,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.props.mapVM.refreshMap();
     }
 
-    openBottomDrawer(height: number, contents: JSX.Element = <CircularProgress />) {
+    openBottomDrawer(height: number, contents: JSX.Element = <CircularProgress/>) {
         // height = this.state.drawerHeight == 0 ? height : 0;
         // const display = this.state.drawerHeight == 0 ? "none" : "block";
         // contents = contents ? contents : <React.Fragment/>
@@ -56,12 +56,12 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.setContent(contents)
 
     }
-    setContent(contents: JSX.Element = <React.Fragment/>){
-        // const mapPadding = this.getMapHeight() / 2
+
+    setContent(contents: JSX.Element = <React.Fragment/>) {
         this.setState({
             display: "block", contents: contents
         })
-        this.props.mapVM.refreshMap();
+        // this.props.mapVM.refreshMap();
     }
 
     closeDrawer() {
@@ -70,11 +70,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
 
     render() {
         return (
-            <Paper sx={{
-
-                width: "100%",
-                height: "100%",
-            }} elevation={6}>
+            <Paper sx={{width: "100%", height: "100%"}} elevation={6}>
                 <div id={this.mapDivId} style={{
                     width: "100%",
                     height: `calc(100% - ${this.state.mapPadding}px)`,
@@ -90,9 +86,9 @@ class MapPanel extends React.PureComponent<IProps, IState> {
                         bgcolor: 'background.paper',
                         mx: 0, pb: 3
                     }}>
-                        <Paper sx={{height: `calc(${this.state.drawerHeight}px - 10px)`,}} elevation={6}>
-                            {this.state.contents}
-                        </Paper>
+                        {/*<Paper sx={{height: `calc(${this.state.drawerHeight}px - 3px)`,}} elevation={6}>*/}
+                        {this.state.contents}
+                        {/*</Paper>*/}
                     </Box>
                 </div>
             </Paper>

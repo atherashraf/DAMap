@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import MapVM from "../models/MapVM";
 import RightDrawer from "../components/drawers/RightDrawer";
 import {MapAPIs} from "../utils/MapApi";
@@ -8,6 +9,7 @@ import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
 import {RefObject} from "react";
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
+import "jqwidgets-scripts/jqwidgets/styles/jqx.web.css";
 
 interface MapVMProps {
     height?: number

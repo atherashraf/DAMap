@@ -225,7 +225,7 @@ class MapVM {
     }
 
     refreshMap() {
-        setTimeout(() => this.map.updateSize(), 500);
+        setTimeout(() => this.map?.updateSize(), 500);
     }
 
     getMap(): Map {
