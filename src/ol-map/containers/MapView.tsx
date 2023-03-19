@@ -7,7 +7,7 @@ import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
 import {RefObject} from "react";
-
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
 
 interface MapVMProps {
     height?: number

@@ -2,7 +2,6 @@ import * as React from "react";
 import {createRoot} from "react-dom/client";
 import MapView from "./ol-map/containers/MapView";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
 import DAGrid from "./widgets/grid";
 
 const theme = createTheme({
