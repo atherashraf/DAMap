@@ -9,7 +9,6 @@ import DAGrid from "../../../widgets/grid/grid";
 
 const AttributeTable = (props: IControlProps) => {
     // const bottomDrawerRef = props.mapVM.getBottomDrawerRef();
-    const [loi, setCurrentLOI] = useState(null);
     const mapBoxRef = props.mapVM.getMapPanelRef()
     return (
         <React.Fragment>
@@ -23,27 +22,29 @@ const AttributeTable = (props: IControlProps) => {
                         height = height < 250 ? 400 : height
                         props.mapVM.getSnackbarRef()?.current?.show("Getting attribute information...")
                         mapBoxRef.current?.openBottomDrawer(height)
-                        props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
-                            .then((payload) => {
-                                if (payload) {
-                                    const table = <DAGrid columns={payload.columns}
-                                                          data={payload.rows}
-                                                          title={""}
-                                                          tableHeight={height - 5}
-                                                          tableWidth={'auto'}
-                                                          mapVM={props.mapVM}/>
+                        if (uuid) {
+                            props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
+                                .then((payload) => {
+                                    if (payload) {
+                                        const table = <DAGrid columns={payload.columns}
+                                                              data={payload.rows}
+                                                              title={""}
+                                                              tableHeight={height - 5}
+                                                              tableWidth={'auto'}
+                                                              mapVM={props.mapVM}/>
 
 
-                                    mapBoxRef.current?.setContent(table);
-                                } else {
+                                        mapBoxRef.current?.setContent(table);
+                                    } else {
+                                        mapBoxRef.current?.closeBottomDrawer()
+                                        props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
+                                    }
+                                })
+                                .catch(() => {
                                     mapBoxRef.current?.closeBottomDrawer()
                                     props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
-                                }
-                            })
-                            .catch(() => {
-                                mapBoxRef.current?.closeBottomDrawer()
-                                props.mapVM.getSnackbarRef()?.current?.show("No attribute found")
-                            });
+                                });
+                        }
                     } else {
                         mapBoxRef.current?.closeBottomDrawer()
                     }

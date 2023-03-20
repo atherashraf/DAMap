@@ -45,7 +45,16 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.props.mapVM.refreshMap();
     }
 
-    openBottomDrawer(height: number, contents: JSX.Element = <CircularProgress/>) {
+    openBottomDrawer(height: number, contents: JSX.Element = null) {
+        if (!contents) {
+            contents = <div style={{
+                display: 'flex', position: "relative",
+                top: "50%", margin: "0px", padding: "0px",
+                justifyContent: 'center', height: "100%"
+            }}>
+                <CircularProgress color="secondary"/>
+            </div>
+        }
         // height = this.state.drawerHeight == 0 ? height : 0;
         // const display = this.state.drawerHeight == 0 ? "none" : "block";
         // contents = contents ? contents : <React.Fragment/>

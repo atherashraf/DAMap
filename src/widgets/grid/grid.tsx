@@ -2,7 +2,6 @@ import * as React from "react";
 import JqxGrid, {IGridProps, jqx} from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
 import {Column, Row} from "../../data-grid/TypeDeclaration";
 import MapVM from "../../ol-map/models/MapVM";
-import GridToolbar from "./toolbar";
 
 
 interface DataGridProps {
@@ -16,43 +15,75 @@ interface DataGridProps {
 
 class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
     private myGrid = React.createRef<JqxGrid>();
-    private gridToolbar = new GridToolbar(this.myGrid, this.props.mapVM);
+
+    // private gridToolbar = new GridToolbar(this.myGrid, this.props.mapVM);
 
     constructor(props: DataGridProps) {
         super(props);
+        if (this.props.data.length > 0) {
+            const columns = [];
+            const dataFields = [];
+            const data = this.props.data;
+            this.props.columns.forEach((col) => {
+                let dataKey = col.id
+                // problematic columns updating key of data
+                const errorFields = ["group"]
 
-        const columns = [];
-        props.columns.forEach((col) => {
-            columns.push({
-                text: col.label,
-                aligh: col.type == "string" ? "left" : "center",
-                datafield: col.id,
-                width: col.type == "string" ? 200 : 80
-            })
-        })
+                if (errorFields.includes(dataKey)) {
+                    const newKey = dataKey + "_x";
+                    data.map(({dataKey: newKey, ...rest}) => ({
+                        newKey,
+                        ...rest
+                    }));
+                    dataKey = newKey
+                }
+                // column model
+                columns.push({
+                    text: col.label,
+                    cellsalign: col.type == "string" ? "left" : "right",
+                    datafield: dataKey,
+                    width: col.type == "string" ? 200 : 80
+                })
+                //data field
+                dataFields.push({
+                    name: dataKey,
+                    type: col.type
+                })
 
-        this.state = {
-            width: "100%",
-            height: this.props.tableHeight + "px",
-            columns: columns,
-            source: this.getAdapter(),
-            rendertoolbar: this.gridToolbar.renderToolbar
+            });
+            this.state = {
+                width: "100%",
+                height: this.props.tableHeight + "px",
+                columns: columns,
+                source: this.getAdapter(dataFields, data),
+                // rendertoolbar: this.gridToolbar.renderToolbar
+            }
         }
     }
 
-    getAdapter(): any {
+    getAdapter(dataFields, data): any {
         const source: any = {
-            datatype: "array",
-            localdata: this.props.data
+            datatype: "json",
+            datafields: dataFields,
+            localdata: data,
+            // async: false,
+
         }
-        return new jqx.dataAdapter(source)
+        return new jqx.dataAdapter(source, {
+            autoBind: true,
+        })
     }
 
-    public componentDidMount() {
-        setTimeout(() => {
-            this.gridToolbar.createButtons();
-        });
+    componentDidCatch(error, errorInfo) {
+        // You can also log the error to an error reporting service
+        console.log(error, errorInfo);
     }
+
+    // public componentDidMount() {
+    //     setTimeout(() => {
+    //         // this.gridToolbar.createButtons();
+    //     });
+    // }
 
 
     render() {
@@ -68,6 +99,8 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
                     filterable={true}
                     sortable={true}
                     pageable={true}
+                    groupable={false}
+                    columnsresize={true}
                     selectionmode={"singlerow"}
                     showtoolbar={true}
                     rendertoolbar={this.state.rendertoolbar}
