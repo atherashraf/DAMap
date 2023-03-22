@@ -1,14 +1,13 @@
 import * as React from "react";
 import {IControlProps} from "../../TypeDeclaration";
 import {IconButton, Tooltip} from "@mui/material";
-import LayerSwitcher from "../LayerSwitcher";
+import LayerSwitcherPaper from "../LayerSwitcher/LayerSwitcherPaper";
 import LayersIcon from '@mui/icons-material/Layers';
 
 const LayerSwitcherControl = (props: IControlProps) => {
     // const {drawerRef} = props
     const handleClick = () => {
-        console.log("click working...", props.drawerRef);
-        props.drawerRef?.current?.addContents(<LayerSwitcher mapVM={props.mapVM}/>)
+        props.drawerRef?.current?.addContents(<LayerSwitcherPaper mapVM={props.mapVM}/>)
         props.drawerRef?.current?.toggleDrawer()
         props.mapVM.refreshMap();
     }

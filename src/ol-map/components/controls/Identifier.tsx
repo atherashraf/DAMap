@@ -7,7 +7,6 @@ import IdentifyResult from "../IdentifyResult";
 
 const Identifier = (props: IControlProps) => {
     const handleClick = () => {
-        console.log("click working...", props.drawerRef);
         props.drawerRef?.current?.addContents(<IdentifyResult mapVM={props.mapVM}/>)
         props.drawerRef?.current?.toggleDrawer()
         props.mapVM.refreshMap();

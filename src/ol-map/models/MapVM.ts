@@ -1,6 +1,5 @@
 import 'ol/ol.css';
 import 'ol-ext/dist/ol-ext.css'
-// import '../static/css/LayerSwitcher.css'
 // @ts-ignore
 import RedPinIcon from "../static/img/red_pin_icon_16.png"
 
@@ -10,7 +9,6 @@ import View from 'ol/View';
 
 import {defaults as defaultControls, FullScreen} from 'ol/control';
 import BaseLayers from "../layers/BaseLayers";
-import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
@@ -20,8 +18,7 @@ import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
-import MapPanel from "../components/MapPanel";
-import '../static/css/custom_layerswitcher.css';
+import MapPanel from "../components/MapPanel";;
 import Legend from "ol-ext/legend/Legend";
 import {Group} from "ol/layer";
 import RasterTileLayer from "../layers/RasterTileLayer";
@@ -170,52 +167,6 @@ class MapVM {
         // this.getMap().addControl(sidebar);
     }
 
-    addLayerSwitcher(target: HTMLElement) {
-        let lswitcher = new LayerSwitcher({
-            // target:$(".layerSwitcher").get(0),
-            target: target,
-            // displayInLayerSwitcher: function (l) { return false; },
-            show_progress: true,
-            // extent: true,
-            // trash: true,
-            // oninfo: function (l) { alert(l.get("title")); }
-        });
-        lswitcher.on('drawlist', function (e) {
-            let layer = e.layer;
-            if (!(layer instanceof Group) && !(layer.get('baseLayer'))) {
-                if (layer.hasOwnProperty('legend')) {
-                    //@ts-ignore
-                    layer.legend['graphic'].render(e.li);
-                } else {
-                    //@ts-ignore
-                    let features = [];
-                    //@ts-ignore
-                    if (layer.getSource() instanceof VectorTileSource) {
-                        //@ts-ignore
-                        let tileGrid = layer.getSource().getTileGrid();
-                        //@ts-ignore
-                        features = layer.getSource().getFeaturesInExtent(tileGrid.getExtent());
-                    }
-                    if (features && features.length > 0) {
-                        let gType = features[0].getGeometry().getType()
-                        //@ts-ignore
-                        let img = Legend.getLegendImage({
-                            /* given a style  and a geom type*/
-                            //@ts-ignore
-                            style: layer.getStyle(),
-                            typeGeom: gType
-
-                        });
-                        e.li.appendChild(img)
-
-                    }
-
-                }
-            }
-            // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)
-        })
-        this.map.addControl(lswitcher)
-    }
 
     setTarget(target: string) {
         this.map.setTarget(target);
@@ -282,6 +233,7 @@ class MapVM {
         const vectorLayer = new VectorLayer({
             // @ts-ignore
             title: title,
+            displayInLayerSwitcher: false,
             source: new VectorSource(),
             style: function (feature) {
                 return me.getSelectStyle(feature)

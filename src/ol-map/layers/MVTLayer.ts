@@ -20,6 +20,7 @@ class MVTLayer extends AbstractDALayer {
             //@ts-ignore
             name: uuid,
             title: title,
+            show_progress: true,
             visible: true,
             source: this.getDataSource(),
             style: this.styleFunction.bind(me),

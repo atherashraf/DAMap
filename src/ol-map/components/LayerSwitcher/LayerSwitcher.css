@@ -1,0 +1,12 @@
+
+.ol-layerswitcher .panel  > li {
+    border: 3px solid #17176255;
+    padding:1px;
+    /*margin:2px;*/
+}
+
+
+.ol-layerswitcher .panel li label span {
+    color: black !important;
+
+}
