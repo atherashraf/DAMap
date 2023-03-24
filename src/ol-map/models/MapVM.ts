@@ -2,11 +2,8 @@ import 'ol/ol.css';
 import 'ol-ext/dist/ol-ext.css'
 // @ts-ignore
 import RedPinIcon from "../static/img/red_pin_icon_16.png"
-
 import Map from 'ol/Map';
 import View from 'ol/View';
-
-
 import {defaults as defaultControls, FullScreen} from 'ol/control';
 import BaseLayers from "../layers/BaseLayers";
 import MapToolbar from "../components/MapToolbar";
@@ -18,14 +15,13 @@ import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
-import MapPanel from "../components/MapPanel";;
-import Legend from "ol-ext/legend/Legend";
-import {Group} from "ol/layer";
+import MapPanel from "../components/MapPanel";
+import Legend from "ol-ext/control/Legend";
+import ol_legend_Legend from "ol-ext/legend/Legend";
 import RasterTileLayer from "../layers/RasterTileLayer";
 import MapControls from "../layers/MapControls";
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from "ol/source/Vector";
-import VectorTileSource from "ol/source/VectorTile";
 import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
@@ -62,6 +58,7 @@ class MapVM {
     public readonly api: MapApi;
     private readonly isDesigner: boolean;
     private fullScreen: FullScreen;
+    legendPanel: any = null;
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -71,6 +68,7 @@ class MapVM {
         this.fullScreen.on('enterfullscreen', this.handleFullScreen.bind(this))
         this.fullScreen.on('leavefullscreen', this.handleFullScreen.bind(this))
         this.mapControls = new MapControls(this);
+
     }
 
     handleFullScreen() {
@@ -104,10 +102,36 @@ class MapVM {
             });
         }
         this.addSidebarController();
-        // this.addLayerSwitcher(null)
         this.isInit = true;
         this.addSelectionLayer();
+        this.addLegendControlToMap()
     }
+
+    addLegendControlToMap() {
+        // Define a new legend
+        this.legendPanel = new ol_legend_Legend({
+            title: 'Legend',
+            // margin: 5,
+            maxHeight: 100,
+            //maxWidth: 100
+        });
+        let legendCtrl = new Legend({
+            legend: this.legendPanel,
+            // collapsed: true
+        });
+        this.map.addControl(legendCtrl);
+    }
+
+    isLegendItemExist(legend, title) {
+        let items = legend.getItems().getArray();
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].get('title') === title) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     setMapFullExtent(extent: number[]) {
         this.mapExtent = extent
@@ -148,7 +172,7 @@ class MapVM {
         this._layerOfInterest = value;
         const mapBoxRef = this.getMapPanelRef();
         let open = mapBoxRef.current?.isBottomDrawerOpen();
-        if(open){
+        if (open) {
             mapBoxRef.current?.closeBottomDrawer()
         }
     }
@@ -166,7 +190,6 @@ class MapVM {
         // let sidebar: Sidebar = new Sidebar({element: 'sidebar', position: 'right'});
         // this.getMap().addControl(sidebar);
     }
-
 
     setTarget(target: string) {
         this.map.setTarget(target);

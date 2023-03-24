@@ -13,6 +13,7 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from 'ol/source/XYZ'
 
 
+
 class AbstractDALayer {
     dataSource: VectorTileSource | XYZ
     layer: VectorLayer<any> | VectorTileLayer | TileLayer<any>;

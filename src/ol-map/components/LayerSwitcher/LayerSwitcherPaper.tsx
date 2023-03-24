@@ -3,7 +3,6 @@ import * as React from "react"
 import MapVM from "../../models/MapVM";
 import "./LayerSwitcher.css";
 import {Group} from "ol/layer";
-import VectorTileSource from "ol/source/VectorTile";
 import Legend from "ol-ext/legend/Legend";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 // import Legend from "./legend/Legend"
@@ -27,50 +26,26 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     }, [])
     const addLayerSwitcher = (target: HTMLElement) => {
         let lswitcher = new LayerSwitcher({
-            // target:$(".layerSwitcher").get(0),
             target: target,
+            tipLabel: 'Legend', // Optional label for button
+            groupSelectStyle: 'children',
             // displayInLayerSwitcher: function (l) { return false; },
             show_progress: true,
+            selection: true,
             extent: true,
-            // trash: true,
-            oninfo: function (l) { alert(l.get("title")); }
+            trash: true,
+            // oninfo: function (l) // alert(l.get("title")); }
         });
         //@ts-ignore
-        lswitcher.on('drawlist', function (e: any) {
+        lswitcher.on('drawlist', function (e) {
             let layer = e.layer;
             if (!(layer instanceof Group) && !(layer.get('baseLayer'))) {
-                if (layer.hasOwnProperty('legend')) {
-                    //@ts-ignore
+                if (layer.hasOwnProperty('legend') && layer.legend['sType'] === 'sld') {
                     layer.legend['graphic'].render(e.li);
                 } else {
-                    //@ts-ignore
-                    let features = [];
-                    //@ts-ignore
-                    if (layer.getSource() instanceof VectorTileSource) {
-                        //@ts-ignore
-                        let tileGrid = layer.getSource().getTileGrid();
-                        //@ts-ignore
-                        features = layer.getSource().getFeaturesInExtent(tileGrid.getExtent());
-                    }
-                    if (features && features.length > 0) {
-                        let gType = features[0].getGeometry().getType()
-                        //@ts-ignore
-                        let img = Legend.getLegendImage({
-                            /* given a style  and a geom type*/
-                            //@ts-ignore
-                            style: layer.getStyle(),
-                            typeGeom: gType,
-                            // size:[32,16],
-                            // margin: 5,
-
-                        });
-                        // console.log("img",img)
-                        // img.width = img.width/2
-                        // img.height = image.height/2
-                        e.li.appendChild(img)
-
-                    }
-
+                    const li = document.createElement("li");
+                    e.li.appendChild(li);
+                    e.li.appendChild(layer.legend['graphic']);
                 }
             }
             // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)

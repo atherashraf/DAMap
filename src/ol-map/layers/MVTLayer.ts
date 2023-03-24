@@ -6,6 +6,7 @@ import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {IGeomStyle, IRule} from "../TypeDeclaration";
 import SLDStyleParser from "./styling/SLDStyleParser";
+import ol_legend_Legend from "ol-ext/legend/Legend";
 
 
 /*****
@@ -26,7 +27,33 @@ class MVTLayer extends AbstractDALayer {
             style: this.styleFunction.bind(me),
             declutter: true
         });
+        this.setSlDStyleAndLegendToLayer()
+    }
 
+    setSlDStyleAndLegendToLayer() {
+        const type = this.style?.type || ""
+        let lyr = this.layer;
+        if (type === 'sld') {
+            let sldObj = new SLDStyleParser(this)
+            sldObj.convertSLDTextToOL(this.style["style"], lyr)
+        } else {
+            this.addLegendGraphic(lyr)
+        }
+    }
+
+    addLegendGraphic(layer) {
+        //@ts-ignore
+        this.mapVM.legendPanel.addItem({
+            title: layer.get('title'),
+            typeGeom: this.layerInfo.geomType,
+            style: layer.getStyle()
+        });
+        let img = ol_legend_Legend.getLegendImage({
+            style: layer.getStyle(),
+            typeGeom: this.layerInfo.geomType
+        });
+        layer.legend = {sType: 'ol', graphic: img}
+        this.mapVM.legendPanel.refresh()
     }
 
     getDataSource(): VectorTileSource {
@@ -34,7 +61,7 @@ class MVTLayer extends AbstractDALayer {
         return super.getDataSource();
     }
 
-    getFeature(id){
+    getFeature(id) {
 // ````    this.layer.
     }
 
@@ -82,6 +109,7 @@ class MVTLayer extends AbstractDALayer {
 
 
     styleFunction(feature: Feature, resolution: number) {
+        let me = this;
         let style: IGeomStyle;
         let rules: IRule[]
         let properties: any
@@ -114,9 +142,14 @@ class MVTLayer extends AbstractDALayer {
                 });
                 break;
             case "sld":
-                if (!this.layer.hasOwnProperty('legend')) {
-                    new SLDStyleParser(this)
-                }
+                // let layer = this.layer;
+                // let prop = this.layer.getProperties()
+                // if (prop.hasOwnProperty('sldStyle')) {
+                //     let sldStyle = prop.sldStyle
+                //
+                //     // let k = new SLDStyleParser(this)
+                //     // console.log(prop.sldStyle)
+                // }
                 break;
             default:
                 break;

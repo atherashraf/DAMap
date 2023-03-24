@@ -47,6 +47,9 @@ class MapControls {
             let vectorSource = mapVm.getSelectionLayer().getSource();
             vectorSource.clear();
             let feature = features[0];
+            if(feature['layer_name'] ==="weather_data"){
+                feature =feature.getProperties().features[0]
+            }
             let gType = feature.getGeometry().getType()
             if (gType === 'Polygon' && feature.flatCoordinates_) {
                 const inflatedCoordinates = inflateCoordinatesArray(
@@ -75,7 +78,9 @@ class MapControls {
             }
             // alert(row || '&nbsp');
             me.showJsonDataInHTMLTable(feature.getProperties(), 'v', targetElem);
-            me.getFeatureDetailFromDB(feature, mapVm, targetElem);
+            if(feature.hasOwnProperty('layer_name')){
+                me.getFeatureDetailFromDB(feature, mapVm, targetElem);
+            }
         } else {
             // alert('&nbsp;');
         }
