@@ -1,7 +1,7 @@
 import * as React from "react";
 import {createRoot} from "react-dom/client";
-import MapView from "./ol-map/containers/MapView";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
+import App from "./App";
 
 
 const theme = createTheme({
@@ -24,8 +24,10 @@ const isDesigner = (elem.getAttribute("isDesigner") == 'true')
 const root = createRoot(elem)
 
 
+
+
+
 root.render(<ThemeProvider theme={theme}>
-    <MapView uuid={uuid} isMap={isMap} isDesigner={isDesigner}/>
-    {/*<DAGrid />*/}
+    <App uuid={uuid} isMap={isMap} isDesigner={isDesigner}/>
 </ThemeProvider>);
 

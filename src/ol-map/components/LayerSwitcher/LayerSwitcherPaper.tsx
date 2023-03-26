@@ -45,7 +45,9 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                 } else {
                     const li = document.createElement("li");
                     e.li.appendChild(li);
-                    e.li.appendChild(layer.legend['graphic']);
+                    if (layer && layer.legend && layer?.legend['graphic'] !== 'undefined') {
+                        e.li.appendChild(layer?.legend['graphic']);
+                    }
                 }
             }
             // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)

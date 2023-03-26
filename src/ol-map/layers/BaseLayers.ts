@@ -10,7 +10,8 @@ import {ILayerSources, ILayerSourcesInfo} from "../TypeDeclaration";
 class BaseLayers {
     private mapVM: MapVM;
     private readonly layersSources: ILayerSources;
-
+    private attributions =
+        '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM;
         this.layersSources = {
@@ -63,6 +64,7 @@ class BaseLayers {
             //@ts-ignore
             title: info.title,
             visible: info.visible,
+            attributions: this.attributions,
             // @ts-ignore
             baseLayer: true,
             source: new OSM({
@@ -77,6 +79,7 @@ class BaseLayers {
             title: info.title,
             visible: info.visible,
             preload: Infinity,
+            attributions: this.attributions,
             // @ts-ignore
             baseLayer: true,
             source: new BingMaps({

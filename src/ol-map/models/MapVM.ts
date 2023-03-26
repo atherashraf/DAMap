@@ -345,10 +345,23 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
-    addOverlayLayer(layer: any, title: string) {
-        // @ts-ignore
-        this.overlayLayers[title] = layer
+    addOverlayLayer(layer: any, key=null) {
+        const title =layer.get('title')
+        if(!key)
+            key = title
+        if(!title || key != title)
+            layer.set('title', key);
+        this.overlayLayers[key] = layer
         this.map.addLayer(layer)
+    }
+    removeOverlayLayer(layerTitle: string) {
+        if(this.overlayLayers[layerTitle] !== 'undefined') {
+            console.log("before delete", this.overlayLayers)
+            const lyr = this.overlayLayers[layerTitle];
+            this.map.removeLayer(lyr);
+            delete this.overlayLayers[layerTitle];
+            console.log("after delete", this.overlayLayers)
+        }
     }
 
     //
