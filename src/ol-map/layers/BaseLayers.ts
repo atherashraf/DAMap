@@ -64,10 +64,10 @@ class BaseLayers {
             //@ts-ignore
             title: info.title,
             visible: info.visible,
-            attributions: this.attributions,
             // @ts-ignore
             baseLayer: true,
             source: new OSM({
+                attributions: this.attributions,
                 wrapX: false,
             }),
         });
@@ -79,7 +79,6 @@ class BaseLayers {
             title: info.title,
             visible: info.visible,
             preload: Infinity,
-            attributions: this.attributions,
             // @ts-ignore
             baseLayer: true,
             source: new BingMaps({

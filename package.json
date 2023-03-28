@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.0.28",
+  "version": "0.0.31",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^2.2.0",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "babel-loader": "^8.2.5",
@@ -54,8 +55,8 @@
     "highcharts-3d": "^0.1.7",
     "highcharts-react-official": "^3.1.0",
     "jqwidgets-scripts": "^16.0.0",
-    "ol": "^7.2.2",
-    "ol-ext": "^4.0.4",
+    "ol": "^7.3.0",
+    "ol-ext": "^4.0.6",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",

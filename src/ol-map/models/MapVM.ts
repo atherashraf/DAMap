@@ -10,7 +10,7 @@ import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {RefObject} from "react";
-import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
+import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo, IGeoJSON} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
@@ -26,6 +26,7 @@ import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
+import IDWLayer from "../layers/IDWLayer";
 
 
 export interface IDALayers {
@@ -345,53 +346,47 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
-    addOverlayLayer(layer: any, key=null) {
-        const title =layer.get('title')
-        if(!key)
-            key = title
-        if(!title || key != title)
-            layer.set('title', key);
-        this.overlayLayers[key] = layer
-        this.map.addLayer(layer)
-    }
-    removeOverlayLayer(layerTitle: string) {
-        if(this.overlayLayers[layerTitle] !== 'undefined') {
-            console.log("before delete", this.overlayLayers)
-            const lyr = this.overlayLayers[layerTitle];
-            this.map.removeLayer(lyr);
-            delete this.overlayLayers[layerTitle];
-            console.log("after delete", this.overlayLayers)
+    addOverlayLayer(layer: any, title = null, key = null) {
+        if(title) {
+            layer.set('title', title)
+        }
+        if (!key)
+            key = MapVM.generateUUID()
+        layer.set('name', key);
+        if (typeof layer?.setAttributions === "function") {
+            layer.setAttributions(`Digital Arz Layer ${layer.get('title')}`)
+        }
+        if (!(key in this.overlayLayers)) {
+            this.overlayLayers[key] = layer
+            this.map.addLayer(layer)
         }
     }
 
-    //
-    // selectFeature(id: any) {
-    //     // console.log("feature " + id)
-    //     // @ts-ignore
-    //     const layer = this.overlayLayers["project_location"]
-    //     const source = layer.getSource()
-    //     const feature = source.getFeatures().find((feature: Feature) => {
-    //         const properties = feature.getProperties()
-    //         if (properties.id === id)
-    //             return feature
-    //     })
-    //     // this.flash(feature)
-    //     const sel_source = this.getSelectionLayer().getSource()
-    //     sel_source.addFeature(feature)
-    //
+    getOverlayLayerUUID(lyr){
+        return lyr.get('name')
+    }
+    isOverlayLayerExist(uuid){
+        return (uuid in this.overlayLayers);
+    }
+    removeOverlayLayer(uuid: string) {
+        if (uuid in this.overlayLayers) {
+            const lyr = this.overlayLayers[uuid];
+            this.map.removeLayer(lyr);
+            delete this.overlayLayers[uuid];
+        }
+    }
+
+    // addInterpolationSurface(title: string, data: IGeoJSON, fieldName: string, aoi: IGeoJSON = null) {
+    //     const uuid = MapVM.generateUUID();
+    //     this.daLayers[uuid] = new IDWLayer(uuid, title, data, fieldName, aoi)
     // }
     //
-    // clearSelectedFeatures() {
-    //     const source = this.getSelectionLayer().getSource()
-    //     source.clear()
-    // }
-    //
-    // zoomToSelectedFeatures() {
-    //     const layer = this.getSelectionLayer()
-    //     const extent = buffer(layer.getSource().getExtent(), 20 * 1000)
-    //     // @ts-ignore
-    //     extent && this.map.getView().fit(extent, this.map.getSize());
-    //
+    // updateIDWLayer(propertyName: string) {
+    //     if (this.interpolationLayer) {
+    //         this.mapVM.getMap().removeLayer(this.interpolationLayer)
+    //     }
+    //     this.createIDWLayer(propertyName)
+    //     this.addIDWLayer()
     // }
 
     async addDALayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
@@ -431,6 +426,52 @@ class MapVM {
 
         this.addDrawInteraction("Polygon", target);
     }
+
+    static generateUUID() { // Public Domain/MIT
+        let d = new Date().getTime();//Timestamp
+        let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            let r = Math.random() * 16;//random number between 0 and 16
+            if (d > 0) {//Use timestamp until depleted
+                r = (d + r) % 16 | 0;
+                d = Math.floor(d / 16);
+            } else {//Use microseconds since page-load if supported
+                r = (d2 + r) % 16 | 0;
+                d2 = Math.floor(d2 / 16);
+            }
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    }
+
+    //
+    // selectFeature(id: any) {
+    //     // console.log("feature " + id)
+    //     // @ts-ignore
+    //     const layer = this.overlayLayers["project_location"]
+    //     const source = layer.getSource()
+    //     const feature = source.getFeatures().find((feature: Feature) => {
+    //         const properties = feature.getProperties()
+    //         if (properties.id === id)
+    //             return feature
+    //     })
+    //     // this.flash(feature)
+    //     const sel_source = this.getSelectionLayer().getSource()
+    //     sel_source.addFeature(feature)
+    //
+    // }
+    //
+    // clearSelectedFeatures() {
+    //     const source = this.getSelectionLayer().getSource()
+    //     source.clear()
+    // }
+    //
+    // zoomToSelectedFeatures() {
+    //     const layer = this.getSelectionLayer()
+    //     const extent = buffer(layer.getSource().getExtent(), 20 * 1000)
+    //     // @ts-ignore
+    //     extent && this.map.getView().fit(extent, this.map.getSize());
+    //
+    // }
 }
 
 export default MapVM;

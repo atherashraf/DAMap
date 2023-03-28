@@ -10,13 +10,15 @@ import VectorTileSource from "ol/source/VectorTile";
 import {IFeatureStyle, IGeomStyle, ILayerInfo} from "../TypeDeclaration";
 import {getPointShapes} from "../components/styling/forms/symbolizer/PointSymbolizer";
 import TileLayer from "ol/layer/Tile";
+import ImageLayer from "ol/layer/Image"
 import XYZ from 'ol/source/XYZ'
+import VectorSource from "ol/source/Vector";
 
 
 
 class AbstractDALayer {
-    dataSource: VectorTileSource | XYZ
-    layer: VectorLayer<any> | VectorTileLayer | TileLayer<any>;
+    dataSource: any
+    layer: VectorLayer<any> | VectorTileLayer | TileLayer<any> | ImageLayer<any>;
     layerInfo: ILayerInfo;
     style: IFeatureStyle;
     mapVM: MapVM;
@@ -33,6 +35,7 @@ class AbstractDALayer {
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
     }
+
 
     async getExtent(): Promise<number[]> {
         if (!this.extent) {

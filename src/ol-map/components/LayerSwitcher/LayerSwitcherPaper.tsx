@@ -27,18 +27,17 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     const addLayerSwitcher = (target: HTMLElement) => {
         let lswitcher = new LayerSwitcher({
             target: target,
-            tipLabel: 'Legend', // Optional label for button
-            groupSelectStyle: 'children',
-            // displayInLayerSwitcher: function (l) { return false; },
+            // tipLabel: 'Legend', // Optional label for button
+            // groupSelectStyle: 'children',
             show_progress: true,
-            selection: true,
-            extent: true,
+            // selection: true,
+            // extent: true,
             trash: true,
             // oninfo: function (l) // alert(l.get("title")); }
         });
         //@ts-ignore
         lswitcher.on('drawlist', function (e) {
-            let layer = e.layer;
+            const layer : any = e.layer;
             if (!(layer instanceof Group) && !(layer.get('baseLayer'))) {
                 if (layer.hasOwnProperty('legend') && layer.legend['sType'] === 'sld') {
                     layer.legend['graphic'].render(e.li);

@@ -50,7 +50,10 @@ class MVTLayer extends AbstractDALayer {
         });
         let img = ol_legend_Legend.getLegendImage({
             style: layer.getStyle(),
-            typeGeom: this.layerInfo.geomType
+            typeGeom: this.layerInfo.geomType[0],
+            title: "",
+            className: "",
+            textStyle: null
         });
         layer.legend = {sType: 'ol', graphic: img}
         this.mapVM.legendPanel.refresh()
@@ -70,6 +73,7 @@ class MVTLayer extends AbstractDALayer {
         this.dataSource = new VectorTileSource({
             format: new MVT(),
             url: `${url}{z}/{x}/{y}`,
+            attributions: "Digital Arz MVT Layer",
             tileLoadFunction: (tile, url) => {
                 const z = tile.tileCoord[0];
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]

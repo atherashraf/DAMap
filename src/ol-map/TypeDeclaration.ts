@@ -49,10 +49,11 @@ export interface ILayerInfo {
     title?: string
     uuid: string
     style?: IFeatureStyle
-    zoomRange: number[]
-    geomType: string[]
-    dataModel: string
+    zoomRange?: number[]
+    geomType?: string[]
+    dataModel?: string
     category?: string
+    data?: IData
 }
 
 export interface IMapInfo {
@@ -93,4 +94,19 @@ export interface IRule {
     filter?: IFilter
     style: IGeomStyle
 
+}
+
+export interface IGeoJSON {
+    type: string
+    features: IGeoJSONFeature[],
+    crs? : any
+}
+export interface IGeoJSONFeature{
+    type: string
+    geometry: any
+    properties: any
+}
+
+export interface IData {
+    [key: string]: any
 }
