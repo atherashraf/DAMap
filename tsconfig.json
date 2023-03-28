@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "module": "esnext",
+//    "sourceMap": true,
     "target": "es6",
-    "jsx": "preserve",
+    "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
+//    "allowSyntheticDefaultImports": true,
     "outDir": "./lib",
-    "strict": false,
-    "declaration": true,
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "declaration": true,
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]
