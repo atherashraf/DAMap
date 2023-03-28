@@ -264,7 +264,7 @@ class MapVM {
             },
             zIndex: 1000
         });
-        this.addOverlayLayer(vectorLayer, title)
+        this.addOverlayLayer(vectorLayer, title, title)
     }
 
 
