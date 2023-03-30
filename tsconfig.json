@@ -10,11 +10,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "declaration": true,
+    "declaration": false,
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["src"],

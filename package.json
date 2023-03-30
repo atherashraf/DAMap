@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.0.35",
+  "version": "0.0.37",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.3.1",
+    "ts-standard": "^12.0.2",
     "tslint": "^6.1.3",
     "typescript": "^4.7.4",
     "webpack": "^5.74.0",
@@ -62,5 +63,8 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-router-dom": "^6.5.0"
+  },
+  "ts-standard": {
+    "project": "./tsconfig.json"
   }
 }
