@@ -43,16 +43,14 @@ class MVTLayer extends AbstractDALayer {
 
     addLegendGraphic(layer) {
         //@ts-ignore
-        this.mapVM.legendPanel.addItem({
-            title: layer.get('title'),
-            typeGeom: this.layerInfo.geomType,
-            style: layer.getStyle()
-        });
+        // this.mapVM.legendPanel.addItem({
+        //     title: layer.get('title'),
+        //     typeGeom: this.layerInfo.geomType,
+        //     style: layer.getStyle()
+        // });
         let img = ol_legend_Legend.getLegendImage({
             style: layer.getStyle(),
             typeGeom: this.layerInfo.geomType[0],
-            title: "",
-            className: "",
             textStyle: null
         });
         layer.legend = {sType: 'ol', graphic: img}
@@ -68,11 +66,32 @@ class MVTLayer extends AbstractDALayer {
 // ````    this.layer.
     }
 
+    getDataURL() {
+        let apiURL, params;
+        if (this.layerInfo.dataURL) {
+            apiURL = this.layerInfo.dataURL
+        } else {
+            apiURL = MapAPIs.DCH_LAYER_MVT
+        }
+        return MapApi.getURL(apiURL, {uuid: this.layerInfo.uuid})
+    }
+
+    setAdditionalUrlParams(params: string) {
+        const url = this.getDataURL();
+        super.setAdditionalUrlParams(params);
+        const source: VectorTileSource = this.layer.getSource();
+        source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}`);
+    }
+
+    refreshLayer() {
+        this.mapVM.refreshMap()
+    }
+
     setDataSource() {
-        const url = MapApi.getURL(MapAPIs.DCH_LAYER_MVT, {uuid: this.layerInfo.uuid})
+        const url = this.getDataURL()
         this.dataSource = new VectorTileSource({
             format: new MVT(),
-            url: `${url}{z}/{x}/{y}`,
+            url: `${url}{z}/{x}/{y}/?${this.urlParams}`,
             attributions: "Digital Arz MVT Layer",
             tileLoadFunction: (tile, url) => {
                 const z = tile.tileCoord[0];

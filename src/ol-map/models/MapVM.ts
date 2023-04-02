@@ -346,7 +346,7 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
-    addOverlayLayer(layer: any, title = null, key = null) {
+    addOverlayLayer(layer: any, title: any = null, key: any = null) {
         if(title) {
             layer.set('title', title)
         }

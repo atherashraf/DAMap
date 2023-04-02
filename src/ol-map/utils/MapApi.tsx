@@ -32,8 +32,20 @@ export default class MapApi {
         this.snackbarRef = snackbarRef
     }
 
+    static getURLKeys(apiURL) {
+        let keys = [],          // an array to collect the strings that are found
+            rxp = /{([^}]+)}/g,
+            curMatch;
+
+        while (curMatch = rxp.exec(apiURL)) {
+            keys.push(curMatch[1]);
+        }
+        return keys;
+    }
+
     static getURL(api: string, params: any = null) {
         const API_URL = process.env.REACT_APP_API_URL;
+        api = api[0] == "/" ? api.substring(1) : api;
         let url = `${API_URL}/${api}`;
         url = url.slice(-1) !== "/" ? url + "/" : url;
         let getParamsCount = 0;

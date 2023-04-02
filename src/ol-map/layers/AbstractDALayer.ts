@@ -25,6 +25,7 @@ class AbstractDALayer {
     uuid: string;
     extent?: number[]
     features: any[];
+    urlParams: string=""
 
     constructor(info: ILayerInfo, mapVM: MapVM) {
         autoBind(this);
@@ -34,6 +35,9 @@ class AbstractDALayer {
         this.style = info && "style" in info && info["style"];
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
+    }
+    setAdditionalUrlParams(params: string){
+        this.urlParams = params
     }
 
 

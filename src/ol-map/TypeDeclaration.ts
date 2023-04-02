@@ -53,7 +53,7 @@ export interface ILayerInfo {
     geomType?: string[]
     dataModel?: string
     category?: string
-    data?: IData
+    dataURL?: string
 }
 
 export interface IMapInfo {
