@@ -49,12 +49,12 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     componentDidMount() {
-        const currentStyle = this.props.mapVM.getDALayer(this.props.layerId)?.style?.style;
-        // console.log(currentStyle)
-        if (currentStyle) {
+        const currentStyle = this.props.mapVM.getDALayer(this.props.layerId)?.style;
+        console.log(currentStyle)
+        if (currentStyle && currentStyle?.type == "density") {
             // const styleList = [{title: "default", style: currentStyle.default}]
             const styleList: IRule[] = []
-            currentStyle.rules?.forEach((rule) => {
+            currentStyle.style.rules?.forEach((rule) => {
                 styleList.push(rule)
             })
             this.setState(() => ({styleList: styleList}))
@@ -101,6 +101,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
                                     filter: filter,
                                     style: this.getGeomStyle(index - 1)
                                 }
+                                // console.log("rules", rule)
                                 styleList.push(rule)
                             }
                         })
@@ -133,49 +134,9 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
 
-    getColor(valueIndex = -1): string {
-        if (valueIndex == -1) {
-            return _.randomColor()
-        } else {
-            // const valueNormalizedIndex = valueIndex / (this.state.noOfClasses - 1);
-            const colors = this.colorRampRef.current.getColors()
-            // console.log("colors", colors)
-
-            const index = valueIndex / (this.state.noOfClasses - 1) * (colors.length - 1);
-            const mod = index % (colors.length - 1)
-            // console.log("normalized values", valueNormalizedIndex, mod)
-            let c;
-            if (mod == 0) {
-                c = colors[index]
-                console.log("color", {
-                    "value Index": valueIndex,
-                    "color index": index, "c": c
-                })
-            } else {
-                const f = Math.floor(index)
-                const x1 = f / (colors.length - 1) * (this.state.noOfClasses - 1)
-                const x2 = (f + 1) / (colors.length - 1) * (this.state.noOfClasses - 1)
-                const rgba1 = _.hex2rgba(colors[f])
-                const rgba2 = _.hex2rgba(colors[f + 1])
-                const r: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.r], [x2, rgba2.r])).toString(16)
-                const g: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.g], [x2, rgba2.g])).toString(16)
-                const b: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.b], [x2, rgba2.b])).toString(16)
-                const a: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.a], [x2, rgba2.a])).toString(16)
-                c = `#${r}${g}${b}${a}`
-                console.log("color", {
-                    "value Index": valueIndex, "color index": index,
-                    "x1": x1, "x2": x2, "y1": f, "y2": f + 1,
-                    "c": c, "c1": colors[f], "c2": colors[f + 1]
-                })
-            }
-
-            return c
-        }
-    }
-
     getGeomStyle(valueIndex = -1): IGeomStyle {
 
-        const color = this.getColor(valueIndex)
+        const color = this.colorRampRef.current?.getColor(valueIndex)
         return {
             pointShape: this.pointSymbolizerRef.current?.getPointSymbolizer().pointShape || "circle",
             pointSize: this.pointSymbolizerRef.current?.getPointSymbolizer().pointSize || 10,
@@ -185,10 +146,19 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
         }
     }
 
-    updateStyleItem(index: number, style: IGeomStyle) {
-        const data = this.state.styleList.map((item: IRule, i: number) => i == index ?
-            Object.assign(item, {style: style}) : item)
-        this.setState(() => ({styleList: data}))
+    // updateStyleItem(index: number, style: IGeomStyle) {
+    //     const data = this.state.styleList.map((item: IRule, i: number) => i == index ?
+    //         Object.assign(item, {style: style}) : item)
+    //     this.setState(() => ({styleList: data}))
+    // }
+    updateStyleItem(index, styleRule: IRule) {
+        this.setState({
+            styleList: [
+                ...this.state.styleList.slice(0, index),
+                Object.assign({}, this.state.styleList[index], styleRule),
+                ...this.state.styleList.slice(index + 1)
+            ]
+        });
     }
 
     render() {
@@ -263,7 +233,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
                 </fieldset>
                 {this.state.styleList.length > 0 &&
                     <LegendGrid styleList={this.state.styleList}
-                                updateStyleItem={this.updateStyleItem}
+                                updateStyleItem={this.updateStyleItem.bind(this)}
                                 mapVM={this.props.mapVM} layerId={this.props.layerId}/>
                 }
             </React.Fragment>

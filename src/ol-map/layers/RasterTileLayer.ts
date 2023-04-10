@@ -31,6 +31,14 @@ class RasterTileLayer extends AbstractDALayer {
         })
         return this.dataSource;
     }
+
+    refreshLayer() {
+        super.refreshLayer();
+        const source = this.getDataSource()
+        // const url = `${MapApi.getURL(MapAPIs.DCH_LAYER_RASTER, {uuid: this.layerInfo.uuid})}{z}/{x}/{y}`
+        source.setTileUrlFunction(source.getTileUrlFunction(), (new Date()).getTime().toLocaleString());
+        source.refresh()
+    }
 }
 
 

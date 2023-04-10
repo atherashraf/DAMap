@@ -9,6 +9,7 @@ interface IState {
     open: boolean
     message: string,
     actions?: JSX.Element
+    autoHideDuration: number
 }
 
 export default class DASnackbar extends React.PureComponent<IProp, IState> {
@@ -16,7 +17,8 @@ export default class DASnackbar extends React.PureComponent<IProp, IState> {
         super(props);
         this.state = {
             open: false,
-            message: ""
+            message: "",
+            autoHideDuration: 6000
         }
     }
 
@@ -32,8 +34,8 @@ export default class DASnackbar extends React.PureComponent<IProp, IState> {
         this.setOpen(false);
     };
 
-    show(message: string, actions: JSX.Element = <React.Fragment/>) {
-        this.setState({message: message, open: true, actions: actions})
+    show(message: string, actions: JSX.Element = <React.Fragment/>, autoHideDuration=6000) {
+        this.setState({message: message, open: true, actions: actions, autoHideDuration: autoHideDuration})
     }
 
     hide() {
@@ -46,7 +48,7 @@ export default class DASnackbar extends React.PureComponent<IProp, IState> {
             <div>
                 <Snackbar
                     open={this.state.open}
-                    autoHideDuration={6000}
+                    autoHideDuration={this.state.autoHideDuration}
                     onClose={this.handleClose.bind(this)}
                     message={this.state.message}
                     // action={this.state.actions}

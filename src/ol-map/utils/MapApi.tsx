@@ -10,6 +10,8 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
     DCH_LAYER_RASTER: "api/dch/raster_tile/{uuid}",
     DCH_SAVE_STYLE: "api/dch/save_style/{uuid}",
+    DCH_SAVE_SLD: "api/dch/upload_sld_style/{uuid}",
+    DCH_GET_STYLE: "api/dch/get_style/{uuid}",
     DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
     DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",
     DCH_LAYER_FIELD_DISTINCT_VALUE: "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",
@@ -18,6 +20,8 @@ export const MapAPIs = Object.freeze({
     DCH_FEATURE_DETAIL: "api/dch/get_feature_detail/{uuid}/{col_name}/{col_val}/",
     DCH_RASTER_AREA: "api/dch/get_raster_area/{uuid}/{geojson_str}",
     DCH_GET_ALL_LAYERS: "api/dch/get_all_layers/",
+    DCH_RASTER_DETAIL: "api/dch/get_raster_info/{uuid}/",
+
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
     // LBDC_DISCHARGE:"https://irrigation.punjab.gov.pk/admin/api/fetch_LBDC_Discharge.php?"

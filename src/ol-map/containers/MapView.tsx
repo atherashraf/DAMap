@@ -67,19 +67,20 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
         } else {
             if (!this.mapVM.isInit) {
                 const info: IMapInfo = {
-                    layers: [{ uuid: this.props.uuid, style: null, visible: true }],
+                    layers: [],
                 }
                 this.mapVM.initMap(info);
+                (async () => {
+                    await this.mapVM.addDALayer({uuid: this.props.uuid})
+                    const extent = await this.mapVM.getDALayer(this.props.uuid).getExtent()
+                    this.mapVM.setMapFullExtent(extent)
+                    this.mapVM.zoomToFullExtent()
+                })();
+                this.mapVM.setLayerOfInterest(this.props.uuid)
+                this.mapVM.setTarget(this.mapDivId);
+                this.mapVM.setDomRef(this.domRefs)
             }
-            (async () => {
-                await this.mapVM.addDALayer({uuid: this.props.uuid})
-                const extent = await this.mapVM.getDALayer(this.props.uuid).getExtent()
-                this.mapVM.setMapFullExtent(extent)
-                this.mapVM.zoomToFullExtent()
-            })();
-            this.mapVM.setLayerOfInterest(this.props.uuid)
-            this.mapVM.setTarget(this.mapDivId);
-            this.mapVM.setDomRef(this.domRefs)
+
         }
     }
 

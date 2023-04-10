@@ -40,6 +40,46 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
         return [...this.state.colors]
     }
 
+    getColor(noOfClasses: number, valueIndex = -1): string {
+
+        if (valueIndex == -1) {
+            return _.randomColor()
+        } else {
+            // const valueNormalizedIndex = valueIndex / (this.state.noOfClasses - 1);
+            const colors = this.getColors()
+
+            const index = valueIndex / (noOfClasses - 1) * (colors.length - 1);
+            const mod = index % (colors.length - 1)
+            // console.log("normalized values", valueNormalizedIndex, mod)
+            let c;
+            if (mod == 0) {
+                c = colors[index]
+                // console.log("color", {
+                //     "value Index": valueIndex,
+                //     "color index": index, "c": c
+                // })
+            } else {
+                const f = Math.floor(index)
+                const x1 = f / (colors.length - 1) * (noOfClasses - 1)
+                const x2 = (f + 1) / (colors.length - 1) * (noOfClasses - 1)
+                const rgba1 = _.hex2rgba(colors[f])
+                const rgba2 = _.hex2rgba(colors[f + 1])
+                const r: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.r], [x2, rgba2.r])).toString(16)
+                const g: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.g], [x2, rgba2.g])).toString(16)
+                const b: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.b], [x2, rgba2.b])).toString(16)
+                const a: string = Math.round(_.linearInterpolation(valueIndex, [x1, rgba1.a], [x2, rgba2.a])).toString(16)
+                c = `#${r}${g}${b}${a}`
+                // console.log("color", {
+                //     "value Index": valueIndex, "color index": index,
+                //     "x1": x1, "x2": x2, "y1": f, "y2": f + 1,
+                //     "c": c, "c1": colors[f], "c2": colors[f + 1]
+                // })
+            }
+
+            return c
+        }
+    }
+
     createColorRamp() {
         // colors = colors ? colors : this.state.colors;
         const {colors} = this.state
@@ -89,7 +129,7 @@ class ColorRamp extends React.PureComponent<IProps, IState> {
             actions: <React.Fragment>
                 <Button key={"add-color"} onClick={this.addColor.bind(this)}>Add Color</Button>
                 <Button key={"create-ramp"} onClick={this.createColorRamp.bind(this)}>Create </Button>
-                <Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>
+                {/*<Button key={"close-ramp"} onClick={dialogRef.current?.closeDialog}>Close </Button>*/}
             </React.Fragment>
         })
     }

@@ -10,7 +10,7 @@ class _ {
 
 
     static hex2rgba = (hex: string) => {
-        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        if (/^#([A-Fa-f0-9]*){1,2}$/.test(hex)) {
             let c = hex.substring(1).split('');
             if (c.length == 3) {
                 c = [c[0], c[0], c[1], c[1], c[2], c[2], 'f', 'f'];

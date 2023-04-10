@@ -6,15 +6,14 @@ import {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
 import {styles} from "./styling/styles";
 import VectorTileLayer from "ol/layer/VectorTile";
-import VectorTileSource from "ol/source/VectorTile";
 import {IFeatureStyle, IGeomStyle, ILayerInfo} from "../TypeDeclaration";
-import {getPointShapes} from "../components/styling/forms/symbolizer/PointSymbolizer";
+import {getPointShapes} from "../components/styling/vector/symbolizer/PointSymbolizer";
 import TileLayer from "ol/layer/Tile";
 import ImageLayer from "ol/layer/Image"
-import XYZ from 'ol/source/XYZ'
-import VectorSource from "ol/source/Vector";
+import SLDStyleParser from "./styling/SLDStyleParser";
+import ol_legend_Legend from "ol-ext/legend/Legend";
 
-
+// import Layer from "ol/layer/Layer"
 
 class AbstractDALayer {
     dataSource: any
@@ -25,7 +24,7 @@ class AbstractDALayer {
     uuid: string;
     extent?: number[]
     features: any[];
-    urlParams: string=""
+    urlParams: string = ""
 
     constructor(info: ILayerInfo, mapVM: MapVM) {
         autoBind(this);
@@ -36,7 +35,58 @@ class AbstractDALayer {
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
     }
-    setAdditionalUrlParams(params: string){
+
+    setSlDStyleAndLegendToLayer() {
+        const type = this.style?.type || ""
+        let lyr = this.layer;
+        if (type === 'sld') {
+            let sldObj = new SLDStyleParser(this)
+            sldObj.convertSLDTextToOL(this.style["style"], lyr)
+        } else {
+            //@ts-ignore
+            lyr.setStyle(this.styleFunction.bind(this))
+            this.addLegendGraphic(lyr)
+        }
+    }
+
+    addLegendGraphic(layer) {
+        //@ts-ignore
+        // this.mapVM.legendPanel.addItem({
+        //     title: layer.get('title'),
+        //     typeGeom: this.layerInfo.geomType,
+        //     style: layer.getStyle()
+        // });
+        let img = ol_legend_Legend.getLegendImage({
+            style: layer.getStyle(),
+            typeGeom: this.layerInfo.geomType[0],
+            textStyle: null
+        });
+        layer.legend = {sType: 'ol', graphic: img}
+        this.mapVM.legendPanel.refresh()
+    }
+
+    setStyle(style: IFeatureStyle) {
+        // this.mapVM.showSnackbar("Updating layer style")
+        this.style = style
+        this.setSlDStyleAndLegendToLayer()
+        this.refreshLayer()
+    }
+
+    updateStyle() {
+        // this.mapVM.showSnackbar("Updating layer style")
+        console.log("layer Info", this.layerInfo)
+        if(this.layerInfo.dataModel=="V") {
+            this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid}).then((payload) => {
+                if (payload) {
+                    this.style = payload
+                    this.setSlDStyleAndLegendToLayer()
+                    this.refreshLayer()
+                }
+            })
+        }
+    }
+
+    setAdditionalUrlParams(params: string) {
         this.urlParams = params
     }
 
@@ -87,7 +137,8 @@ class AbstractDALayer {
     }
 
     refreshLayer() {
-        this.layer.getSource().refresh();
+        this.mapVM.showSnackbar("Refreshing Layer", 11000)
+        // console.log("refreshing layer"
     }
 
     getDataSource() {
@@ -98,10 +149,14 @@ class AbstractDALayer {
         return this.dataSource;
     }
 
-    setStyle(style: IFeatureStyle) {
-        this.style = style;
-        this.refreshLayer();
+    clearAllDataSources(){
+        let source = this.layer.getSource();
+        while(source){
+            source.clear()
+            source = typeof source.getSource === "function"?  source.getSource() : null
+        }
     }
+
 
     createOLStyle(feature: Feature, style: IGeomStyle = null) {
         const geomType = feature.getGeometry().getType();

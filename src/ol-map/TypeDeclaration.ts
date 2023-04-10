@@ -5,10 +5,10 @@ import leftDrawer from "./components/drawers/LeftDrawer";
 import LeftDrawer from "./components/drawers/LeftDrawer";
 import DADialogBox from "./components/common/DADialogBox";
 import DASnackbar from "./components/common/DASnackbar";
-import {pointShapeTypes} from "./components/styling/forms/symbolizer/PointSymbolizer";
+import {pointShapeTypes} from "./components/styling/vector/symbolizer/PointSymbolizer";
 import MapPanel from "./components/MapPanel";
 
-export interface IBaseMapProps{
+export interface IBaseMapProps {
     mapVM: MapVM
     layerId?: string
     mapId?: string
@@ -54,6 +54,7 @@ export interface ILayerInfo {
     dataModel?: string
     category?: string
     dataURL?: string
+    extent3857?: []
 }
 
 export interface IMapInfo {
@@ -73,6 +74,7 @@ export interface IFeatureStyle {
         rules?: IRule[]
     }
 }
+
 
 export interface IGeomStyle {
     pointShape?: typeof pointShapeTypes[number]
@@ -99,9 +101,10 @@ export interface IRule {
 export interface IGeoJSON {
     type: string
     features: IGeoJSONFeature[],
-    crs? : any
+    crs?: any
 }
-export interface IGeoJSONFeature{
+
+export interface IGeoJSONFeature {
     type: string
     geometry: any
     properties: any

@@ -1,5 +1,6 @@
 import {Group, Tile, Vector} from "ol/layer";
 import XYZ from "ol/source/XYZ";
+// @ts-ignore
 import olLegendImage from 'ol-ext/legend/Image';
 // @ts-ignore
 import clouds_new from "../static/img/legends/clouds_new.JPG"
@@ -13,10 +14,10 @@ import GeoJSON from "ol/format/GeoJSON";
 import {Cluster} from "ol/source";
 import {Icon, Style} from "ol/style";
 import VectorSource from "ol/source/Vector";
+import MapVM from "../models/MapVM";
 
 class WeatherLayers {
-    mapVM: null
-    map: null
+    mapVM: MapVM
     weatherLayersGroup = new Group({
         // @ts-ignore
         title: 'Weather Layers',
@@ -24,15 +25,15 @@ class WeatherLayers {
         openInLayerSwitcher: true,
         layers: []
     });
-    weatherLayers = null;
+    weatherLayers : any = null;
     open_weather_map_key = 'e9c0f98767ed96cefc3dd01adf8aacf2'
 
-    constructor(mapVM) {
+    constructor(mapVM: MapVM) {
         this.mapVM = mapVM
-        this.map = mapVM.getMap()
+        // this.map = mapVM.getMap()
     }
 
-    addTileWeatherMap = function (layer_type) {
+    addTileWeatherMap = function (layer_type: string) {
         let me = this;
         let layer_name = me.getLayerName(layer_type)
         if (me.weatherLayers === null) {

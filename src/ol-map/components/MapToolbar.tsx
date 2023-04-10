@@ -44,7 +44,9 @@ class MapToolbar extends Control {
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }
                 <AttributeTable mapVM={mapVM}/>
-                <LOISelector mapVM={mapVM}/>
+                {!optOptions.isDesigner &&
+                    <LOISelector mapVM={mapVM}/>
+                }
 
             </React.Fragment>
         );

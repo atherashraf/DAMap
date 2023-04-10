@@ -44,8 +44,8 @@ export default function AddStyleButton(props: IProps) {
                 open={open}
                 onClose={handleClose}
             >
-                {props.menuList.map((item) =>
-                    <MenuItem onClick={() => item.handleClick()}>
+                {props.menuList.map((item, index) =>
+                    <MenuItem key={"add-button-menu-" + index} onClick={() => item.handleClick()}>
                         {item.name}
                     </MenuItem>
                 )}

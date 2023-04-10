@@ -18,7 +18,6 @@ import PointSymbolizer, {IPointSymbolizerState} from "./symbolizer/PointSymboliz
 import {LegendIcons} from "../atoms/LegendIcons";
 
 
-
 interface IProps extends BaseStyleFormProps {
 
 }
@@ -36,7 +35,7 @@ interface FieldInfo {
 interface IState {
     fields: FieldInfo[],
     fieldValues: string[],
-    selectedField: FieldInfo,
+    selectedField: string,
     selectedValue: string,
     styleList: IRule[],
 }
@@ -71,7 +70,7 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
             this.setState(() => ({styleList: styleList}))
         }
         this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELDS, {uuid: this.props.layerId})
-            .then((payload:any) => {
+            .then((payload: any) => {
                 // console.log("fields", payload)
                 this.setState({fields: payload})
             });
@@ -94,7 +93,7 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
         this.props.mapVM.getApi().get(MapAPIs.DCH_LAYER_FIELD_DISTINCT_VALUE, {
             uuid: this.props.layerId,
             field_name: fieldInfo.name, field_type: fieldInfo.d_type
-        }).then((payload:any) =>
+        }).then((payload: any) =>
             this.setState({fieldValues: payload}))
     }
 
@@ -125,19 +124,19 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     AddStyleItem() {
-        if (!this.state.selectedField) {
+        if (!this.state.selectedField || this.state.selectedField=="") {
             this.props.mapVM.showSnackbar("Please select field")
-        } else if (!this.state.selectedValue) {
+        } else if (!this.state.selectedValue || this.state.selectedValue=="") {
             this.props.mapVM.showSnackbar("Please select value")
         } else {
             const index = this.state.styleList.findIndex((item: IRule) =>
-                item.filter?.field == this.state.selectedField?.name &&
+                item.filter?.field == this.state.selectedField &&
                 item.filter?.value == this.state.selectedValue)
             if (index == -1) {
                 const data: IRule[] = [...this.state.styleList, {
                     title: this.state.selectedValue,
                     filter: {
-                        field: this.state.selectedField.name,
+                        field: this.state.selectedField,
                         op: "==",
                         value: this.state.selectedValue,
                     },
@@ -151,7 +150,7 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     AddAllStyleItem() {
-        if (!this.state.selectedField) {
+        if (!this.state.selectedField || this.state.selectedField=="")  {
             this.props.mapVM.showSnackbar("Please select field")
         } else {
             const styleItems: IRule[] = []
@@ -159,7 +158,7 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
                 styleItems.push({
                     title: value,
                     filter: {
-                        field: this.state.selectedField.name,
+                        field: this.state.selectedField,
                         op: "==",
                         value: value
                     },
@@ -173,9 +172,10 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
             this.setState(() => ({styleList: styleItems}))
         }
     }
-    RemoveAllItems(){
-        const defaultValue = this.state.styleList.filter((item: IRule)=>item.title == "default")
-        this.setState(()=>({styleList:defaultValue}))
+
+    RemoveAllItems() {
+        const defaultValue = this.state.styleList.filter((item: IRule) => item.title == "default")
+        this.setState(() => ({styleList: defaultValue}))
     }
 
     render() {
@@ -198,16 +198,18 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
                             <DASelect
                                 labelId="select-field-label"
                                 id="select-field-select"
-                                value={this.state.selectedField.name}
+                                value={this.state.selectedField}
                                 label="Select Field"
                                 onChange={(e) => {
+                                    //@ts-ignore
                                     this.setState({selectedField: e.target.value})
-                                    this.getFieldName(e.target.value)
+                                    const fieldInfo = this.state.fields.find((item: FieldInfo) => item.name == e.target.value)
+                                    this.getFieldName(fieldInfo)
                                 }}
                             >
                                 {this.state.fields.map((field: any) =>
                                     field.d_type === "string" &&
-                                    <MenuItem key={`${field.name}-key`} value={field}>{field.name}</MenuItem>)}
+                                    <MenuItem key={`${field.name}-key`} value={field.name}>{field.name}</MenuItem>)}
                             </DASelect>
                         </FormControl>
                     </Box>
@@ -255,11 +257,12 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
                             <Table size={"medium"} padding={"none"}>
                                 <TableBody>
                                     {this.state.styleList.map((item: IRule, index: number) =>
-                                        <TableRow>
-                                            <TableCell>{item.title}</TableCell>
-                                            <TableCell>
-                                                <LegendIcons mapVM={this.props.mapVM}
-                                                             updateStyle={this.updateStyleItem.bind(this)}
+                                        <TableRow key={"style-row-" + index}>
+                                            <TableCell key={"style-title-" + index}>{item.title}</TableCell>
+                                            <TableCell key={"style-icon-cell-" + index}>
+                                                <LegendIcons key={"Legend-icon-" + index}
+                                                             mapVM={this.props.mapVM}
+                                                             updateStyle={(style: IGeomStyle) => this.updateStyleItem(index, style)}
                                                              index={index}
                                                              geomType={geomType}
                                                              style={item.style}/>

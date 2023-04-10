@@ -3,6 +3,7 @@ import {Dialog, DialogActions, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import Paper, {PaperProps} from '@mui/material/Paper';
 import Draggable from 'react-draggable';
+import autoBind from "auto-bind";
 
 interface IProps {
 
@@ -35,6 +36,7 @@ function PaperComponent(props: PaperProps) {
 class DADialogBox extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
+        autoBind(this)
         this.state = {
             open: false,
             content: <React.Fragment/>
@@ -72,10 +74,10 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
                                                       id="draggable-dialog-title">{this.state.title}</DialogTitle>}
                     {this.state.content}
                     {this.state.actions && <DialogActions>
+                        {this.state.actions}
                         <Button autoFocus onClick={this.closeDialog.bind(this)}>
                             Close
                         </Button>
-                        {this.state.actions}
                     </DialogActions>}
                 </Dialog>
             </React.Fragment>

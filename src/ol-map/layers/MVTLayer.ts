@@ -4,9 +4,10 @@ import VectorTileSource from "ol/source/VectorTile";
 import AbstractDALayer from "./AbstractDALayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
-import {IGeomStyle, IRule} from "../TypeDeclaration";
+import {IFeatureStyle, IGeomStyle, IRule} from "../TypeDeclaration";
 import SLDStyleParser from "./styling/SLDStyleParser";
 import ol_legend_Legend from "ol-ext/legend/Legend";
+import {intersects} from "ol/extent";
 
 
 /*****
@@ -30,32 +31,7 @@ class MVTLayer extends AbstractDALayer {
         this.setSlDStyleAndLegendToLayer()
     }
 
-    setSlDStyleAndLegendToLayer() {
-        const type = this.style?.type || ""
-        let lyr = this.layer;
-        if (type === 'sld') {
-            let sldObj = new SLDStyleParser(this)
-            sldObj.convertSLDTextToOL(this.style["style"], lyr)
-        } else {
-            this.addLegendGraphic(lyr)
-        }
-    }
 
-    addLegendGraphic(layer) {
-        //@ts-ignore
-        // this.mapVM.legendPanel.addItem({
-        //     title: layer.get('title'),
-        //     typeGeom: this.layerInfo.geomType,
-        //     style: layer.getStyle()
-        // });
-        let img = ol_legend_Legend.getLegendImage({
-            style: layer.getStyle(),
-            typeGeom: this.layerInfo.geomType[0],
-            textStyle: null
-        });
-        layer.legend = {sType: 'ol', graphic: img}
-        this.mapVM.legendPanel.refresh()
-    }
 
     getDataSource(): VectorTileSource {
         // @ts-ignore
@@ -84,16 +60,24 @@ class MVTLayer extends AbstractDALayer {
     }
 
     refreshLayer() {
-        this.mapVM.refreshMap()
+        // console.log("refreshing source and map")
+        super.refreshLayer()
+        this.layer.getSource().clear()
+        this.layer.getSource().refresh();
+        // this.mapVM.refreshMap()
     }
+    // setStyle(style: IFeatureStyle) {
+    //     this.style = style;
+    //     this.refreshLayer();
+    // }
 
     setDataSource() {
-        const url = this.getDataURL()
         this.dataSource = new VectorTileSource({
             format: new MVT(),
-            url: `${url}{z}/{x}/{y}/?${this.urlParams}`,
+            url: `${this.getDataURL()}{z}/{x}/{y}/?${this.urlParams}`,
             attributions: "Digital Arz MVT Layer",
             tileLoadFunction: (tile, url) => {
+                // console.log("url", url);
                 const z = tile.tileCoord[0];
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
@@ -104,26 +88,30 @@ class MVTLayer extends AbstractDALayer {
                         })
                         cols = cols.filter((v, i, a) => a.indexOf(v) === i);
                         if (cols.length > 0)
-                            url = url + "?cols=" + String(cols)
+                            url = url + "cols=" + String(cols)
                     }
                     //@ts-ignore
                     tile.setLoader((extent, resolution, projection) => {
-                        fetch(url, {
-                            headers: new Headers({
-                                // "Authorization": "Bearer " + accessToken
-                            })
-                        }).then((response) => {
-                            response.arrayBuffer().then((data) => {
-                                //@ts-ignore
-                                const format = tile.getFormat(); // ol/format/MVT configured as source format
-                                const features = format.readFeatures(data, {
-                                    extent: extent,
-                                    featureProjection: projection
+                        if(this.layerInfo.extent3857 && intersects(extent, this.layerInfo.extent3857)) {
+                            url = url +"&resolution="+resolution
+                            // console.log("url", url) /
+                            fetch(url, {
+                                headers: new Headers({
+                                    // "Authorization": "Bearer " + accessToken
+                                })
+                            }).then((response) => {
+                                response.arrayBuffer().then((data) => {
+                                    //@ts-ignore
+                                    const format = tile.getFormat(); // ol/format/MVT configured as source format
+                                    const features = format.readFeatures(data, {
+                                        extent: extent,
+                                        featureProjection: projection
+                                    });
+                                    //@ts-ignore
+                                    tile.setFeatures(features);
                                 });
-                                //@ts-ignore
-                                tile.setFeatures(features);
                             });
-                        });
+                        }
                     });
                 }
             }
@@ -150,6 +138,7 @@ class MVTLayer extends AbstractDALayer {
                         style = rule.style;
                     }
                 });
+
                 break;
             case "density":
                 // style = this.style["style"]["default"];

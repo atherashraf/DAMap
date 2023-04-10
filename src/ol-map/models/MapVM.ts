@@ -200,7 +200,11 @@ class MapVM {
     }
 
     refreshMap() {
-        setTimeout(() => this.map?.updateSize(), 500);
+        setTimeout(() => {
+            this.map?.updateSize()
+            this.map?.setSize(this.map.getSize())
+            this.map?.updateSize()
+        }, 100);
     }
 
     getMap(): Map {
@@ -391,25 +395,26 @@ class MapVM {
 
     async addDALayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
         const {uuid, style, zoomRange} = info
-        const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
-        if (payload) {
-            if (style)
-                payload.style = style
-            if (zoomRange)
-                payload.zoomRange = zoomRange
-            let daLayer: AbstractDALayer;
-            this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
-            if (payload?.dataModel === 'V') {
-                daLayer = new MVTLayer(payload, this);
-                this.daLayers[payload.uuid] = daLayer
-                window.dispatchEvent(this._vectorLayerAddedEvent)
-            } else {
-                daLayer = new RasterTileLayer(payload, this)
-                this.daLayers[payload.uuid] = daLayer
+        if(!(uuid in this.daLayers)) {
+            const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
+            if (payload) {
+                if (style)
+                    payload.style = style
+                if (zoomRange)
+                    payload.zoomRange = zoomRange
+                let daLayer: AbstractDALayer;
+                this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
+                if (payload?.dataModel === 'V') {
+                    daLayer = new MVTLayer(payload, this);
+                    this.daLayers[payload.uuid] = daLayer
+                    window.dispatchEvent(this._vectorLayerAddedEvent)
+                } else {
+                    daLayer = new RasterTileLayer(payload, this)
+                    this.daLayers[payload.uuid] = daLayer
+                }
+                const visible = info.visible != undefined ? info.visible : true
+                daLayer.getOlLayer().setVisible(visible)
             }
-            const visible = info.visible != undefined ? info.visible : true
-            daLayer.getOlLayer().setVisible(visible)
-
         }
     }
 
@@ -418,8 +423,8 @@ class MapVM {
             return this.daLayers[layerId]
     }
 
-    showSnackbar(msg: string) {
-        this._domRef.snackBarRef.current.show(msg)
+    showSnackbar(msg: string, duration: number=6000) {
+        this._domRef.snackBarRef.current.show(msg, null, duration,)
     }
 
     drawPolygonForRasterArea(target: HTMLElement) {

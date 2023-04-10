@@ -32,7 +32,8 @@ class DAColorPicker extends React.PureComponent<CustomColorPickerProps, CustomCo
             hexColor = color.hex + (parseInt(String(color.rgb.a * 255))).toString(16);
         }
         this.setState({color: hexColor});
-        this.props.onChange(hexColor)
+        if(typeof this.props.onChange !== "undefined")
+            this.props.onChange(hexColor)
 
     }
 
