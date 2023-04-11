@@ -6,7 +6,12 @@ import MapVM from "../ol-map/models/MapVM";
 
 
 const MapViewRef = React.createRef<MapView>();
-const WaterQualitySurfaceTest = (props) => {
+interface IProps{
+    uuid: string
+    isMap: boolean
+    isDesigner: boolean
+}
+const WaterQualitySurfaceTest = (props: IProps) => {
     const [aoi, setAOI] = React.useState(null);
     const [waterQualityData, setWaterQualityData] = React.useState(null);
     const [idwUUID, setIDWUUID] = React.useState(MapVM.generateUUID())

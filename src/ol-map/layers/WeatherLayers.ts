@@ -67,7 +67,7 @@ class WeatherLayers {
         }
         me.addLegendGraphic(layer_type, layer_name)
     };
-    addLegendGraphic = function (layer_type, layer_name) {
+    addLegendGraphic = function (layer_type: any, layer_name: any) {
         let me = this;
         let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
         if (!isLegendAdded) {

@@ -35,9 +35,14 @@ class RasterTileLayer extends AbstractDALayer {
     refreshLayer() {
         super.refreshLayer();
         const source = this.getDataSource()
-        // const url = `${MapApi.getURL(MapAPIs.DCH_LAYER_RASTER, {uuid: this.layerInfo.uuid})}{z}/{x}/{y}`
+        source.tileCache.expireCache({});
+        source.tileCache.clear();
         source.setTileUrlFunction(source.getTileUrlFunction(), (new Date()).getTime().toLocaleString());
-        source.refresh()
+        setTimeout(() => source.refresh(), 1000)
+        this.mapVM.refreshMap()
+        this.mapVM.getSnackbarRef().current?.show("Note: if Map is not refreshed. Please reload page or Zoom in to see changes", null,15000)
+
+
     }
 }
 

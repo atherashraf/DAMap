@@ -38,9 +38,7 @@ class MVTLayer extends AbstractDALayer {
         return super.getDataSource();
     }
 
-    getFeature(id) {
-// ````    this.layer.
-    }
+
 
     getDataURL() {
         let apiURL, params;

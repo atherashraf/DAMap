@@ -151,7 +151,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     //         Object.assign(item, {style: style}) : item)
     //     this.setState(() => ({styleList: data}))
     // }
-    updateStyleItem(index, styleRule: IRule) {
+    updateStyleItem(index: number, styleRule: IRule) {
         this.setState({
             styleList: [
                 ...this.state.styleList.slice(0, index),

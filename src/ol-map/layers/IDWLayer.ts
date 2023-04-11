@@ -100,7 +100,7 @@ class IDWLayer {
                 const vectorContext = getVectorContext(evt);
                 ctx.globalCompositeOperation = 'destination-in';
 
-                clipLayer.getSource().forEachFeature((feature) => {
+                clipLayer.getSource().forEachFeature((feature: any) => {
                     vectorContext.drawFeature(feature, new Style({
                         fill: new Fill({
                             color: 'black',

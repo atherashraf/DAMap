@@ -21,8 +21,8 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
     constructor(props: DataGridProps) {
         super(props);
         if (this.props.data.length > 0) {
-            const columns = [];
-            const dataFields = [];
+            const columns : any[] = [];
+            const dataFields: any[] = [];
             const data = this.props.data;
             this.props.columns.forEach((col) => {
                 let dataKey = col.id
@@ -61,7 +61,7 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
         }
     }
 
-    getAdapter(dataFields, data): any {
+    getAdapter(dataFields:any, data:any): any {
         const source: any = {
             datatype: "json",
             datafields: dataFields,
@@ -74,7 +74,7 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
         })
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error: any, errorInfo: any) {
         // You can also log the error to an error reporting service
         console.log(error, errorInfo);
     }

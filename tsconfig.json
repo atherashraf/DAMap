@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-//    "sourceMap": true,
+    "sourceMap": true,
+    "outDir": "./lib",
+    "module": "esnext",
+    "noImplicitAny": false,
     "target": "es6",
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-//    "allowSyntheticDefaultImports": true,
-    "outDir": "./lib",
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": false,

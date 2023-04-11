@@ -19,7 +19,6 @@ import MapPanel from "../components/MapPanel";
 import Legend from "ol-ext/control/Legend";
 import ol_legend_Legend from "ol-ext/legend/Legend";
 import RasterTileLayer from "../layers/RasterTileLayer";
-import MapControls from "../layers/MapControls";
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from "ol/source/Vector";
 import {Fill, Stroke, Style} from "ol/style";
@@ -27,6 +26,7 @@ import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
 import IDWLayer from "../layers/IDWLayer";
+import MapControls from "../layers/MapControls";
 
 
 export interface IDALayers {
@@ -123,7 +123,7 @@ class MapVM {
         this.map.addControl(legendCtrl);
     }
 
-    isLegendItemExist(legend, title) {
+    isLegendItemExist(legend: any, title: string) {
         let items = legend.getItems().getArray();
         for (let i = 0; i < items.length; i++) {
             if (items[i].get('title') === title) {
@@ -366,10 +366,10 @@ class MapVM {
         }
     }
 
-    getOverlayLayerUUID(lyr){
+    getOverlayLayerUUID(lyr: any){
         return lyr.get('name')
     }
-    isOverlayLayerExist(uuid){
+    isOverlayLayerExist(uuid: string){
         return (uuid in this.overlayLayers);
     }
     removeOverlayLayer(uuid: string) {

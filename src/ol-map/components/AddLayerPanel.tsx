@@ -9,7 +9,7 @@ interface AddLayerPanelProps {
     layers: any
 }
 
-let wLayers = null;
+let wLayers: any = null;
 const AddLayerPanel = (props: AddLayerPanelProps) => {
     const mapVM = props.mapVM
     if (!wLayers) {

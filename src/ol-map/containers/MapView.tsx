@@ -3,7 +3,7 @@ import * as React from "react";
 import MapVM from "../models/MapVM";
 import RightDrawer from "../components/drawers/RightDrawer";
 import {MapAPIs} from "../utils/MapApi";
-import {IDomRef, IFeatureStyle, IMapInfo} from "../TypeDeclaration";
+import {IDomRef, IMapInfo} from "../TypeDeclaration";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";

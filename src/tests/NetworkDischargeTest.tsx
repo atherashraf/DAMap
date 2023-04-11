@@ -3,7 +3,12 @@ import MapView from "../ol-map/containers/MapView";
 import {useEffect} from "react";
 
 const MapViewRef = React.createRef<MapView>();
-const NetworkDischargeTest = (props) => {
+interface  IProps{
+    uuid: string
+    isMap: boolean
+    isDesigner: boolean
+}
+const NetworkDischargeTest = (props: IProps) => {
 
     const changeDate =() =>{
         const mapVM = MapViewRef.current?.getMapVM();

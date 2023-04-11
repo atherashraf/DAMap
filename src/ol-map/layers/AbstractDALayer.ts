@@ -49,7 +49,7 @@ class AbstractDALayer {
         }
     }
 
-    addLegendGraphic(layer) {
+    addLegendGraphic(layer: any) {
         //@ts-ignore
         // this.mapVM.legendPanel.addItem({
         //     title: layer.get('title'),
@@ -74,7 +74,7 @@ class AbstractDALayer {
 
     updateStyle() {
         // this.mapVM.showSnackbar("Updating layer style")
-        console.log("layer Info", this.layerInfo)
+        // console.log("layer Info", this.layerInfo)
         if(this.layerInfo.dataModel=="V") {
             this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid}).then((payload) => {
                 if (payload) {

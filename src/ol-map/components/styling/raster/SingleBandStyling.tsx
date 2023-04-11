@@ -75,7 +75,7 @@ class SingleBandStyling extends React.PureComponent<IProps, IState> {
     //         Object.assign(item, {style: style}) : item)
     //     this.setState(() => ({styleList: data}))
     // }
-    updateStyleItem(index, styleRule: IRule) {
+    updateStyleItem(index: number, styleRule: IRule) {
         this.setState({
             styleList: [
                 ...this.state.styleList.slice(0, index),
@@ -88,8 +88,8 @@ class SingleBandStyling extends React.PureComponent<IProps, IState> {
     saveStyle() {
         this.props.mapVM.showSnackbar("Creating new style")
 
-        const values = []
-        const palette = []
+        const values: any[] = []
+        const palette: any[] = []
         this.state.styleList.forEach((item) => {
             values.push(parseFloat(item.title))
             palette.push(item.style.fillColor)
