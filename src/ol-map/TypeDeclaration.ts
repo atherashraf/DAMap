@@ -7,6 +7,7 @@ import DADialogBox from "./components/common/DADialogBox";
 import DASnackbar from "./components/common/DASnackbar";
 import {pointShapeTypes} from "./components/styling/vector/symbolizer/PointSymbolizer";
 import MapPanel from "./components/MapPanel";
+import DAGrid from "../widgets/grid/grid";
 
 export interface IBaseMapProps {
     mapVM: MapVM
@@ -16,7 +17,7 @@ export interface IBaseMapProps {
 
 export interface IControlProps {
     mapVM: MapVM
-    drawerRef?: RefObject<RightDrawer> | RefObject<leftDrawer>
+    drawerRef?: RefObject<RightDrawer> //| RefObject<leftDrawer>
 }
 
 export interface IDomRef {
@@ -26,12 +27,14 @@ export interface IDomRef {
     dialogBoxRef: RefObject<DADialogBox>
     snackBarRef: RefObject<DASnackbar>
     mapPanelRef: RefObject<MapPanel>
+    attributeTableRef?: RefObject<DAGrid>
 }
 
 export interface IMapToolbarProps {
     target?: any
     mapVM: MapVM
     isDesigner: boolean
+    isCreateMap: boolean
 }
 
 export interface ILayerSourcesInfo {

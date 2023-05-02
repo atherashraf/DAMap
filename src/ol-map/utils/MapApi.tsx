@@ -7,6 +7,7 @@ export const MapAPIs = Object.freeze({
     API_REFRESH_TOKEN: "api/jwt/refresh/",
     API_LOGIN: "api/jwt/auth/login/",
     DCH_LAYER_INFO: "api/dch/layer_info/{uuid}/",
+    DCH_ALL_LAYER_INFO: "api/dch/all_layer_info/",
     DCH_LAYER_EXTENT: "api/dch/layer_extent/{uuid}/",
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
     DCH_LAYER_RASTER: "api/dch/raster_tile/{uuid}",
@@ -17,11 +18,16 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",
     DCH_LAYER_FIELD_DISTINCT_VALUE: "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",
     DCH_MAP_INFO: "api/dch/get_map_info/{uuid}/",
+    DCH_ALL_MAP_INFO: "api/dch/all_map_info",
     DCH_LAYER_PIXEL_VALUE: "api/dch/get_pixel_value/{uuid}/{long}/{lat}/",
     DCH_FEATURE_DETAIL: "api/dch/get_feature_detail/{uuid}/{col_name}/{col_val}/",
     DCH_RASTER_AREA: "api/dch/get_raster_area/{uuid}/{geojson_str}",
     DCH_GET_ALL_LAYERS: "api/dch/get_all_layers/",
     DCH_RASTER_DETAIL: "api/dch/get_raster_info/{uuid}/",
+    DCH_PREDEFINED_LIST: "api/dch/get_predefined_style_list/",
+    DCH_LEGEND_GRAPHIC: "api/dch/get_legend_graphic/{uuid}/",
+    DCH_SAVE_MAP: "api/dch/save_map/",
+    DCH_DELETE_MAP: "api/dch/delete_map/{uuid}/",
 
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
@@ -127,6 +133,11 @@ export default class MapApi {
     async get(apiKey: string, params: any = {}, isJSON: boolean = true) {
 
         const url = MapApi.getURL(apiKey, params);
+        return await this.getFetch(url, isJSON);
+
+    }
+
+    async getFetch(url: string, isJSON: boolean = true) {
         const headers = await this.getHeaders()
         const response = await fetch(url, {
             method: "GET",
@@ -135,26 +146,19 @@ export default class MapApi {
             credentials: "same-origin",
             headers: headers
         });
+        // console.log(response.text())
         const res = await this.apiResponse(response, isJSON);
-
-        return res && res.payload;
+        // console.log(response.)
+        if (isJSON)
+            return res && res.payload;
+        else
+            return res
     }
 
     async post(apiKey: string, data: any, params: any = {}, isJSON = true) {
         try {
             const url = MapApi.getURL(apiKey, params);
-            const headers = await this.getHeaders();
-            const response = await fetch(url, {
-                method: "POST",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                headers: headers,
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            });
-            return await this.apiResponse(response, isJSON);
+            return await this.postFetch(url, data, isJSON)
 
         } catch (e) {
             this.snackbarRef.current?.show("Services are not available at this time.");
@@ -162,6 +166,20 @@ export default class MapApi {
         }
     }
 
+    async postFetch(url,  data, isJSON){
+        const headers = await this.getHeaders();
+        const response = await fetch(url, {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: headers,
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return await this.apiResponse(response, isJSON);
+    }
     async getHeaders(isJson: boolean = true) {
         const accessToken = await this.getAccessToken(); //state.user.accessToken
         const csrfToken = MapApi.getCookie("csrftoken")

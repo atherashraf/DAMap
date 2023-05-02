@@ -1,19 +1,19 @@
 import * as ReactDOM from "react-dom";
 import JqxButton from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons";
 import * as React from "react";
-import DAGrid from "./grid";
 import {createRoot} from 'react-dom/client';
 import MapVM from "../../ol-map/models/MapVM";
 
 const reloadBtn = require("../../static/img/refresh.png");
 const zoomBtn = require("../../static/img/search.png")
 
-class GridToolbar {
-    private myGrid: any  //React.RefObject<DAGrid>
+
+class ChangeListToolbar {
+    private grid: any  //React.RefObject<DAGrid>
     private mapVM: MapVM
-    constructor(myGrid: any, mapVM: MapVM) {
-        this.myGrid = myGrid;
-        this.mapVM = mapVM;
+    constructor(myGrid: any) {
+        this.grid = myGrid;
+
     }
 
     createButtons(): void {
@@ -50,10 +50,13 @@ class GridToolbar {
     }
 
     clearBtnOnClick(): void {
-        this.myGrid.current!.clearfilters();
+        this.grid.current!.clearfilters();
     }
+    setButtonContainers(){
 
+    }
     renderToolbar(toolbar: any) {
+        console.log("toolbar", toolbar)
         const style: React.CSSProperties = {float: 'left', marginLeft: '5px'};
         const buttonsContainer = (
             <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
@@ -67,4 +70,4 @@ class GridToolbar {
 
 }
 
-export default GridToolbar
+export default ChangeListToolbar

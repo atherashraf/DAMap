@@ -68,7 +68,7 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
         return (
             <React.Fragment>
                 <Dialog scroll={"paper"} onClose={this.closeDialog} open={this.state.open}
-                        PaperComponent={PaperComponent}
+                        PaperComponent={PaperComponent} maxWidth={'xl'}
                         aria-labelledby="draggable-dialog-title">
                     {this.state.title && <DialogTitle style={{cursor: 'move'}}
                                                       id="draggable-dialog-title">{this.state.title}</DialogTitle>}

@@ -55,7 +55,7 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
     }
 
     componentDidMount() {
-        if (this.props.isMap) {
+        if (this.props.isMap && this.props.uuid !== "-1") {
             this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": this.props.uuid})
                 .then((payload: IMapInfo) => {
                     // console.log("payload", payload)
@@ -64,6 +64,11 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
                     }
                     this.mapVM.setTarget(this.mapDivId);
                 })
+        }else if (this.props.isMap){
+            if (!this.mapVM.isInit) {
+                this.mapVM.initMap();
+            }
+            this.mapVM.setTarget(this.mapDivId);
         } else {
             if (!this.mapVM.isInit) {
                 const info: IMapInfo = {

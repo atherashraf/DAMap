@@ -20,7 +20,7 @@ interface IState {
 
 }
 
-class SingleBandStyling extends React.PureComponent<IProps, IState> {
+class MinMaxStyling extends React.PureComponent<IProps, IState> {
     colorRampRef: RefObject<ColorRamp> = React.createRef<ColorRamp>()
     legendGridRef: RefObject<LegendGrid> = React.createRef<LegendGrid>()
 
@@ -155,4 +155,4 @@ class SingleBandStyling extends React.PureComponent<IProps, IState> {
     }
 }
 
-export default SingleBandStyling
+export default MinMaxStyling

@@ -3,11 +3,12 @@ import {Paper, Select, styled} from "@mui/material";
 
 export const SideDrawerDiv = styled('div')(({theme})=>({
     width: "350px",
-    height: "99%",
-    display: "flex",
-    backgroundColor: "darkgray",
-    padding: 4,
-    // overflow: "auto"
+    // height: "99%",
+    // display: "flex",
+    backgroundColor: "white",
+    // padding: 4,
+    overflow: "auto",
+    // border: "black 1px solid"
 }));
 export const DrawerPaper = styled(Paper)(({theme}) => ({
     boxSizing: "border-box",

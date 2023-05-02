@@ -40,6 +40,7 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
         await props.mapVM.addDALayer({uuid: selectedOption})
     }
     const handelAddWeatherButton = async () => {
+        console.log(selectedWeatherOption)
         if (selectedWeatherOption === "weather_data") {
             wLayers.getWeatherData(selectedWeatherOption)
         } else {

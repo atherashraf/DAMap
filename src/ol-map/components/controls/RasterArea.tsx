@@ -7,9 +7,9 @@ import RasterAreaResult from "../RasterAreaResult";
 
 const RasterArea = (props: IControlProps) => {
     const handleClick = () => {
-        console.log("click working...", props.drawerRef);
-        props.drawerRef?.current?.addContents(<RasterAreaResult mapVM={props.mapVM}/>)
-        props.drawerRef?.current?.toggleDrawer()
+        // console.log("click working...", props.drawerRef);
+        props.drawerRef?.current?.addContents("Zonal Stats", <RasterAreaResult mapVM={props.mapVM}/>)
+        props.drawerRef?.current?.openDrawer()
         props.mapVM.refreshMap();
         // props.mapVM.drawPolygonForRasterArea()
 

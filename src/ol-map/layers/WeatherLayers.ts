@@ -15,6 +15,9 @@ import {Cluster} from "ol/source";
 import {Icon, Style} from "ol/style";
 import VectorSource from "ol/source/Vector";
 import MapVM from "../models/MapVM";
+import autoBind from "auto-bind";
+import ol_legend_Legend from "ol-ext/legend/Legend";
+import ol_legend_Item from "ol-ext/legend/Item";
 
 class WeatherLayers {
     mapVM: MapVM
@@ -25,12 +28,13 @@ class WeatherLayers {
         openInLayerSwitcher: true,
         layers: []
     });
-    weatherLayers : any = null;
+    weatherLayers: any = null;
     open_weather_map_key = 'e9c0f98767ed96cefc3dd01adf8aacf2'
 
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM
         // this.map = mapVM.getMap()
+        autoBind(this)
     }
 
     addTileWeatherMap = function (layer_type: string) {
@@ -38,7 +42,7 @@ class WeatherLayers {
         let layer_name = me.getLayerName(layer_type)
         if (me.weatherLayers === null) {
             me.weatherLayers = [];
-            me.map.addLayer(me.weatherLayersGroup);
+            me.mapVM.getMap().addLayer(me.weatherLayersGroup);
         }
         let url = 'https://tile.openweathermap.org/map/' + layer_type + '/{z}/{x}/{y}.png?appid=e9c0f98767ed96cefc3dd01adf8aacf2'
 
@@ -65,11 +69,12 @@ class WeatherLayers {
             layers.insertAt(layers.getLength(), layer);
             // me.map.addLayer(me.weatherLayers[layer_name]);
         }
-        me.addLegendGraphic(layer_type, layer_name)
+        this.addLegendGraphic(layer, layer_type, layer_name)
     };
-    addLegendGraphic = function (layer_type: any, layer_name: any) {
+    addLegendGraphic = function (layer, layer_type: any, layer_name: any) {
         let me = this;
         let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
+        console.log("isLegendAdded", isLegendAdded)
         if (!isLegendAdded) {
             let legends = {
                 "clouds_new": clouds_new,
@@ -77,10 +82,18 @@ class WeatherLayers {
                 "wind_new": wind_new,
                 "temp_new": temp_new
             };
-            me.mapVM.legendPanel.addItem(new olLegendImage({
+            layer.legend = {
+                sType: 'src',
+                graphic: legends[layer_type],
+                width: "100%",
+                height: "30px"
+            }
+            // layer.set('legend', legends[layer_type])
+            const img: ol_legend_Item = new olLegendImage({
                 title: layer_name,
                 src: legends[layer_type]
-            }))
+            })
+            me.mapVM.legendPanel.addItem(img)
         }
     }
     getLayerName = function (layer_type) {
@@ -98,7 +111,7 @@ class WeatherLayers {
         let me = this;
         if (me.weatherLayers === null) {
             me.weatherLayers = [];
-            me.map.addLayer(me.weatherLayersGroup);
+            me.mapVM.map.addLayer(me.weatherLayersGroup);
         }
         if (!me.weatherLayers[layer_name]) {
             let westLng = 70;
@@ -135,7 +148,7 @@ class WeatherLayers {
         let vectorSource = new VectorSource({
             features: (new GeoJSON()).readFeatures(geo_json, {
                 dataProjection: 'EPSG:4326',
-                featureProjection: me.map.getView().getProjection()
+                featureProjection: me.mapVM.getMap().getView().getProjection()
             }),
         });
         let clusterSource = new Cluster({
@@ -156,7 +169,7 @@ class WeatherLayers {
             style: me.getWeatherFeatureStyle
         });
         me.weatherLayers[layer_name] = clusterLayer;
-        me.map.addLayer(me.weatherLayers[layer_name]);
+        me.mapVM.getMap().addLayer(me.weatherLayers[layer_name]);
         // me.createWeatherPopUp();
     };
     getWeatherFeatureStyle = function (feature, resolution) {

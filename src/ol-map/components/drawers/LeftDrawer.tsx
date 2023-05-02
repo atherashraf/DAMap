@@ -6,6 +6,7 @@ import {DrawerPaper, SideDrawerDiv} from "../StyledMapComponent";
 interface LeftDrawerState {
     open: boolean
     content: JSX.Element
+    heading: string
 }
 
 interface LeftDrawerProps {
@@ -18,7 +19,8 @@ class LeftDrawer extends React.PureComponent<LeftDrawerProps, LeftDrawerState> {
         super(props);
         this.state = {
             open: props.initState || false,
-            content: <React.Fragment/>
+            content: <React.Fragment/>,
+            heading: ""
         }
     }
 
@@ -36,7 +38,9 @@ class LeftDrawer extends React.PureComponent<LeftDrawerProps, LeftDrawerState> {
         this.setState(()=>({content: content}))
     }
 
-
+    addHeading(value: string){
+        this.setState(()=>({heading: value}))
+    }
     render() {
         return (
             <Slide direction="right" in={this.state.open} mountOnEnter unmountOnExit>

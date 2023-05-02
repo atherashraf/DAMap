@@ -9,7 +9,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             "process.env": JSON.stringify(process.env)
-        })
+        }),
     ],
     output: {
         path: path.resolve(__dirname, '../dist'),

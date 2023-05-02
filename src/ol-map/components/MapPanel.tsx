@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Box, CircularProgress, Paper} from "@mui/material";
 import MapVM from "../models/MapVM";
+import BottomDrawerResizer from "./drawers/BottomDrawerResizer";
 
 
 interface IProps {
@@ -10,8 +11,9 @@ interface IProps {
 interface IState {
     drawerHeight: number,
     mapPadding: number,
-    display: "none" | "block"
+    // display: "none" | "block"
     contents: JSX.Element
+    maxMapHeight: number
 }
 
 class MapPanel extends React.PureComponent<IProps, IState> {
@@ -24,7 +26,8 @@ class MapPanel extends React.PureComponent<IProps, IState> {
             drawerHeight: 0,
             mapPadding: 0,
             contents: <React.Fragment/>,
-            display: "none"
+            // display: "none",
+            maxMapHeight: 0,
         }
     }
 
@@ -41,7 +44,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeBottomDrawer() {
-        this.setState({drawerHeight: 0, mapPadding: 0, display: "none", contents: <React.Fragment/>})
+        this.setState({drawerHeight: 0, mapPadding: 0, contents: <React.Fragment/>})
         this.props.mapVM.refreshMap();
     }
 
@@ -49,56 +52,79 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         if (!contents) {
             contents = <div style={{
                 display: 'flex', position: "relative",
-                top: "50%", margin: "0px", padding: "0px",
-                justifyContent: 'center', height: "100%"
+                top: "30%", margin: "0px", padding: "0px",
+                justifyContent: 'center', height: this.state.drawerHeight
             }}>
                 <CircularProgress color="secondary"/>
             </div>
         }
-        // height = this.state.drawerHeight == 0 ? height : 0;
-        // const display = this.state.drawerHeight == 0 ? "none" : "block";
-        // contents = contents ? contents : <React.Fragment/>
-        const mapPadding = height > this.getMapHeight() / 2 ? this.getMapHeight() / 4 : this.getMapHeight() / 2
-        this.setState({
-            drawerHeight: height, mapPadding: mapPadding,
-        })
+        this.resizeDrawer(height)
         this.setContent(contents)
 
+    }
+    getDrawerHeight(){
+        return this.state.drawerHeight;
+    }
+
+    resizeDrawer(height) {
+        if (height > 50) {
+            this.setState({
+                drawerHeight: height > 200 ? height : 300, mapPadding: height
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        // console.log("max", this.state.maxMapHeight, "padding", this.state.mapPadding, "drawer", this.state.drawerHeight);
+    }
+
+    componentDidMount() {
+        this.setState({maxMapHeight: this.getMapHeight()})
     }
 
     setContent(contents: JSX.Element = <React.Fragment/>) {
         this.setState({
-            display: "block", contents: contents
+            contents: contents
         })
         // this.props.mapVM.refreshMap();
     }
 
     closeDrawer() {
-        this.setState(() => ({drawerHeight: 0, display: "none"}))
+        this.setState(() => ({drawerHeight: 0}))
+    }
+
+    getPaperHeight() {
+
+        const totalHeight = this.state.drawerHeight + (this.state.maxMapHeight - this.state.mapPadding)
+        return this.state.maxMapHeight + 10 < totalHeight ? totalHeight : this.state.maxMapHeight
     }
 
     render() {
+
         return (
-            <Paper sx={{width: "100%", height: "100%"}} elevation={6}>
+            <Paper sx={{width: "100%", height: !this.state.maxMapHeight ? "100%" : this.getPaperHeight()}}
+                   elevation={6}>
                 <div id={this.mapDivId} style={{
                     width: "100%",
                     height: `calc(100% - ${this.state.mapPadding}px)`,
                 }}/>
                 <div style={{
-                    display: this.state.display,
+                    display: "block",
                     width: "100%",
                     height: this.state.drawerHeight
                 }}>
-                    <Box style={{boxSizing: "border-box"}} sx={{
-                        // display: 'flex', flexDirection: 'column',
-                        height: this.state.drawerHeight,
-                        bgcolor: 'background.paper',
-                        mx: 0, pb: 3
-                    }}>
-                        {/*<Paper sx={{height: `calc(${this.state.drawerHeight}px - 3px)`,}} elevation={6}>*/}
-                        {this.state.contents}
-                        {/*</Paper>*/}
-                    </Box>
+                    <BottomDrawerResizer newMousePos={(mousePosY: number) => {
+                        const newSize = document.body.offsetHeight - (mousePosY - document.body.offsetTop + 50)
+                        // const newSize = mousePosY - 50
+                        this.resizeDrawer(newSize)
+                    }}/>
+                    <div id={"bottom-drawer-div"}
+                         style={{boxSizing: "border-box" ,height: this.state.drawerHeight}}
+                    >
+                    {/*<Paper sx={{height: `calc(${this.state.drawerHeight}px - 3px)`,}} elevation={6}>*/}
+                    {this.state.contents}
+                    {/*</Paper>*/}
+                    </div>
                 </div>
             </Paper>
         );

@@ -1,7 +1,7 @@
 import * as React from "react";
 import JqxGrid, {IGridProps, jqx} from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
-import {Column, Row} from "../../data-grid/TypeDeclaration";
 import MapVM from "../../ol-map/models/MapVM";
+import {Column, Row} from "../GridTypeDeclaration";
 
 
 interface DataGridProps {
@@ -60,6 +60,12 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
             }
         }
     }
+    // componentDidUpdate(prevProps: Readonly<DataGridProps>, prevState: Readonly<IGridProps>, snapshot?: any) {
+    //     // if(this.state.height !== this.props.tableHeight){
+    //     //     console.log("updating table height", this.state.height, this.props.tableHeight)
+    //         // this.setState({height: this.props.tableHeight})
+    //     // }
+    // }
 
     getAdapter(dataFields:any, data:any): any {
         const source: any = {
@@ -84,7 +90,9 @@ class DAGrid extends React.PureComponent<DataGridProps, IGridProps> {
     //         // this.gridToolbar.createButtons();
     //     });
     // }
-
+    updateTableHeight(newHeight){
+        this.setState({height: newHeight})
+    }
 
     render() {
         return (

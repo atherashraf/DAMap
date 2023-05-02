@@ -67,7 +67,7 @@ class BaseLayers {
             // @ts-ignore
             baseLayer: true,
             source: new OSM({
-                attributions: this.attributions,
+                attributions: "OSM Layer",
                 wrapX: false,
             }),
         });

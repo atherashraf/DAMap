@@ -24,7 +24,8 @@ const elem = document.getElementById("da-map") as Element;
 const root = createRoot(elem)
 
 
-root.render(<ThemeProvider theme={theme}>
-    <App/>
-</ThemeProvider>);
+root.render(
+        <ThemeProvider theme={theme}>
+            <App/>
+        </ThemeProvider>);
 

@@ -11,7 +11,7 @@ module.exports = merge(common, {
     devServer: {
         static: path.resolve(__dirname, './dist'),
         // compress: true,
-        // historyApiFallback: true,
+        historyApiFallback: true,
         port: process.env.port || 3000,
     },
     plugins: [

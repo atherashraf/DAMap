@@ -27,6 +27,7 @@ import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
 import IDWLayer from "../layers/IDWLayer";
 import MapControls from "../layers/MapControls";
+import DAGrid from "../../widgets/grid/grid";
 
 
 export interface IDALayers {
@@ -86,7 +87,8 @@ class MapVM {
                 this.fullScreen,
                 new MapToolbar({
                     mapVM: this,
-                    isDesigner: this.isDesigner
+                    isDesigner: this.isDesigner,
+                    isCreateMap: (!this.isDesigner && !mapInfo)
                 })
             ]),
             view: new View({
@@ -97,9 +99,9 @@ class MapVM {
         this.addBaseLayers()
         if (mapInfo) {
             this.mapExtent = mapInfo.extent;
-            // console.log(mapInfo.layers)
             mapInfo.layers.forEach(async (layer) => {
-                await this.addDALayer(layer)
+                // console.log(layer)
+                await  this.addDALayer(layer)
             });
         }
         this.addSidebarController();
@@ -112,8 +114,9 @@ class MapVM {
         // Define a new legend
         this.legendPanel = new ol_legend_Legend({
             title: 'Legend',
-            // margin: 5,
-            maxHeight: 100,
+            margin: 5,
+            padding: 10,
+            maxHeight: 150,
             //maxWidth: 100
         });
         let legendCtrl = new Legend({
@@ -156,7 +159,12 @@ class MapVM {
     getLeftDrawerRef(): RefObject<LeftDrawer> {
         return this._domRef.leftDrawerRef
     }
-
+    setAttributeTableRef(ref: RefObject<DAGrid>){
+        this._domRef.attributeTableRef = ref
+    }
+    getAttributeTableRef(): RefObject<DAGrid>{
+        return this._domRef.attributeTableRef;
+    }
     getDialogBoxRef(): RefObject<DADialogBox> {
         return this._domRef.dialogBoxRef
     }
@@ -215,6 +223,14 @@ class MapVM {
         // const extent = [7031250.271849444, 2217134.3474655207, 8415677.728150556, 4922393.652534479]
         // @ts-ignore
         this.mapExtent && this.map.getView().fit(this.mapExtent, this.map.getSize());
+    }
+
+    getCurrentExtent() {
+        return this.map.getView().calculateExtent(this.map.getSize())
+    }
+
+    getExtent() {
+        return this.mapExtent ? this.mapExtent : this.getCurrentExtent()
     }
 
     identifyFeature(target: HTMLElement) {
@@ -351,7 +367,7 @@ class MapVM {
     // }
     //
     addOverlayLayer(layer: any, title: any = null, key: any = null) {
-        if(title) {
+        if (title) {
             layer.set('title', title)
         }
         if (!key)
@@ -366,12 +382,14 @@ class MapVM {
         }
     }
 
-    getOverlayLayerUUID(lyr: any){
+    getOverlayLayerUUID(lyr: any) {
         return lyr.get('name')
     }
-    isOverlayLayerExist(uuid: string){
+
+    isOverlayLayerExist(uuid: string) {
         return (uuid in this.overlayLayers);
     }
+
     removeOverlayLayer(uuid: string) {
         if (uuid in this.overlayLayers) {
             const lyr = this.overlayLayers[uuid];
@@ -395,7 +413,7 @@ class MapVM {
 
     async addDALayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
         const {uuid, style, zoomRange} = info
-        if(!(uuid in this.daLayers)) {
+        if (!(uuid in this.daLayers)) {
             const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
             if (payload) {
                 if (style)
@@ -423,7 +441,7 @@ class MapVM {
             return this.daLayers[layerId]
     }
 
-    showSnackbar(msg: string, duration: number=6000) {
+    showSnackbar(msg: string, duration: number = 6000) {
         this._domRef.snackBarRef.current.show(msg, null, duration,)
     }
 
@@ -477,6 +495,7 @@ class MapVM {
     //     extent && this.map.getView().fit(extent, this.map.getSize());
     //
     // }
+
 }
 
 export default MapVM;
