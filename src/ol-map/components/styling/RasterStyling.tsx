@@ -5,6 +5,7 @@ import MinMaxStyling from "./raster/MinMaxStyling";
 import MapApi, {MapAPIs} from "../../utils/MapApi";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import PredefinedStyling from "./raster/PredefinedStyling";
+import SLDForm from "./SLDForm";
 
 interface IRasterStylingProps {
     mapVM: MapVM
@@ -14,7 +15,9 @@ const RasterStyling = (props: IRasterStylingProps) => {
     const uuid = props.mapVM.getLayerOfInterest();
     const [rasterInfo, setRasterInfo] = React.useState(null)
     const [styleType, setStyleType] = React.useState('');
-    const styleTypes = [{name: "Min Max Stretch", val: "min-max"}, {name: "Predefined Style", val: "predefined"}]
+    const styleTypes = [{name: "SLD", val: "sld"},
+        {name: "Min Max Stretch", val: "min-max"},
+        {name: "Predefined Style", val: "predefined"}]
     const getRasterInfo = () => {
         props.mapVM.getApi().get(MapAPIs.DCH_RASTER_DETAIL, {uuid: uuid}).then((payload) => {
             if (payload) {
@@ -52,7 +55,8 @@ const RasterStyling = (props: IRasterStylingProps) => {
                 <MinMaxStyling mapVM={props.mapVM} bandInfo={rasterInfo?.bandsInfo[0]}/> :
                 styleType == "predefined" ?
                     <PredefinedStyling mapVM={props.mapVM}/> :
-                    <React.Fragment/>
+                    styleType =="sld"?
+                        <SLDForm mapVM={props.mapVM} /> :<React.Fragment/>
             }
         </DAFieldSet>
     )

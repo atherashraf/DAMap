@@ -9,7 +9,7 @@ import DAGrid from "../../../widgets/grid/grid";
 const daGridRef = React.createRef<DAGrid>()
 
 const AttributeTable = (props: IControlProps) => {
-    const tableHeight = 300;
+    let tableHeight = 300;
     const mapBoxRef = props.mapVM.getMapPanelRef()
 
     const ro = new ResizeObserver(entries => {
@@ -33,6 +33,8 @@ const AttributeTable = (props: IControlProps) => {
                     if (!uuid) {
                         props.mapVM.showSnackbar("Please select a layer to view its attributes");
                     } else if (!open) {
+                        const mapHeight = mapBoxRef.current.getMapHeight()
+                        tableHeight = tableHeight < mapHeight + 50 ? tableHeight : mapHeight / 2
                         mapBoxRef.current?.openBottomDrawer(tableHeight)
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})

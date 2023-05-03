@@ -2,10 +2,9 @@ import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import JqxGrid, {IGridProps, jqx} from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
 import {Column, Row} from "../../widgets/GridTypeDeclaration";
-import ChangeListToolbar from "./ChangeListToolbar";
 
 import autoBind from "auto-bind";
-import jsxToString from 'jsx-to-string';
+
 
 
 export interface Action {

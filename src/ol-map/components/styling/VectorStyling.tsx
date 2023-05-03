@@ -9,7 +9,7 @@ import {MapAPIs} from "../../utils/MapApi";
 import BaseStyleForm from "./vector/BaseStyleForm";
 import {useEffect} from "react";
 import MapVM from "../../models/MapVM";
-import SLDForm from "./vector/symbolizer/SLDForm";
+import SLDForm from "./SLDForm";
 
 interface IVectorStylingProps {
     mapVM: MapVM
