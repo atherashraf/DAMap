@@ -28,9 +28,11 @@ export const MapAPIs = Object.freeze({
     DCH_LEGEND_GRAPHIC: "api/dch/get_legend_graphic/{uuid}/",
     DCH_SAVE_MAP: "api/dch/save_map/",
     DCH_DELETE_MAP: "api/dch/delete_map/{uuid}/",
+    DCH_LAYER_CATEGORIES: "api/dch/layer_categories/",
 
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
+
     // LBDC_DISCHARGE:"https://irrigation.punjab.gov.pk/admin/api/fetch_LBDC_Discharge.php?"
 
 });

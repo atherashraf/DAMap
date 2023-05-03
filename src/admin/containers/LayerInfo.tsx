@@ -6,11 +6,13 @@ import DASnackbar from "../../ol-map/components/common/DASnackbar";
 import {RefObject} from "react";
 import {Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import DAFullScreenDialog from "../../common/DAFullScreenDialog";
+import AddRasterLayerInfo from "../components/forms/AddRasterLayerInfo";
 
 
 const changeListRef = React.createRef<ChangeList>()
 const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
-
+const dialogRef: RefObject<DAFullScreenDialog> = React.createRef<DAFullScreenDialog>()
 const LayerInfo = () => {
     const [columns, setColumns] = React.useState<Column[]>([]);
     const [data, setData] = React.useState<Row[]>()
@@ -32,28 +34,32 @@ const LayerInfo = () => {
         return rowData
 
     }
-    const getSelectedUUID = () =>{
+    const getSelectedUUID = () => {
         const rowData = getRowData()
-        if(rowData) {
+        if (rowData) {
             return rowData.uuid
         }
     }
     const initActions = () => {
         const actions: Action[] = [{
-            name: "Viww Layer Designer",
-            action: () =>{
+            name: "View Layer Designer",
+            action: () => {
                 const uuid = getSelectedUUID();
-                navigate("/designer/"+ uuid, )
+                navigate("/designer/" + uuid,)
             }
-        },{
+        }, {
             name: "Add Raster Layer",
-            action: () => alert("Adding LayerInfo....")
+            action: () => {
+                dialogRef.current?.handleClickOpen()
+                dialogRef.current?.setContent("Add Raster Layer", <AddRasterLayerInfo snackbarRef={snackbarRef}/>)
+                // alert("Adding LayerInfo....")
+            }
         }, {
             name: "Delete layer Info",
             action: () => {
                 // console.log(changeListRef)
                 const rowData = changeListRef.current?.getSelectedRowData()
-                if(rowData) {
+                if (rowData) {
                     console.log(rowData)
                     alert(`Deleting ${rowData.id} LayerInfo....`)
                 }
@@ -71,6 +77,7 @@ const LayerInfo = () => {
                 <React.Fragment/>
             }
             <DASnackbar ref={snackbarRef}/>
+            <DAFullScreenDialog ref={dialogRef} />
         </React.Fragment>
     )
 }
