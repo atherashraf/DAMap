@@ -7,7 +7,7 @@ import DADialogBox from "./components/common/DADialogBox";
 import DASnackbar from "./components/common/DASnackbar";
 import {pointShapeTypes} from "./components/styling/vector/symbolizer/PointSymbolizer";
 import MapPanel from "./components/MapPanel";
-import DAGrid from "../widgets/grid/grid";
+import AttributeGrid from "../widgets/grid/AttributeGrid";
 
 export interface IBaseMapProps {
     mapVM: MapVM
@@ -27,7 +27,7 @@ export interface IDomRef {
     dialogBoxRef: RefObject<DADialogBox>
     snackBarRef: RefObject<DASnackbar>
     mapPanelRef: RefObject<MapPanel>
-    attributeTableRef?: RefObject<DAGrid>
+    attributeTableRef?: RefObject<AttributeGrid>
 }
 
 export interface IMapToolbarProps {
@@ -105,6 +105,7 @@ export interface IGeoJSON {
     type: string
     features: IGeoJSONFeature[],
     crs?: any
+    style? : any
 }
 
 export interface IGeoJSONFeature {

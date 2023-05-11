@@ -29,6 +29,8 @@ export const MapAPIs = Object.freeze({
     DCH_SAVE_MAP: "api/dch/save_map/",
     DCH_DELETE_MAP: "api/dch/delete_map/{uuid}/",
     DCH_LAYER_CATEGORIES: "api/dch/layer_categories/",
+    DCH_ADD_RASTER_INFO: "api/dch/add_raster_layer_info/",
+    DCH_GET_FEATURE_GEOMETRY: "api/dch/get_feature_geometry/{uuid}/{pk_values}/",
 
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",

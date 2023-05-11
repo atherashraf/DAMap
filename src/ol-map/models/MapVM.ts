@@ -27,7 +27,8 @@ import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
 import IDWLayer from "../layers/IDWLayer";
 import MapControls from "../layers/MapControls";
-import DAGrid from "../../widgets/grid/grid";
+import AttributeGrid from "../../widgets/grid/AttributeGrid";
+import SelectionLayer from "../layers/SelectionLayer";
 
 
 export interface IDALayers {
@@ -59,8 +60,9 @@ class MapVM {
     isInit: Boolean = false;
     public readonly api: MapApi;
     private readonly isDesigner: boolean;
-    private fullScreen: FullScreen;
+    private readonly fullScreen: FullScreen;
     legendPanel: any = null;
+    selectionLayer: SelectionLayer
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -106,9 +108,10 @@ class MapVM {
         }
         this.addSidebarController();
         this.isInit = true;
-        this.addSelectionLayer();
+        this.selectionLayer = new SelectionLayer(this)
         this.addLegendControlToMap()
     }
+
 
     addLegendControlToMap() {
         // Define a new legend
@@ -159,10 +162,10 @@ class MapVM {
     getLeftDrawerRef(): RefObject<LeftDrawer> {
         return this._domRef.leftDrawerRef
     }
-    setAttributeTableRef(ref: RefObject<DAGrid>){
+    setAttributeTableRef(ref: RefObject<AttributeGrid>){
         this._domRef.attributeTableRef = ref
     }
-    getAttributeTableRef(): RefObject<DAGrid>{
+    getAttributeTableRef(): RefObject<AttributeGrid>{
         return this._domRef.attributeTableRef;
     }
     getDialogBoxRef(): RefObject<DADialogBox> {
@@ -224,6 +227,10 @@ class MapVM {
         // @ts-ignore
         this.mapExtent && this.map.getView().fit(this.mapExtent, this.map.getSize());
     }
+    zoomToExtent(extent: number[]){
+        // @ts-ignore
+        this.map.getView().fit(extent, this.map.getSize());
+    }
 
     getCurrentExtent() {
         return this.map.getView().calculateExtent(this.map.getSize())
@@ -232,6 +239,7 @@ class MapVM {
     getExtent() {
         return this.mapExtent ? this.mapExtent : this.getCurrentExtent()
     }
+
 
     identifyFeature(target: HTMLElement) {
         let me = this;
@@ -250,7 +258,7 @@ class MapVM {
     // @ts-ignore
     addDrawInteraction(drawType, target) {
         let me = this;
-        let source = this.getSelectionLayer().getSource();
+        let source = this.selectionLayer.getSource();
         if (this.currentMapInteraction !== null) {
             this.map.removeInteraction(this.currentMapInteraction);
         }
@@ -271,27 +279,14 @@ class MapVM {
         });
     }
 
-    addSelectionLayer() {
-        let me = this;
-        const title = "sel_layer";
-        const vectorLayer = new VectorLayer({
-            // @ts-ignore
-            title: title,
-            displayInLayerSwitcher: false,
-            source: new VectorSource(),
-            style: function (feature) {
-                return me.getSelectStyle(feature)
-            },
-            zIndex: 1000
-        });
-        this.addOverlayLayer(vectorLayer, title, title)
-    }
 
 
-    getSelectionLayer(): VectorLayer<VectorSource> {
-        // @ts-ignore
-        return this.overlayLayers["sel_layer"]
-    }
+
+
+    // getSelectionLayer(): VectorLayer<VectorSource> {
+    //     // @ts-ignore
+    //     return this.overlayLayers["sel_layer"]
+    // }
 
     getOverlayLayer(layer_name: string): VectorLayer<VectorSource> {
         // @ts-ignore
@@ -299,45 +294,6 @@ class MapVM {
     }
 
     // @ts-ignore
-    getSelectStyle(feature) {
-        let g_type = feature.getGeometry().getType();
-        let selStyle;
-        if (!g_type) g_type = feature.f;
-        if (g_type.indexOf('Point') !== -1) {
-            selStyle = new Style({
-                image: new CircleStyle({
-                    radius: 7,
-                    fill: new Fill({color: 'rgba(0, 0, 0, 0.33)'}),
-                    stroke: new Stroke({
-                        color: [0, 0, 0], width: 1.5
-                    })
-                })
-                // image: new ol.style.Icon({
-                //     anchor: [0.5, 0.5],
-                //     opacity: 1,
-                //     src: '/static/assets/img/icons/flashing_circle.gif'
-                // })
-            });
-        } else if (g_type.indexOf('LineString') !== -1) {
-            selStyle = new Style({
-                stroke: new Stroke({
-                    color: '#d17114',
-                    width: 5
-                }),
-            });
-        } else {
-            selStyle = new Style({
-                fill: new Fill({
-                    color: 'rgba(209, 113, 20, 0)'
-                }),
-                stroke: new Stroke({
-                    color: '#d17114',
-                    width: 3
-                })
-            });
-        }
-        return selStyle;
-    }
 
     //
     // getIconStyle() {

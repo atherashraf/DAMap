@@ -25,7 +25,7 @@ const App = () => {
                 <Route path={"/MapInfo"} element={<MapInfo />} />
                 {/*<Route path={"/create_map"} element={<DAMap />} />*/}
                 <Route path={"/ViewMap/:mapId/"} element={<DAMap />} />
-                <Route path={"/test/"} element={<AddRasterLayerInfo />} />
+                {/*<Route path={"/test/"} element={<AddRasterLayerInfo snackbarRef={null} />} />*/}
                 <Route path={"/"} element={<MapAdmin />} />
 
                 {/*<Route path="/discharge" element={<NetworkDischargeTest uuid={"b4e1e9d2-cf70-11ed-9a9a-acde48001122"} isMap={props.isMap} isDesigner={props.isDesigner}/>}/>*/}

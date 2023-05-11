@@ -10,35 +10,44 @@ import DASnackbar from "../../../ol-map/components/common/DASnackbar";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {useNavigate} from "react-router-dom";
 
 
 interface IProps {
     snackbarRef: React.RefObject<DASnackbar>
 }
 
+interface ILayerCategory {
+    pk: string
+    name: string
+}
+
 const AddRasterLayerInfo = (props: IProps) => {
+    const navigate = useNavigate();
     const [rasterFile, setRasterFile] = useState<File>();
-    const [filePath, setFilePath] = useState<string>("")
+    const [rasterFilePath, setRasterFilePath] = useState<string>("")
     const [rasterType, setRasterType] = React.useState("existing");
     const [sldFile, setSldFile] = useState<File>();
     const [layerTitle, setLayerTitle] = useState<string>("");
     const [layerCategories, setLayerCategories] = useState<any>([])
-    const [selectLayerCatId, setSelectLayerId] = useState<string>("")
+    const [selectLayerCat, setSelectLayerCat] = useState<ILayerCategory>()
+    const [temporalRes, setTemporalRes] = useState<any>(null)
+    const [uuid, setUUID] = useState<string>()
     const handleRegionFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setRasterFile(e.target.files[0]);
-            setFilePath(e.target.files[0].name)
+            setRasterFilePath(e.target.files[0].name)
         }
     };
 
     const handleLayerCategoryChange = (e) => {
-        setSelectLayerId(e.target.value as string)
+        setSelectLayerCat(e.target.value as ILayerCategory)
     }
 
     const handleUpdatedToChange = (event: SelectChangeEvent) => {
         setRasterType(event.target.value);
         if (event.target.value == "existing") {
-            setFilePath("")
+            setRasterFilePath("")
         }
     };
 
@@ -56,9 +65,27 @@ const AddRasterLayerInfo = (props: IProps) => {
     }, [])
     const handleSubmit = (event) => {
         event.preventDefault()
-        console.log(event.currentTarget.elements)
-    }
 
+        const formData = new FormData()
+        formData.append("title", layerTitle);
+        formData.append("isExisting", (rasterType == "existing").toString())
+        if (rasterType == "existing") {
+            formData.append("rasterFilePath", rasterFilePath)
+        } else {
+            formData.append("rasterFile", rasterFile)
+        }
+
+        formData.append("categoryId", selectLayerCat.pk)
+        formData.append("temporal", temporalRes.format("YYYY-MM-DD"))
+        formData.append("sldFile", sldFile)
+        api.postFile(MapAPIs.DCH_ADD_RASTER_INFO, formData).then((payload) => {
+            console.log(payload)
+            props.snackbarRef.current?.show(payload.msg)
+            setUUID(payload.uuid)
+        })
+
+    }
+    // const url = MapApi.getURL(MapAPIs.DCH_ADD_RASTER_INFO)
     return (
 
         <Box
@@ -85,14 +112,14 @@ const AddRasterLayerInfo = (props: IProps) => {
                         <Select
                             labelId="demo-simple-select-standard-label"
                             id="demo-simple-select-standard"
-                            value={rasterType}
+                            value={selectLayerCat}
                             autoWidth
                             onChange={handleLayerCategoryChange}
                             fullWidth={true}
 
                         >
-                            {layerCategories && layerCategories.map((item) => <MenuItem
-                                value={item.value}>{item.name}</MenuItem>)}
+                            {layerCategories && layerCategories.map((item) =>
+                                (<MenuItem key={"key-" + item.name} value={item}>{item.name}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Box>
@@ -128,15 +155,18 @@ const AddRasterLayerInfo = (props: IProps) => {
 
 
                     <TextField id="raster-path-id" label="Raster File Path" variant="standard"
-                               value={filePath} onChange={(e) => setFilePath(e.target.value as string)}
-                               required={true} error={filePath === ""}
+                               value={rasterFilePath} onChange={(e) => setRasterFilePath(e.target.value as string)}
+                               required={true} error={rasterFilePath === ""}
                     />
                 </Box>
                 <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
                     <InputLabel>Temporal Resolution</InputLabel>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
-                            <DatePicker label="Basic date picker"/>
+                            <DatePicker value={temporalRes} onChange={(e) => {
+                                // console.log(e)
+                                setTemporalRes(e)
+                            }}/>
                         </DemoContainer>
                     </LocalizationProvider>
                 </Box>
@@ -149,23 +179,18 @@ const AddRasterLayerInfo = (props: IProps) => {
                     <p style={{color: "black"}}>{sldFile && `${sldFile.name}`}</p>
                 </Box>
                 <Box sx={{margin: "30px"}}>
-                    {/*<Button*/}
-                    {/*    type={"submit"}*/}
-                    {/*    sx={{backgroundColor: "black"}}*/}
-                    {/*    variant="contained"*/}
-                    {/*    component="span"*/}
-                    {/*    onClick={handleSubmit}*/}
-                    {/*>*/}
-                    {/*    Create Layer*/}
-                    {/*</Button>*/}
-                    <Button type="submit"  sx={{backgroundColor: "black", color:"white"}} variant="contained">Create Layer</Button>
+                    <Button type="submit" sx={{backgroundColor: "black", color: "white"}} variant="contained">Create
+                        Layer</Button>
                     &nbsp; &nbsp;
 
                     <Button
                         sx={{backgroundColor: "black"}}
                         variant="contained"
                         component="span"
-                        disabled={true}
+                        disabled={!uuid}
+                        onClick={() => {
+                            navigate("/LayerDesigner/" + uuid)
+                        }}
                     >
                         Layer Designer
                     </Button>

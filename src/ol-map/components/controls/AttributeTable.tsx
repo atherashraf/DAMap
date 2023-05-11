@@ -4,9 +4,9 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import {IControlProps} from "../../TypeDeclaration";
 import {MapAPIs} from "../../utils/MapApi";
 import {useState} from "react";
-import DAGrid from "../../../widgets/grid/grid";
+import AttributeGrid from "../../../widgets/grid/AttributeGrid";
 
-const daGridRef = React.createRef<DAGrid>()
+const daGridRef = React.createRef<AttributeGrid>()
 
 const AttributeTable = (props: IControlProps) => {
     let tableHeight = 300;
@@ -40,12 +40,13 @@ const AttributeTable = (props: IControlProps) => {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                                 .then((payload) => {
                                     if (payload) {
-                                        const table = <DAGrid ref={daGridRef} columns={payload.columns}
-                                                              data={payload.rows}
-                                                              title={""}
-                                                              tableHeight={tableHeight}
-                                                              tableWidth={'auto'}
-                                                              mapVM={props.mapVM}/>
+                                        const table = <AttributeGrid ref={daGridRef} columns={payload.columns}
+                                                                     data={payload.rows}
+                                                                     title={""}
+                                                                     pkCols={payload.pkCols}
+                                                                     tableHeight={tableHeight}
+                                                                     tableWidth={'auto'}
+                                                                     mapVM={props.mapVM}/>
 
 
                                         mapBoxRef.current?.setContent(table);
