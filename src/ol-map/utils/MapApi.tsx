@@ -1,5 +1,6 @@
 import {RefObject} from "react";
 import DASnackbar from "../components/common/DASnackbar";
+import UserUtils from "../../admin/UserUtils";
 
 export const MapAPIs = Object.freeze({
     API_OAUTH_LOGIN: "api/jwt/oauth/login/{type}/",
@@ -31,6 +32,7 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_CATEGORIES: "api/dch/layer_categories/",
     DCH_ADD_RASTER_INFO: "api/dch/add_raster_layer_info/",
     DCH_GET_FEATURE_GEOMETRY: "api/dch/get_feature_geometry/{uuid}/{pk_values}/",
+    DCH_ADD_MODEL_ROW: "api/dch/add_model_row/",
 
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
@@ -81,12 +83,12 @@ export default class MapApi {
         return url;
     }
 
-    async getAccessToken() {
+    static async getAccessToken(token) {
         try {
             // const state = store.getState();
             // const token = state.auth.refreshToken;
             // const token = false;
-            const token = localStorage.getItem("token")
+            // const token = localStorage.getItem("token")
             if (token) {
                 const url = MapApi.getURL(MapAPIs.API_REFRESH_TOKEN);
                 const response = await fetch(url, {
@@ -130,7 +132,7 @@ export default class MapApi {
             }
 
         } catch (e) {
-            this.snackbarRef.current?.show("Failed to contact to server. Please ask system administrator.");
+            // this.snackbarRef?.current?.show("Failed to contact to server. Please ask system administrator.");
         }
     }
 
@@ -185,7 +187,7 @@ export default class MapApi {
         return await this.apiResponse(response, isJSON);
     }
     async getHeaders(isJson: boolean = true) {
-        const accessToken = await this.getAccessToken(); //state.user.accessToken
+        const accessToken = await UserUtils.getAccessToken(); //state.user.accessToken
         const csrfToken = MapApi.getCookie("csrftoken")
         // console.log("csrfToken", csrfToken)
         let headers = new Headers()
@@ -205,7 +207,7 @@ export default class MapApi {
 
     }
 
-    async postFile(apiKey: string, formData: FormData, params: any = {}, isJSON = true) {
+    async postFormData(apiKey: string, formData: FormData, params: any = {}, isJSON = true) {
         try {
             const url = MapApi.getURL(apiKey, params);
             const headers = await this.getHeaders(false);
@@ -406,5 +408,33 @@ export default class MapApi {
             }
         }
         return cookieValue;
+    }
+    static async authenticate(formData) {
+        try {
+            // const headers = new Headers({
+            //     // "X-REQUESTED-WITH": "XMLHttpRequest",
+            //     // 'Accept': 'application/json',
+            //     // "Content-Type": "application/x-www-form-urlencoded",
+            // });
+            const url = MapApi.getURL(MapAPIs.API_LOGIN);
+            const response = await fetch(url, {
+                method: "POST",
+                // mode: "cors",
+                // cache: "no-cache",
+                // credentials: "same-origin",
+                // headers: headers,
+                // redirect: "follow", // manual, *follow, error
+                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: formData, // body data type must match "Content-Type" header
+            });
+            if(response.status==200) {
+                return await response.json();
+            }else{
+                return null;
+            }
+        } catch (e) {
+            // CommonUtils.showSnackbar("Failed to authenticate user", AlertType.error);
+            console.error(e);
+        }
     }
 }

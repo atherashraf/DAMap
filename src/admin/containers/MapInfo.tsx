@@ -75,7 +75,7 @@ const MapInfo = () => {
 
     return (
         <React.Fragment>
-            <Typography variant="h5">Map Info</Typography>
+            {/*<Typography variant="h5">Map Info</Typography>*/}
             {columns.length > 0 ?
                 <ChangeList ref={changeListRef} columns={columns} data={data} tableHeight={'100%'} tableWidth={"100%"}
                             actions={actions}/> :

@@ -80,7 +80,7 @@ class DAFullScreenDialog extends React.PureComponent<IProps, IState> {
                                 {this.state.title}
                             </Typography>
                             <Button autoFocus color="inherit" onClick={this.handleClose}>
-                                save
+                                Close
                             </Button>
                         </Toolbar>
                     </AppBar>

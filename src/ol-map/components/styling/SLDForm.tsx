@@ -21,7 +21,7 @@ const SLDForm = (props: IProps) => {
         // fileToUpload.forEach((file) => formData.append("files", file))
         formData.append("file", file)
         const layerId = props.mapVM.getLayerOfInterest();
-        props.mapVM.getApi().postFile(MapAPIs.DCH_SAVE_SLD, formData, {uuid: layerId}).then((payload) => {
+        props.mapVM.getApi().postFormData(MapAPIs.DCH_SAVE_SLD, formData, {uuid: layerId}).then((payload) => {
             if (payload) {
                 props.mapVM.showSnackbar("SLD uploaded successfully")
                 const daLayer = props.mapVM.getDALayer(layerId)

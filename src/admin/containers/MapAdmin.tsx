@@ -12,18 +12,19 @@ export default  function MapAdmin() {
     return (
         <React.Fragment>
             {Object.keys(items).map((key) => (
-                <Accordion expanded={true}>
+                <Accordion  key={"accordion-"+key} expanded={true}>
                     <AccordionSummary
+                        key={"accordion-summary-"+key}
                         expandIcon={<ExpandMoreIcon/>}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography>{key}</Typography>
+                        <Typography key={"typo-"+key}>{key}</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
-                        <List>
+                    <AccordionDetails  key={"accordion-detail-"+key}>
+                        <List  key={"accordion-list-"+key}>
                             {items[key].map((item) => (
-                                <ListItem><a href={item.href}>{item.name}</a></ListItem>
+                                <ListItem key={item.name}><a href={item.href}>{item.name}</a></ListItem>
                             ))}
                         </List>
                     </AccordionDetails>

@@ -128,14 +128,8 @@ class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
 
     renderToolbar(toolbar: any) {
         if(!this.state.isToolbarAdded) {
-            // console.log("toolbar", toolbar)
-            // const style: React.CSSProperties = {float: 'left', marginLeft: '5px'};
-            // const toolbarRenderer =
-            // createRoot(toolbar[0]).render(this.getToolbarContainer());
             const container = this.getToolbarContainer();
-            // console.log(jsxToString(container))
-            console.log(toolbar[0])
-            // toolbar[0].innerHTML = jsxToString(container)
+
             const root = ReactDOMClient.createRoot(toolbar[0])
             root.render(container)
             this.setState({isToolbarAdded: true})

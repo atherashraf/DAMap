@@ -4,7 +4,6 @@ import ChangeList, {Action} from "../components/ChangeList";
 import MapApi, {MapAPIs} from "../../ol-map/utils/MapApi";
 import DASnackbar from "../../ol-map/components/common/DASnackbar";
 import {RefObject} from "react";
-import {Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import DAFullScreenDialog from "../../common/DAFullScreenDialog";
 import AddRasterLayerInfo from "../components/forms/AddRasterLayerInfo";
@@ -67,10 +66,10 @@ const LayerInfo = () => {
         }]
         setActions(actions)
     }
-
+    const infoGridHeight=0
+    const appbarHeight=0
     return (
         <React.Fragment>
-            <Typography variant="h5">Layer Info</Typography>
             {columns.length > 0 ?
                 <ChangeList ref={changeListRef} columns={columns} data={data} tableHeight={'100%'} tableWidth={"100%"}
                             actions={actions}/> :

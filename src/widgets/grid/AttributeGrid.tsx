@@ -211,6 +211,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     rendertoolbar={this.renderToolbar}
                     onRowselect={this.handleRowSelect}
                     // scrollmode={"default"}
+                    // filtermode={"excel"}
                     altrows={true}/>
             </React.Fragment>
         )
