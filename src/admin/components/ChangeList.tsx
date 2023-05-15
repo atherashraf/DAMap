@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import JqxGrid, {IGridProps, jqx} from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
 import {Column, Row} from "../../widgets/GridTypeDeclaration";
-
+import "jqwidgets-scripts/jqwidgets/styles/jqx.ui-darkness.css"
 import autoBind from "auto-bind";
 
 
@@ -151,7 +151,7 @@ class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
             <React.Fragment>
                 <JqxGrid
                     ref={this.clGrid}
-                    theme={"web"}
+                    theme={"ui-darkness"}
                     width={this.state?.width}
                     source={this.state?.source}
                     columns={this.state?.columns}

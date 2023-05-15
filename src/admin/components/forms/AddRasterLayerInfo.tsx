@@ -27,7 +27,9 @@ const AddRasterLayerInfo = (props: IProps) => {
     const navigate = useNavigate();
     const [formType, setFormType] = useState<"LayerCategory" | null>(null)
     const [rasterFile, setRasterFile] = useState<File>();
+    const [worldFile, setWorldFile] = useState<File>()
     const [rasterFilePath, setRasterFilePath] = useState<string>("")
+    const [worldFilePath, setWorldFilePath] = useState<string>("")
     const [rasterType, setRasterType] = React.useState("new");
     const [sldFile, setSldFile] = useState<File>();
     const [layerTitle, setLayerTitle] = useState<string>("");
@@ -35,12 +37,18 @@ const AddRasterLayerInfo = (props: IProps) => {
     const [selectLayerCat, setSelectLayerCat] = useState<ILayerCategory>()
     const [temporalRes, setTemporalRes] = useState<any>(null)
     const [uuid, setUUID] = useState<string>()
-    const handleRegionFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleRasterFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setRasterFile(e.target.files[0]);
             setRasterFilePath(e.target.files[0].name)
         }
     };
+    const handleWorldFileChange = (e: ChangeEvent<HTMLInputElement>) =>{
+        if (e.target.files) {
+            setWorldFile(e.target.files[0]);
+            setWorldFilePath(e.target.files[0].name)
+        }
+    }
 
     const handleLayerCategoryChange = (e) => {
         setSelectLayerCat(e.target.value as ILayerCategory)
@@ -78,6 +86,7 @@ const AddRasterLayerInfo = (props: IProps) => {
             formData.append("rasterFilePath", rasterFilePath)
         } else {
             formData.append("rasterFile", rasterFile)
+            formData.append("worldFile", worldFile)
         }
 
         formData.append("categoryId", selectLayerCat.pk)
@@ -166,7 +175,7 @@ const AddRasterLayerInfo = (props: IProps) => {
                                 <><InputLabel>Select Raster</InputLabel>
                                     <Button variant="contained" component="label">
                                         Upload File
-                                        <input type="file" onChange={handleRegionFileChange} hidden/>
+                                        <input type="file" onChange={handleRasterFileChange} hidden/>
                                     </Button><br/></>}
 
 
@@ -176,6 +185,21 @@ const AddRasterLayerInfo = (props: IProps) => {
                                        required={true} error={rasterFilePath === ""}
                             />
                         </Box>
+                        {rasterType === "new" &&
+                        <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
+
+                                <><InputLabel>Select World File</InputLabel>
+                                    <Button variant="contained" component="label">
+                                        Upload World File
+                                        <input type="file" onChange={handleWorldFileChange} hidden/>
+                                    </Button><br/></>
+
+
+                            <TextField id="worldfile-path-id" label="World File Path" variant="standard"
+                                       value={worldFilePath}
+                            />
+                        </Box>}
+
                         <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
                             <InputLabel>Temporal Resolution</InputLabel>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -206,7 +230,7 @@ const AddRasterLayerInfo = (props: IProps) => {
                                 component="span"
                                 disabled={!uuid}
                                 onClick={() => {
-                                    navigate("/LayerDesigner/" + uuid)
+                                    navigate("/designer/" + uuid)
                                 }}
                             >
                                 Layer Designer

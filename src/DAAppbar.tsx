@@ -41,10 +41,10 @@ export default function DAAppBar() {
     }
     const handleLogin = () => {
         UserUtils.isLoggedIn().then((res) => {
-            console.log(:"is loged in ")
+            console.log("is logedin ")
             if (!res) {
                 setAuth(false)
-                snackbarRef?.current?.show("Login in process...")
+                // snackbarRef?.current?.show("Login in process...")
                 const formData = new FormData()
                 formData.append("username", "ather")
                 formData.append("password", "abcd@1234")
@@ -53,9 +53,9 @@ export default function DAAppBar() {
                         // setIsAuthenticated(true)
                         UserUtils.saveUser(payload)
                         setAuth(true)
-                        snackbarRef?.current?.hide()
+                        // snackbarRef?.current?.hide()
                     } else {
-                        snackbarRef?.current?.show("Login Faileds...")
+                        // snackbarRef?.current?.show("Login Faileds...")
                     }
 
                 })
