@@ -17,12 +17,10 @@ class UserUtils{
     static saveUser(userInfo: UserInfo){
         if(!userInfo.updatedTime){
             Object.assign(userInfo, {updatedTime: (new Date()).getTime()})
-            console.log(userInfo)
         }
         localStorage.setItem("da_info", JSON.stringify(userInfo))
     }
     static removeUser(){
-        console.log("removing item")
         localStorage.removeItem("da_info")
     }
     static getUser(): UserInfo{
@@ -44,9 +42,7 @@ class UserUtils{
             const userInfo = this.getUser()
             if(userInfo) {
                 const d: Date = new Date()
-                console.log(userInfo?.updatedTime)
                 const diff = Math.abs(d.getTime() - userInfo?.updatedTime)
-                console.log(diff)
                 return diff >= 60000 // true if differnce is more than a min
             }else{
                 return true
@@ -60,7 +56,6 @@ class UserUtils{
         if(userInfo) {
             if (this.isUpdateAccessRequired()) {
                 const r = await MapApi.getAccessToken(userInfo.refresh)
-                console.log("access", r)
                 if (r) {
                     const u = Object.assign(userInfo, {access: r, updatedTime: (new Date()).getTime()})
                     this.saveUser(u)

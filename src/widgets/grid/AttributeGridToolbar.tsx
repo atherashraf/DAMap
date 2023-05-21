@@ -6,7 +6,7 @@ import {createRoot} from 'react-dom/client';
 import MapVM from "../../ol-map/models/MapVM";
 import {RefObject} from "react";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
-import JqxTooltip from "jqwidgets-scripts/jqwidgets-react-tsx/jqxtooltip";
+
 import DATooltip from "./DATooltip";
 
 const reloadBtn = require("../../static/img/refresh.png");

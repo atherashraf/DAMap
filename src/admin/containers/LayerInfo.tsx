@@ -19,14 +19,18 @@ const LayerInfo = () => {
     const api = new MapApi(snackbarRef);
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-        initActions();
+    const getTableData=()=>{
         api.get(MapAPIs.DCH_ALL_LAYER_INFO).then((payload) => {
             if (payload) {
+                console.log(payload)
                 setData(payload.rows)
                 setColumns(payload.columns)
             }
         })
+    }
+    React.useEffect(() => {
+        initActions();
+        getTableData()
     }, [])
     const getRowData = () => {
         const rowData = changeListRef.current?.getSelectedRowData()
@@ -57,10 +61,24 @@ const LayerInfo = () => {
             name: "Delete layer Info",
             action: () => {
                 // console.log(changeListRef)
-                const rowData = changeListRef.current?.getSelectedRowData()
-                if (rowData) {
-                    console.log(rowData)
-                    alert(`Deleting ${rowData.id} LayerInfo....`)
+                const uuid = getSelectedUUID();
+                console.log("uuid", uuid)
+                if (uuid) {
+                    // const formData = new FormData()
+                    // formData.append("model_name", "LayerInfo")
+                    // formData.append("col_name", "uuid")
+                    // formData.append("col_value", uuid)
+                    // // alert(`Deleting ${rowData.id} LayerInfo....`)
+                    api.get(MapAPIs.DCH_DELETE_LAYER_INFO, {uuid:uuid}).then((payload)=>{
+                        if(payload){
+                            // window.location.reload();
+                            getTableData();
+                            snackbarRef.current.show("Layer info deleted successfully")
+
+                        }
+                    })
+                }else{
+                    snackbarRef.current.show("Please select row to delete")
                 }
             }
         }]
@@ -71,8 +89,9 @@ const LayerInfo = () => {
     return (
         <React.Fragment>
             {columns.length > 0 ?
-                <ChangeList ref={changeListRef} columns={columns} data={data} tableHeight={'100%'} tableWidth={"100%"}
-                            actions={actions}/> :
+                <ChangeList ref={changeListRef} columns={columns} data={data}
+                            tableHeight={'100%'} tableWidth={"100%"} modelName={"LayerInfo"}
+                            actions={actions} api={api} pkColName={"uuid"}/> :
                 <React.Fragment/>
             }
             <DASnackbar ref={snackbarRef}/>

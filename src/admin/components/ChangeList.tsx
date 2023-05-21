@@ -4,7 +4,8 @@ import JqxGrid, {IGridProps, jqx} from "jqwidgets-scripts/jqwidgets-react-tsx/jq
 import {Column, Row} from "../../widgets/GridTypeDeclaration";
 import "jqwidgets-scripts/jqwidgets/styles/jqx.ui-darkness.css"
 import autoBind from "auto-bind";
-
+import ChangeListToolbar, {IToolbarButton} from "./ChangeListToolbar";
+import MapApi, {MapAPIs} from "../../ol-map/utils/MapApi";
 
 
 export interface Action {
@@ -12,16 +13,23 @@ export interface Action {
     action: Function
 }
 
-interface CLGridProps {
+interface ICLGridProps {
     columns: Column[];
     data: Row[];
     title?: string
     tableHeight?: number | string,
     tableWidth?: number | string
     actions: Action[]
+    api: MapApi
+    pkColName: string
+    modelName: string
     // mapVM: MapVM
 }
 
+interface IEditedData {
+    pk: { colName: string, colValue: any }
+    rowData: { [key: string]: any }
+}
 
 interface IChangeListState extends IGridProps {
     actions: Action[]
@@ -29,66 +37,84 @@ interface IChangeListState extends IGridProps {
     isToolbarAdded: boolean
 }
 
-class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
-    private clGrid = React.createRef<JqxGrid>();
+class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
+    private daGrid = React.createRef<JqxGrid>();
+
+    private columns: any[] = [];
+    private dataFields: any[] = [];
 
     // private gridToolbar = new ChangeListToolbar(this.clGrid);
 
-    constructor(props: CLGridProps) {
+    constructor(props: ICLGridProps) {
         super(props);
         autoBind(this);
-        const columns: any[] = [];
-        const dataFields: any[] = [];
+        this.setTableStructure();
+        this.state = {
+            width: this.props.tableWidth ? this.props.tableWidth : "100%",
+            height: this.props.tableHeight ? this.props.tableHeight : "100$",
+            columns: this.columns,
+            source: this.getAdapter(),
+            selectedAction: null,
+            actions: [...this.props.actions],
+            editable: false,
+            isToolbarAdded: false,
+        }
+    }
+
+    setTableStructure() {
 
         this.props?.columns?.forEach((col: Column) => {
             let dataKey = col.id
             // problematic columns updating key of data
             const errorFields = ["group"]
 
-            columns.push({
+            this.columns.push({
                 text: col.label,
                 cellsalign: col.type == "string" ? "left" : "right",
                 datafield: dataKey,
                 width: col.type == "string" ? 200 : 80
             })
             //data field
-            dataFields.push({
+            this.dataFields.push({
                 name: dataKey,
                 type: col.type
             })
 
         });
-
-        this.state = {
-            width: this.props.tableWidth ? this.props.tableWidth : "100%",
-            height: this.props.tableHeight ? this.props.tableHeight : "100$",
-            columns: columns,
-            source: this.getAdapter(dataFields),
-            selectedAction: null,
-            actions: [...this.props.actions],
-            isToolbarAdded: false,
-            // {
-            // name: "delete",
-            // action: () => {
-            //     alert("item deleted")
-            // }}
-            // ],
-            // rendertoolbar: (toolbar) => this.renderToolbar(toolbar)
-            // rendertoolbar: this.gridToolbar.renderToolbar
-        }
     }
 
-    getAdapter(dataFields: any): any {
+    getAdapter(data?: Row[]): any {
         const source: any = {
             datatype: "json",
-            datafields: dataFields,
-            localdata: this.props.data,
+            datafields: this.dataFields,
+            localdata: data ? data : this.props.data,
             // async: false,
+            updaterow: (rowid: number, rowdata: any, commit: any): void => {
+                const editedData: IEditedData = {
+                    // cellName: args.dataFields,
+                    // cellValue: args.value
+                    pk: {colName: this.props.pkColName, colValue: rowdata[this.props.pkColName]},
+                    rowData: rowdata
+                }
+                this.props.api.post(MapAPIs.DCH_EDIT_MODEL_ROW, editedData, {modelName: this.props.modelName}).then(payload => {
+                    if (payload) {
+                        this.props.api.snackbarRef.current.show("data updated successfully...")
+                        commit(true);
+                    } else {
+                        commit(false);
+                    }
+                })
+
+            }
 
         }
         return new jqx.dataAdapter(source, {
             autoBind: true,
         })
+    }
+
+    updateSource(data?: Row[]) {
+        this.daGrid.current!.setOptions({source: this.getAdapter(data)});
     }
 
     componentDidCatch(error: any, errorInfo: any) {
@@ -102,34 +128,46 @@ class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
         }, 1000);
     }
 
-    getToolbarContainer() {
-        return (
-            <div style={{overflow: "hidden", position: "absolute", margin: "5px", padding: "5px"}}>
-                <span>actions: &nbsp; &nbsp;</span>
-                <select onChange={(e) => {
-                    const action = this.state.actions.find((item) => item.name == e.target.value)
-                    this.setState({selectedAction: action})
-                }}>
-                    <option value={"-1"}>Select an action</option>
-                    {this.state.actions.map((item: Action) =>
-                        (<option key={"key-" + item.name} value={item.name}>{item.name}</option>))}
-                </select>
+    getToolbarButtons() {
+        // const reloadBtn = require("../../static/img/pencil-icon.png");
+        const tbButtons: IToolbarButton[] = []
+        return tbButtons
+    }
 
-                &nbsp; &nbsp;
-                <button onClick={(e) => {
-                    if (this.state.selectedAction) {
-                        this.state.selectedAction?.action()
-                    }
-                }}>Go
-                </button>
-            </div>
+    getToolbarContainer() {
+        const buttons = this.getToolbarButtons()
+        return (
+            <span style={{display: "flex"}}>
+                <ChangeListToolbar daGrid={this.daGrid} parent={this} buttons={buttons}/>
+                <div style={{overflow: "hidden", position: "relative", margin: "5px", padding: "5px"}}>
+                    <span>actions: &nbsp; &nbsp;</span>
+                    <select onChange={(e) => {
+                        const action = this.state.actions.find((item) => item.name == e.target.value)
+                        this.setState({selectedAction: action})
+                    }}>
+                        <option value={"-1"}>Select an action</option>
+                        {this.state.actions.map((item: Action) =>
+                            (<option key={"key-" + item.name} value={item.name}>{item.name}</option>))}
+                    </select>
+
+                    &nbsp; &nbsp;
+                    <button onClick={(e) => {
+                        if (this.state.selectedAction) {
+                            this.state.selectedAction?.action()
+                        }
+                    }}>Go
+                    </button>
+                </div>
+            </span>
         )
     }
 
     renderToolbar(toolbar: any) {
-        if(!this.state.isToolbarAdded) {
+        if (!this.state.isToolbarAdded) {
             const container = this.getToolbarContainer();
-
+            // const container: JSX.Element = <span style={{display: "flex"}}>
+            //     <ChangeListToolbar  daGrid={this.daGrid}/>
+            //     {this.getToolbarContainer()}</span>
             const root = ReactDOMClient.createRoot(toolbar[0])
             root.render(container)
             this.setState({isToolbarAdded: true})
@@ -137,20 +175,29 @@ class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
 
     }
 
-    getSelectedRowIndex(){
+    getSelectedRowIndex() {
         // console.log(this.clGrid.current.getselectedrowindex())
-        return this.clGrid?.current?.getselectedrowindex()
+        return this.daGrid?.current?.getselectedrowindex()
     }
 
-    getSelectedRowData(){
-        const rowIndex = this.clGrid?.current?.getselectedrowindex()
-        return this.clGrid.current?.getrowdata(rowIndex)
+    getSelectedRowData(): Row {
+        const rowIndex = this.daGrid?.current?.getselectedrowindex()
+        return this.daGrid.current?.getrowdata(rowIndex)
     }
+
+
+
+
+    startEditing() {
+        this.setState(() => ({editable: true}))
+        this.props.api.snackbarRef.current.show("Please double click on cell for editing...")
+    }
+
     render() {
         return (
             <React.Fragment>
                 <JqxGrid
-                    ref={this.clGrid}
+                    ref={this.daGrid}
                     theme={"ui-darkness"}
                     width={this.state?.width}
                     source={this.state?.source}
@@ -160,14 +207,19 @@ class ChangeList extends React.PureComponent<CLGridProps, IChangeListState> {
                     filtermode={'excel'}
                     sortable={true}
                     pageable={true}
+                    pagesize={30}
                     groupable={true}
+                    editable={this.state.editable}
+                    selectionmode={'singlerow'}
                     columnsresize={true}
-                    selectionmode={"singlerow"}
                     showtoolbar={true}
                     rendertoolbar={this.renderToolbar}
                     scrollmode={"default"}
                     altrows={true}/>
+
             </React.Fragment>
+
+
         )
     }
 }
