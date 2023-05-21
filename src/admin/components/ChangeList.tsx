@@ -89,6 +89,12 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
             datafields: this.dataFields,
             localdata: data ? data : this.props.data,
             // async: false,
+            // deleterow: function (rowid, commit) {
+            //     // synchronize with the server - send delete command
+            //     // call commit with parameter true if the synchronization with the server is successful
+            //     //and with parameter false if the synchronization failed.
+            //     commit(true);
+            // },
             updaterow: (rowid: number, rowdata: any, commit: any): void => {
                 const editedData: IEditedData = {
                     // cellName: args.dataFields,
@@ -100,6 +106,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                     if (payload) {
                         this.props.api.snackbarRef.current.show("data updated successfully...")
                         commit(true);
+                        this.setState(()=>({editable: false}))
                     } else {
                         commit(false);
                     }
