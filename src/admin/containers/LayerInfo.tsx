@@ -54,7 +54,7 @@ const LayerInfo = () => {
             name: "Add Raster Layer",
             action: () => {
                 dialogRef.current?.handleClickOpen()
-                dialogRef.current?.setContent("Add Raster Layer", <AddRasterLayerInfo snackbarRef={snackbarRef}/>)
+                dialogRef.current?.setContent("Add Raster Layer", <AddRasterLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef}/>)
                 // alert("Adding LayerInfo....")
             }
         }, {
@@ -62,17 +62,12 @@ const LayerInfo = () => {
             action: () => {
                 // console.log(changeListRef)
                 const uuid = getSelectedUUID();
-                console.log("uuid", uuid)
+                // console.log("uuid", uuid)
                 if (uuid) {
-                    // const formData = new FormData()
-                    // formData.append("model_name", "LayerInfo")
-                    // formData.append("col_name", "uuid")
-                    // formData.append("col_value", uuid)
-                    // // alert(`Deleting ${rowData.id} LayerInfo....`)
                     api.get(MapAPIs.DCH_DELETE_LAYER_INFO, {uuid:uuid}).then((payload)=>{
                         if(payload){
-                            // window.location.reload();
-                            getTableData();
+                            window.location.reload();
+                            // getTableData();
                             snackbarRef.current.show("Layer info deleted successfully")
 
                         }

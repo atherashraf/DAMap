@@ -42,25 +42,28 @@ class ChangeListToolbar extends React.PureComponent<IProps, IState> {
         const reloadButtonIcon = require("../../static/img/refresh.png");
         const editButtonIcon = require("../../static/img/pencil-icon.png");
         const saveButtonIcon = require("../../static/img/Save-as-icon.png");
-        const buttons: IToolbarButton[] = [{
-            id: 'reloadButton',
-            value: 'Reload',
-            imgSrc: reloadButtonIcon,
-            onClick: (event?: any) => {
-                // this.props.daGrid.current!.setOptions({source: this.props.parent.getAdapter()});
-                // alert("relaod...")
-                this.props.parent.updateSource()
-            }
-        }, {
-            id: "edit-button",
-            value: "Edit",
-            imgSrc: editButtonIcon,
-            onClick: () => {
-                // alert("working...")
-                this.props.parent.startEditing();
-            }
+        const buttons: IToolbarButton[] = [
+            //     {
+            //
+            //     id: 'reloadButton',
+            //     value: 'Reload',
+            //     imgSrc: reloadButtonIcon,
+            //     onClick: (event?: any) => {
+            //         // this.props.daGrid.current!.setOptions({source: this.props.parent.getAdapter()});
+            //         // alert("relaod...")
+            //         this.props.parent.updateSource()
+            //     }
+            // },
+            {
+                id: "edit-button",
+                value: "Edit",
+                imgSrc: editButtonIcon,
+                onClick: () => {
+                    // alert("working...")
+                    this.props.parent.startEditing();
+                }
 
-        }]
+            }]
         return buttons;
     }
 

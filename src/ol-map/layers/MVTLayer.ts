@@ -92,7 +92,6 @@ class MVTLayer extends AbstractDALayer {
                     tile.setLoader((extent, resolution, projection) => {
                         if(this.layerInfo.extent3857 && intersects(extent, this.layerInfo.extent3857)) {
                             url = url +"&resolution="+resolution
-                            // console.log("mvt url", url);
                             fetch(url, {
                                 headers: new Headers({
                                     // "Authorization": "Bearer " + accessToken

@@ -13,9 +13,11 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {useNavigate} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import LayerCategory from "./LayerCategory";
+import DAFullScreenDialog from "../../../common/DAFullScreenDialog";
 
 interface IProps {
     snackbarRef: React.RefObject<DASnackbar>
+    dialogRef: React.RefObject<DAFullScreenDialog>
 }
 
 interface ILayerCategory {
@@ -235,6 +237,14 @@ const AddRasterLayerInfo = (props: IProps) => {
                             >
                                 Layer Designer
                             </Button>
+                            &nbsp; &nbsp;
+                            <Button type="submit" sx={{backgroundColor: "black", color: "white"}}
+                                    variant="contained" onClick={()=>{
+                                props.dialogRef.current.handleClose()
+                                window.location.reload()
+                            }}>
+                                Close</Button>
+
                         </Box>
                     </form>
                 </Box>

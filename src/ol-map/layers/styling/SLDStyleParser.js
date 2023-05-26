@@ -16,29 +16,25 @@ class SLDStyleParser {
         sldText = sldText.replaceAll("SvgParameter", "CssParameter");
         const olParser = new OlParser();
         const sldParser = new SldParser();
-        sldParser.readStyle(sldText)
-            .then((geostylerStyle) => {
-                const renderer = new LegendRenderer({
-                    // maxColumnWidth: 250,
-                    // maxColumnHeight: 300,
-                    overflow: 'group',
-                    styles: [geostylerStyle.output],
-                    hideRect: true,
-                    iconSize: [20, 30],
-                    size: [300, 150] //w,h
-                });
-                layer.legend = {sType: 'sld', graphic: renderer}
-                this.legendRenderer = renderer
-                // console.log(JSON.stringify(geostylerStyle.output));
-                return olParser.writeStyle(geostylerStyle.output);
-            })
-            .then((olStyle) => {
-                // Run your actions with the converted style here
-                layer.setStyle(olStyle.output)
-                layer.getSource().refresh()
-                let legendPanel = this.objMvtLayer.mapVM.legendPanel;
-                this.getLegendAsImage(this.legendRenderer, legendPanel, layer)
+        (async ()=>{
+            const geostylerStyle = await sldParser.readStyle(sldText);
+            const renderer = new LegendRenderer({
+                // maxColumnWidth: 250,
+                // maxColumnHeight: 300,
+                overflow: 'group',
+                styles: [geostylerStyle.output],
+                hideRect: true,
+                iconSize: [20, 30],
+                size: [300, 150] //w,h
             });
+            layer.legend = {sType: 'sld', graphic: renderer}
+            this.legendRenderer = renderer
+            const olStyle = await olParser.writeStyle(geostylerStyle.output);
+            layer.setStyle(olStyle.output)
+            layer.getSource().refresh()
+            let legendPanel = this.objMvtLayer.mapVM.legendPanel;
+            this.getLegendAsImage(this.legendRenderer, legendPanel, layer)
+        })();
     }
 
     getLegendAsImage(legendRenderer, legendPanel, layer) {

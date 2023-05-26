@@ -33,7 +33,6 @@ interface IEditedData {
 
 interface IChangeListState extends IGridProps {
     actions: Action[]
-    selectedAction: Action | null
     isToolbarAdded: boolean
 }
 
@@ -42,6 +41,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
     private columns: any[] = [];
     private dataFields: any[] = [];
+    private selectedAction: Action;
 
     // private gridToolbar = new ChangeListToolbar(this.clGrid);
 
@@ -54,7 +54,6 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
             height: this.props.tableHeight ? this.props.tableHeight : "100$",
             columns: this.columns,
             source: this.getAdapter(),
-            selectedAction: null,
             actions: [...this.props.actions],
             editable: false,
             isToolbarAdded: false,
@@ -106,7 +105,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                     if (payload) {
                         this.props.api.snackbarRef.current.show("data updated successfully...")
                         commit(true);
-                        this.setState(()=>({editable: false}))
+                        this.setState(() => ({editable: false}))
                     } else {
                         commit(false);
                     }
@@ -149,8 +148,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                 <div style={{overflow: "hidden", position: "relative", margin: "5px", padding: "5px"}}>
                     <span>actions: &nbsp; &nbsp;</span>
                     <select onChange={(e) => {
-                        const action = this.state.actions.find((item) => item.name == e.target.value)
-                        this.setState({selectedAction: action})
+                        this.selectedAction = this.state.actions.find((item) => item.name == e.target.value)
                     }}>
                         <option value={"-1"}>Select an action</option>
                         {this.state.actions.map((item: Action) =>
@@ -159,8 +157,8 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
                     &nbsp; &nbsp;
                     <button onClick={(e) => {
-                        if (this.state.selectedAction) {
-                            this.state.selectedAction?.action()
+                        if (this.selectedAction) {
+                            this.selectedAction.action()
                         }
                     }}>Go
                     </button>
@@ -191,8 +189,6 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
         const rowIndex = this.daGrid?.current?.getselectedrowindex()
         return this.daGrid.current?.getrowdata(rowIndex)
     }
-
-
 
 
     startEditing() {
