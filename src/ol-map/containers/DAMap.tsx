@@ -2,13 +2,20 @@ import * as React from "react"
 import {useParams} from "react-router-dom";
 import MapView from "./MapView";
 
-const DAMap=()=>{
-    const {mapId} = useParams()
+interface IProps {
+    isEditor?: boolean
+}
 
-    return(
-        <React.Fragment>
-           <MapView uuid={mapId} isMap={true} />
-        </React.Fragment>
+const DAMap = (props: IProps) => {
+    const {mapId} = useParams()
+    return (
+        <div style={{"width": "100%", height: "calc(100% - 60px)"}}>
+            {props.isEditor ?
+                <MapView uuid={mapId} isMap={true} isEditor={props.isEditor}/> :
+                <MapView uuid={mapId} isMap={true}/>
+            }
+        </div>
+
     )
 }
 

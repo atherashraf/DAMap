@@ -61,12 +61,14 @@ export interface ILayerInfo {
 }
 
 export interface IMapInfo {
+    uuid: string
     title?: string
     layers: { uuid: string, style: IFeatureStyle, visible: boolean }[]
     extent?: number[]
     srid?: number
     units?: string
     description?: string
+    isEditor?: boolean
 }
 
 

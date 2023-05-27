@@ -31,7 +31,7 @@ const MapInfo = () => {
             {
                 name: "Create Map Info",
                 action: () => {
-                    navigate("/ViewMap/-1")
+                    navigate("/EditMap/-1")
                 }
             }, {
                 name: "View Map",
@@ -41,6 +41,24 @@ const MapInfo = () => {
                         navigate("/ViewMap/" + uuid)
                     }
                     snackbarRef.current?.show("Please select a row")
+                }
+            },{
+                name: "Upate Map",
+                action: () =>{
+                    const uuid = getSelectedUUID()
+                    if (uuid) {
+                        navigate('/EditMap/'+uuid)
+                        // api.get(MapAPIs.DCH_UPDATE_MAP, {uuid: uuid}).then((payload) => {
+                        //     if (payload) {
+                        //         window.location.reload()
+                        //         setTimeout(() => {
+                        //             snackbarRef.current.show("Map Info deleted successfully")
+                        //         }, 3000)
+                        //     }
+                        // })
+                    }
+                    snackbarRef.current?.show("Please select a row")
+
                 }
             }, {
                 name: "Delete Map",
@@ -78,7 +96,7 @@ const MapInfo = () => {
             {/*<Typography variant="h5">Map Info</Typography>*/}
             {columns.length > 0 ?
                 <ChangeList ref={changeListRef} columns={columns} data={data} tableHeight={'100%'} tableWidth={"100%"}
-                            actions={actions}/> :
+                            actions={actions} api={api} modelName={"MapInfo"} pkColName={"uuid"}/> :
                 <React.Fragment/>
             }
             <DASnackbar ref={snackbarRef}/>

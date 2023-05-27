@@ -63,6 +63,7 @@ class MapVM {
     private readonly fullScreen: FullScreen;
     legendPanel: any = null;
     selectionLayer: SelectionLayer
+    mapInfo: IMapInfo = null;
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -84,13 +85,14 @@ class MapVM {
     }
 
     initMap(mapInfo?: IMapInfo) {
+        this.mapInfo = mapInfo
         this.map = new Map({
             controls: defaultControls().extend([
                 this.fullScreen,
                 new MapToolbar({
                     mapVM: this,
                     isDesigner: this.isDesigner,
-                    isCreateMap: (!this.isDesigner && !mapInfo)
+                    isCreateMap: ((!this.isDesigner && !mapInfo) || mapInfo?.isEditor)
                 })
             ]),
             view: new View({
@@ -100,10 +102,12 @@ class MapVM {
         });
         this.addBaseLayers()
         if (mapInfo) {
-            this.mapExtent = mapInfo.extent;
-            mapInfo.layers.forEach(async (layer) => {
+            if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
+            mapInfo?.layers?.forEach((layer) => {
                 // console.log(layer)
-                await  this.addDALayer(layer)
+                setTimeout(async () => {
+                    await this.addDALayer(layer)
+                }, 500)
             });
         }
         this.addSidebarController();
@@ -162,12 +166,15 @@ class MapVM {
     getLeftDrawerRef(): RefObject<LeftDrawer> {
         return this._domRef.leftDrawerRef
     }
-    setAttributeTableRef(ref: RefObject<AttributeGrid>){
+
+    setAttributeTableRef(ref: RefObject<AttributeGrid>) {
         this._domRef.attributeTableRef = ref
     }
-    getAttributeTableRef(): RefObject<AttributeGrid>{
+
+    getAttributeTableRef(): RefObject<AttributeGrid> {
         return this._domRef.attributeTableRef;
     }
+
     getDialogBoxRef(): RefObject<DADialogBox> {
         return this._domRef.dialogBoxRef
     }
@@ -227,7 +234,8 @@ class MapVM {
         // @ts-ignore
         this.mapExtent && this.map.getView().fit(this.mapExtent, this.map.getSize());
     }
-    zoomToExtent(extent: number[]){
+
+    zoomToExtent(extent: number[]) {
         // @ts-ignore
         this.map.getView().fit(extent, this.map.getSize());
     }
@@ -278,9 +286,6 @@ class MapVM {
             me.mapControls.getRasterAreaFromPolygon(me, target, e.feature);
         });
     }
-
-
-
 
 
     // getSelectionLayer(): VectorLayer<VectorSource> {

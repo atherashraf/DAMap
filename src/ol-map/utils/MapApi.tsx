@@ -29,6 +29,7 @@ export const MapAPIs = Object.freeze({
     DCH_LEGEND_GRAPHIC: "api/dch/get_legend_graphic/{uuid}/",
     DCH_SAVE_MAP: "api/dch/save_map/",
     DCH_DELETE_MAP: "api/dch/delete_map/{uuid}/",
+    DCH_UPDATE_MAP: "api/dch/update_map/{uuid}/",
     DCH_LAYER_CATEGORIES: "api/dch/layer_categories/",
     DCH_ADD_RASTER_INFO: "api/dch/add_raster_layer_info/",
     DCH_GET_FEATURE_GEOMETRY: "api/dch/get_feature_geometry/{uuid}/{pk_values}/",
@@ -36,6 +37,7 @@ export const MapAPIs = Object.freeze({
     DCH_DELETE_MODEL_ROW: "api/dch/delete_model_row/",
     DCH_EDIT_MODEL_ROW: "api/dch/edit_model_row/{modelName}/",
     DCH_DELETE_LAYER_INFO: "api/dch/delete_layerinfo_row/{uuid}/",
+    DCH_DOWNLOAD_SLD: "api/dch/download_sld_style/{uuid}/",
 
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",

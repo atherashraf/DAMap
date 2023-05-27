@@ -10,7 +10,9 @@ interface IProps {
 
 const SaveMap = (props: IProps) => {
     const handleClick = () => {
-        const mapName = prompt("Please enter map name");
+        // console.log("mapeInfo", props.mapVM.mapInfo)
+        const mapName = props.mapVM.mapInfo? props.mapVM.mapInfo.title :  prompt("Please enter map name")
+        const mapUUID = props.mapVM.mapInfo? props.mapVM.mapInfo.uuid : "-1"
         const uuids = []
         const visibility = []
         Object.keys(props.mapVM.daLayers).forEach((uuid) => {
@@ -21,8 +23,8 @@ const SaveMap = (props: IProps) => {
         const extent = props.mapVM.getCurrentExtent()
         console.log(mapName, uuids, extent)
         let url = MapApi.getURL(MapAPIs.DCH_SAVE_MAP)
-        url += `?map_name=${mapName}&uuids=${String(uuids)}
-        &extent=${String(extent)}&visibility=${String(visibility)}`
+        url += `?map_name=${mapName}&uuids=${String(uuids.reverse())}
+        &extent=${String(extent)}&visibility=${String(visibility)}&mapUUID=${mapUUID}`
         props.mapVM.getApi().getFetch(url).then((payload) => {
             if (payload) {
                 props.mapVM.showSnackbar("Map created successfully")

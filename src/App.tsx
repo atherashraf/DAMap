@@ -51,6 +51,7 @@ const MapRoutes = () => {
                 </Protected>
             }/>
             <Route path={"/ViewMap/:mapId/"} element={<DAMap/>}/>
+            <Route path={"/EditMap/:mapId/"} element={<DAMap isEditor={true}/>}/>
             <Route path={"/"} element={<MapAdmin/>}/>
         </Routes>
 

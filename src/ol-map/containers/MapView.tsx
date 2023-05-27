@@ -16,6 +16,7 @@ interface MapVMProps {
     uuid: string
     isMap: boolean
     isDesigner?: boolean
+    isEditor?: boolean
 }
 
 interface MapVMState {
@@ -55,16 +56,18 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
     }
 
     componentDidMount() {
+        const {props} = this
         if (this.props.isMap && this.props.uuid !== "-1") {
-            this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": this.props.uuid})
+            this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
                 .then((payload: IMapInfo) => {
                     // console.log("payload", payload)
+                    const mapInfo = Object.assign(payload, {isEditor: props.isEditor})
                     if (!this.mapVM.isInit) {
-                        this.mapVM.initMap(payload);
+                        this.mapVM.initMap(mapInfo);
                     }
                     this.mapVM.setTarget(this.mapDivId);
                 })
-        }else if (this.props.isMap){
+        } else if (this.props.isMap) {
             if (!this.mapVM.isInit) {
                 this.mapVM.initMap();
             }

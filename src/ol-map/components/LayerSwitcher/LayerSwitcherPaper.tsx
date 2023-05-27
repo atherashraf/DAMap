@@ -28,11 +28,12 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     const addLayerSwitcher = (target: HTMLElement) => {
         let lswitcher = new LayerSwitcher({
             target: target,
-            // tipLabel: 'Legend', // Optional label for button
-            // groupSelectStyle: 'children',
+            //tipLabel: 'Legend', // Optional label for button
+            //groupSelectStyle: 'children',
             show_progress: true,
-            // selection: true,
-            // extent: true,
+            //selection: true,
+            //@ts-ignore
+            extent: true,
             trash: true,
             // oninfo: function (l) // alert(l.get("title")); }
         });
