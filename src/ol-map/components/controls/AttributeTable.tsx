@@ -34,7 +34,8 @@ const AttributeTable = (props: IControlProps) => {
                         props.mapVM.showSnackbar("Please select a layer to view its attributes");
                     } else if (!open) {
                         const mapHeight = mapBoxRef.current.getMapHeight()
-                        tableHeight = tableHeight < mapHeight + 50 ? tableHeight : mapHeight / 2
+                        tableHeight = mapHeight <= mapBoxRef.current.getMaxMapHeight() ? tableHeight : mapHeight / 2
+                        // tableHeight = mapHeight / 2;
                         mapBoxRef.current?.openBottomDrawer(tableHeight)
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})

@@ -10,27 +10,28 @@ interface IProps {
 
 interface IState {
     drawerHeight: number,
-    mapPadding: number,
+    mapHeight: number,
     display: "none" | "block"
     contents: JSX.Element
-    maxMapHeight: number
 }
 
 class MapPanel extends React.PureComponent<IProps, IState> {
     private mapDivId: string;
+    public maxMapHeight: number = 300
 
     constructor(props: IProps) {
         super(props);
         this.mapDivId = "map"
         this.state = {
             drawerHeight: 0,
-            mapPadding: 0,
+            mapHeight: 0,
             contents: <React.Fragment/>,
             display: "none",
-            maxMapHeight: 0,
         }
     }
-
+    getMaxMapHeight(): number{
+        return this.maxMapHeight
+    }
     getMapHeight(): number {
         return document.getElementById(this.mapDivId)?.clientHeight || 0
     }
@@ -45,11 +46,12 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeBottomDrawer() {
-        this.setState({drawerHeight: 0, display: "none", mapPadding: 0, contents: <React.Fragment/>})
+        this.setState({drawerHeight: 0, display: "none", contents: <React.Fragment/>})
         this.props.mapVM.refreshMap();
     }
 
     openBottomDrawer(height: number, contents: JSX.Element = null) {
+        this.resizeDrawer(height)
         if (!contents) {
             contents = <div style={{
                 display: 'flex', position: "relative",
@@ -61,7 +63,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         }
 
         this.setContent(contents)
-        this.resizeDrawer(height)
+
     }
 
     getDrawerHeight() {
@@ -69,12 +71,9 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     resizeDrawer(height: number) {
-        const checkHeight = 150
         this.setState({
-            drawerHeight: height > checkHeight ? height : 300,
-            mapPadding: height
+            drawerHeight: height,
         })
-
     }
 
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
@@ -82,7 +81,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        this.setState({maxMapHeight: this.getMapHeight()})
+        this.setState({mapHeight: this.getMapHeight()})
     }
 
     setContent(contents: JSX.Element = <React.Fragment/>) {
@@ -98,19 +97,22 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     getPaperHeight() {
-
-        const totalHeight = this.state.drawerHeight + (this.state.maxMapHeight - this.state.mapPadding)
-        return this.state.maxMapHeight + 10 < totalHeight ? totalHeight : this.state.maxMapHeight
+        console.log(this.state.mapHeight, this.maxMapHeight)
+        return this.state.mapHeight <= this.maxMapHeight ? this.state.drawerHeight + this.state.mapHeight : this.state.mapHeight
     }
 
     render() {
 
         return (
-            <Paper sx={{width: "100%", height: (!this.state.maxMapHeight || this.state.display =="none") ? "100%" : this.getPaperHeight()}}
+            <Paper sx={{
+                width: "100%",
+                height: (this.state.display == "none") ? "100%" : this.getPaperHeight()
+                // height: "100%",
+            }}
                    elevation={6}>
                 <div id={this.mapDivId} style={{
                     width: "100%",
-                    height: `calc(100% - ${this.state.mapPadding}px)`,
+                    height:`calc(100% - ${this.state.drawerHeight}px)`,
                 }}/>
                 <div style={{
                     display: this.state.display,

@@ -75,6 +75,7 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
         } else {
             if (!this.mapVM.isInit) {
                 const info: IMapInfo = {
+                    uuid: "-1",
                     layers: [],
                 }
                 this.mapVM.initMap(info);
