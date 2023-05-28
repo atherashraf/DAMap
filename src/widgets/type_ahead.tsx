@@ -37,7 +37,7 @@ class TypeAhead extends React.PureComponent<IProps, IState> {
                     options={data}
                     onChange={(e, option)=>this.props.onChange(option)}
                     getOptionLabel={(option) => option[optionLabelKey]}
-                    sx={{width: "95%"}}
+                    sx={{width: "90%", m:1}}
                     renderInput={(params) => <TextField {...params} label={inputLabel}/>}
                 />
             </>

@@ -46,8 +46,8 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
     const handleOptionChange = (selectedOption: any) => {
         setSelectedOption(selectedOption.uuid);
     };
-    const handleWeatherOptionChange = (event: any) => {
-        setSelectedWeatherOption(event.target.value);
+    const handleWeatherOptionChange = (selectedOption: any) => {
+        setSelectedWeatherOption(selectedOption.layer_name);
     };
     const handelAddButton = async () => {
         await props.mapVM.addDALayer({uuid: selectedOption})
@@ -87,19 +87,23 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
                 <div id={"div-add_layer"} style={{width: "100%", height: "auto"}}/>
                 <h3>Add Weather Layer</h3>
                 <FormControl style={{display: "flex"}}>
-                    <InputLabel id="dropdown-label">Select Weather Layer</InputLabel>
-                    <Select
-                        labelId="dropdown-label"
-                        id="dropdown"
-                        value={selectedWeatherOption}
-                        onChange={handleWeatherOptionChange}
-                    >
-                        {weatherLayers.map((option: any) => (
-                            <MenuItem key={option.title} value={option.layer_name}>
-                                {option.title}
-                            </MenuItem>
-                        ))}
-                    </Select>
+                    <TypeAhead data={weatherLayers}
+                               optionLabelKey={"title"}
+                               inputLabel={"Select Weather Layer"}
+                               onChange={handleWeatherOptionChange} />
+                    {/*<InputLabel id="dropdown-label">Select Weather Layer</InputLabel>*/}
+                    {/*<Select*/}
+                    {/*    labelId="dropdown-label"*/}
+                    {/*    id="dropdown"*/}
+                    {/*    value={selectedWeatherOption}*/}
+                    {/*    onChange={handleWeatherOptionChange}*/}
+                    {/*>*/}
+                    {/*    {weatherLayers.map((option: any) => (*/}
+                    {/*        <MenuItem key={option.title} value={option.layer_name}>*/}
+                    {/*            {option.title}*/}
+                    {/*        </MenuItem>*/}
+                    {/*    ))}*/}
+                    {/*</Select>*/}
                 </FormControl>
                 <Button style={{marginTop: "5px"}} variant="contained" color="primary" onClick={handelAddWeatherButton}>Add
                     Weather Layer</Button>
