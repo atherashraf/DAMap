@@ -1,8 +1,4 @@
 import * as React from "react";
-import JqxWindow from "jqwidgets-scripts/jqwidgets-react-tsx/jqxwindow";
-import JqxInput from "jqwidgets-scripts/jqwidgets-react-tsx/jqxinput";
-import JqxNumberInput from "jqwidgets-scripts/jqwidgets-react-tsx/jqxnumberinput";
-import JqxButton from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons";
 import {Box, TextField} from "@mui/material";
 import {Row} from "../../widgets/grid/GridTypeDeclaration";
 

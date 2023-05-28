@@ -1,10 +1,9 @@
 import * as React from "react";
 import {useState} from "react"
 import MapVM from "../models/MapVM";
-import {Button, FormControl, InputLabel, MenuItem, Select} from '@mui/material';
+import {Button, FormControl} from '@mui/material';
 import WeatherLayers from "../layers/WeatherLayers";
-import Type_ahead from "../../widgets/type_ahead";
-import TypeAhead from "../../widgets/type_ahead";
+import TypeAhead from "../../widgets/TypeAhead";
 
 interface AddLayerPanelProps {
     mapVM: MapVM,
@@ -68,19 +67,6 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
                 <FormControl style={{display: "flex"}}>
                     <TypeAhead data={options} inputLabel={"Select Layer"}
                                optionLabelKey={"title"} onChange={handleOptionChange}/>
-                    {/*<InputLabel id="dropdown-label">Select Layer</InputLabel>*/}
-                    {/*<Select*/}
-                    {/*    labelId="dropdown-label"*/}
-                    {/*    id="dropdown"*/}
-                    {/*    value={selectedOption}*/}
-                    {/*    onChange={handleOptionChange}*/}
-                    {/*>*/}
-                    {/*    {options.map((option: any) => (*/}
-                    {/*        <MenuItem key={option.uuid} value={option.uuid}>*/}
-                    {/*            {option.title}*/}
-                    {/*        </MenuItem>*/}
-                    {/*    ))}*/}
-                    {/*</Select>*/}
                 </FormControl>
                 <Button style={{marginTop: "5px"}} variant="contained" color="primary" onClick={handelAddButton}>Add
                     Layer</Button>
@@ -90,20 +76,7 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
                     <TypeAhead data={weatherLayers}
                                optionLabelKey={"title"}
                                inputLabel={"Select Weather Layer"}
-                               onChange={handleWeatherOptionChange} />
-                    {/*<InputLabel id="dropdown-label">Select Weather Layer</InputLabel>*/}
-                    {/*<Select*/}
-                    {/*    labelId="dropdown-label"*/}
-                    {/*    id="dropdown"*/}
-                    {/*    value={selectedWeatherOption}*/}
-                    {/*    onChange={handleWeatherOptionChange}*/}
-                    {/*>*/}
-                    {/*    {weatherLayers.map((option: any) => (*/}
-                    {/*        <MenuItem key={option.title} value={option.layer_name}>*/}
-                    {/*            {option.title}*/}
-                    {/*        </MenuItem>*/}
-                    {/*    ))}*/}
-                    {/*</Select>*/}
+                               onChange={handleWeatherOptionChange}/>
                 </FormControl>
                 <Button style={{marginTop: "5px"}} variant="contained" color="primary" onClick={handelAddWeatherButton}>Add
                     Weather Layer</Button>
