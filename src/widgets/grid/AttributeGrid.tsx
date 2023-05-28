@@ -1,7 +1,7 @@
 import * as React from "react";
 import JqxGrid, {IGridProps, jqx} from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
 import MapVM from "../../ol-map/models/MapVM";
-import {Column, Row} from "../GridTypeDeclaration";
+import {Column, Row} from "./GridTypeDeclaration";
 import autoBind from "auto-bind";
 import { MapAPIs } from "../../ol-map/utils/MapApi";
 import {createRoot} from "react-dom/client";

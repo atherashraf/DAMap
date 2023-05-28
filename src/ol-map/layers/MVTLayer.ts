@@ -104,6 +104,8 @@ class MVTLayer extends AbstractDALayer {
                                         extent: extent,
                                         featureProjection: projection
                                     });
+                                    // console.log(url)
+                                    // console.log(features)
                                     //@ts-ignore
                                     tile.setFeatures(features);
                                 });

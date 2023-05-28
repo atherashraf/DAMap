@@ -3,6 +3,8 @@ import {useState} from "react"
 import MapVM from "../models/MapVM";
 import {Button, FormControl, InputLabel, MenuItem, Select} from '@mui/material';
 import WeatherLayers from "../layers/WeatherLayers";
+import Type_ahead from "../../widgets/type_ahead";
+import TypeAhead from "../../widgets/type_ahead";
 
 interface AddLayerPanelProps {
     mapVM: MapVM,
@@ -15,7 +17,18 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
     if (!wLayers) {
         wLayers = new WeatherLayers(mapVM)
     }
-    const options = props.layers
+    const options = props.layers.sort((a, b) => {
+        let fa = a.title.toLowerCase(),
+            fb = b.title.toLowerCase();
+
+        if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+    })
     const weatherLayers = [
         {"uuid": "1", "title": "Clouds", "layer_name": "clouds_new"},
         {"uuid": "2", "title": "Precipitation", "layer_name": "precipitation_new"},
@@ -30,8 +43,8 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
     // }, [])
     const [selectedOption, setSelectedOption] = useState(options[0].uuid);
     const [selectedWeatherOption, setSelectedWeatherOption] = useState(weatherLayers[4].layer_name);
-    const handleOptionChange = (event: any) => {
-        setSelectedOption(event.target.value);
+    const handleOptionChange = (selectedOption: any) => {
+        setSelectedOption(selectedOption.uuid);
     };
     const handleWeatherOptionChange = (event: any) => {
         setSelectedWeatherOption(event.target.value);
@@ -47,24 +60,27 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
             wLayers.addTileWeatherMap(selectedWeatherOption)
         }
     }
+
     return (
         <React.Fragment>
             <div className="panel">
                 <h3>Add New Layer</h3>
                 <FormControl style={{display: "flex"}}>
-                    <InputLabel id="dropdown-label">Select Layer</InputLabel>
-                    <Select
-                        labelId="dropdown-label"
-                        id="dropdown"
-                        value={selectedOption}
-                        onChange={handleOptionChange}
-                    >
-                        {options.map((option: any) => (
-                            <MenuItem key={option.uuid} value={option.uuid}>
-                                {option.title}
-                            </MenuItem>
-                        ))}
-                    </Select>
+                    <TypeAhead data={options} inputLabel={"Select Layer"}
+                               optionLabelKey={"title"} onChange={handleOptionChange}/>
+                    {/*<InputLabel id="dropdown-label">Select Layer</InputLabel>*/}
+                    {/*<Select*/}
+                    {/*    labelId="dropdown-label"*/}
+                    {/*    id="dropdown"*/}
+                    {/*    value={selectedOption}*/}
+                    {/*    onChange={handleOptionChange}*/}
+                    {/*>*/}
+                    {/*    {options.map((option: any) => (*/}
+                    {/*        <MenuItem key={option.uuid} value={option.uuid}>*/}
+                    {/*            {option.title}*/}
+                    {/*        </MenuItem>*/}
+                    {/*    ))}*/}
+                    {/*</Select>*/}
                 </FormControl>
                 <Button style={{marginTop: "5px"}} variant="contained" color="primary" onClick={handelAddButton}>Add
                     Layer</Button>

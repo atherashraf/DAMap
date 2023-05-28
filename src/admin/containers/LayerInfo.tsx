@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Column, Row} from "../../widgets/GridTypeDeclaration";
+import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 import ChangeList, {Action} from "../components/ChangeList";
 import MapApi, {MapAPIs} from "../../ol-map/utils/MapApi";
 import DASnackbar from "../../ol-map/components/common/DASnackbar";

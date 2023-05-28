@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import JqxGrid, {IGridProps, jqx} from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
-import {Column, Row} from "../../widgets/GridTypeDeclaration";
+import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 import "jqwidgets-scripts/jqwidgets/styles/jqx.ui-darkness.css"
 import autoBind from "auto-bind";
 import ChangeListToolbar, {IToolbarButton} from "./ChangeListToolbar";

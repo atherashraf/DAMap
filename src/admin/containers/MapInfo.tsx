@@ -2,7 +2,7 @@ import * as React from "react"
 import {Typography} from "@mui/material";
 import ChangeList, {Action} from "../components/ChangeList";
 import DASnackbar from "../../ol-map/components/common/DASnackbar";
-import {Column, Row} from "../../widgets/GridTypeDeclaration";
+import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 import MapApi, {MapAPIs} from "../../ol-map/utils/MapApi";
 import {useNavigate} from "react-router-dom";
 import {RefObject} from "react";

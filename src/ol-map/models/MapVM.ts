@@ -45,7 +45,7 @@ class MapVM {
     overlayLayers: IOverlays = {}
     private _domRef: IDomRef
     private _layerOfInterest: string = null;
-    private _vectorLayerAddedEvent = new Event('VectorLayerAdded');
+    private _daLayerAddedEvent = new Event('DALayerAdded');
     // @ts-ignore
     mapControls = null;
     // @ts-ignore
@@ -103,11 +103,10 @@ class MapVM {
         this.addBaseLayers()
         if (mapInfo) {
             if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
-            mapInfo?.layers?.forEach((layer) => {
+            mapInfo?.layers?.forEach(async (layer) => {
                 // console.log(layer)
-                setTimeout(async () => {
-                    await this.addDALayer(layer)
-                }, 500)
+                await this.addDALayer(layer)
+
             });
         }
         this.addSidebarController();
@@ -386,13 +385,13 @@ class MapVM {
                 if (payload?.dataModel === 'V') {
                     daLayer = new MVTLayer(payload, this);
                     this.daLayers[payload.uuid] = daLayer
-                    window.dispatchEvent(this._vectorLayerAddedEvent)
                 } else {
                     daLayer = new RasterTileLayer(payload, this)
                     this.daLayers[payload.uuid] = daLayer
                 }
                 const visible = info.visible != undefined ? info.visible : true
                 daLayer.getOlLayer().setVisible(visible)
+                window.dispatchEvent(this._daLayerAddedEvent)
             }
         }
     }
