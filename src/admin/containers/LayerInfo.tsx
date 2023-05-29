@@ -81,14 +81,16 @@ const LayerInfo = () => {
             action: () =>{
                 const uuid = getSelectedUUID();
                 if(uuid){
-                    api.get(MapAPIs.DCH_DOWNLOAD_SLD, {uuid:uuid}).then((payload)=>{
-                        if(payload){
-                            window.location.reload();
-                            // getTableData();
-                            snackbarRef.current.show("Layer info deleted successfully")
-
-                        }
-                    })
+                    const url = MapApi.getURL(MapAPIs.DCH_DOWNLOAD_SLD, {uuid:uuid});
+                    window.open(url)
+                    // api.get(MapAPIs.DCH_DOWNLOAD_SLD, {uuid:uuid}).then((payload)=>{
+                    //     if(payload){
+                    //         window.location.reload();
+                    //         // getTableData();
+                    //         snackbarRef.current.show("Layer info deleted successfully")
+                    //
+                    //     }
+                    // })
                 }
             }
         }]

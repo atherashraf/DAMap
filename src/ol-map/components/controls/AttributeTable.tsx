@@ -40,6 +40,7 @@ const AttributeTable = (props: IControlProps) => {
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                                 .then((payload) => {
+                                    console.log(payload)
                                     if (payload) {
                                         const table = <AttributeGrid ref={daGridRef} columns={payload.columns}
                                                                      data={payload.rows}
