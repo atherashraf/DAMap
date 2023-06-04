@@ -1,5 +1,6 @@
 import 'ol/ol.css';
-import 'ol-ext/dist/ol-ext.css'
+import 'ol-ext/dist/ol-ext.css';
+import * as React from "react";
 // @ts-ignore
 import RedPinIcon from "../static/img/red_pin_icon_16.png"
 import Map from 'ol/Map';
@@ -21,14 +22,15 @@ import ol_legend_Legend from "ol-ext/legend/Legend";
 import RasterTileLayer from "../layers/RasterTileLayer";
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from "ol/source/Vector";
-import {Fill, Stroke, Style} from "ol/style";
-import CircleStyle from "ol/style/Circle";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
-import IDWLayer from "../layers/IDWLayer";
 import MapControls from "../layers/MapControls";
 import AttributeGrid from "../../widgets/grid/AttributeGrid";
 import SelectionLayer from "../layers/SelectionLayer";
+
+import LayerSwitcherPaper from "../components/LayerSwitcher/LayerSwitcherPaper";
+import autoBind from "auto-bind";
+import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 
 
 export interface IDALayers {
@@ -73,6 +75,7 @@ class MapVM {
         this.fullScreen.on('enterfullscreen', this.handleFullScreen.bind(this))
         this.fullScreen.on('leavefullscreen', this.handleFullScreen.bind(this))
         this.mapControls = new MapControls(this);
+        autoBind(this)
 
     }
 
@@ -455,6 +458,28 @@ class MapVM {
     //     extent && this.map.getView().fit(extent, this.map.getSize());
     //
     // }
+
+    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], title:string="", tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null) {
+        const mapBoxRef = this.getMapPanelRef()
+        const table = <AttributeGrid ref={daGridRef} columns={columns}
+                                     data={rows}
+                                     title={title}
+                                     pkCols={pkCols}
+                                     tableHeight={tableHeight}
+                                     tableWidth={'auto'}
+                                     mapVM={this}/>
+
+
+        mapBoxRef.current?.setContent(table);
+    }
+
+    openLayerSwitcher() {
+        const drawerRef = this.getRightDrawerRef();
+        drawerRef?.current?.addContents("Table of Content", <LayerSwitcherPaper mapVM={this}/>)
+        drawerRef?.current?.openDrawer()
+        // props.drawerRef?.current?.addHeading()
+        this.refreshMap();
+    }
 
 }
 

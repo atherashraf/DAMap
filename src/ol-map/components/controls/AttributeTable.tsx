@@ -22,7 +22,7 @@ const AttributeTable = (props: IControlProps) => {
     });
     ro.observe(document.getElementById("bottom-drawer-div"))
     React.useEffect(() => {
-        props.mapVM.setAttributeTableRef(daGridRef)
+        setTimeout(() => props.mapVM.setAttributeTableRef(daGridRef), 500)
     }, [])
     return (
         <React.Fragment>
@@ -42,16 +42,9 @@ const AttributeTable = (props: IControlProps) => {
                                 .then((payload) => {
                                     console.log(payload)
                                     if (payload) {
-                                        const table = <AttributeGrid ref={daGridRef} columns={payload.columns}
-                                                                     data={payload.rows}
-                                                                     title={""}
-                                                                     pkCols={payload.pkCols}
-                                                                     tableHeight={tableHeight}
-                                                                     tableWidth={'auto'}
-                                                                     mapVM={props.mapVM}/>
+                                        props.mapVM?.openAttributeTable(payload.columns, payload.rows,
+                                            payload.pkCols, "Attributes Information", tableHeight, daGridRef)
 
-
-                                        mapBoxRef.current?.setContent(table);
 
                                     } else {
                                         mapBoxRef.current?.closeBottomDrawer()

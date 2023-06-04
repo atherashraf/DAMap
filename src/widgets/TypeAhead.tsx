@@ -36,6 +36,7 @@ class TypeAhead extends React.PureComponent<IProps, IState> {
                     id={"type-ahead-" + inputLabel}
                     options={data}
                     onChange={(e, option)=>this.props.onChange(option)}
+                    //@ts-ignore
                     getOptionLabel={(option) => option[optionLabelKey]}
                     sx={{width: "90%", m:1}}
                     renderInput={(params) => <TextField {...params} label={inputLabel}/>}

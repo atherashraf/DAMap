@@ -1,16 +1,12 @@
 import * as React from "react";
 import {IControlProps} from "../../TypeDeclaration";
 import {IconButton, Tooltip} from "@mui/material";
-import LayerSwitcherPaper from "../LayerSwitcher/LayerSwitcherPaper";
 import LayersIcon from '@mui/icons-material/Layers';
 
 const LayerSwitcherControl = (props: IControlProps) => {
     // const {drawerRef} = props
     const handleClick = () => {
-        props.drawerRef?.current?.addContents("Layer Switcher", <LayerSwitcherPaper mapVM={props.mapVM}/>)
-        props.drawerRef?.current?.openDrawer()
-        // props.drawerRef?.current?.addHeading()
-        props.mapVM.refreshMap();
+        props.mapVM?.openLayerSwitcher()
     }
     return (
         <React.Fragment>
