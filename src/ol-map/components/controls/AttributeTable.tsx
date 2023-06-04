@@ -40,7 +40,6 @@ const AttributeTable = (props: IControlProps) => {
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                                 .then((payload) => {
-                                    console.log(payload)
                                     if (payload) {
                                         props.mapVM?.openAttributeTable(payload.columns, payload.rows,
                                             payload.pkCols, "Attributes Information", tableHeight, daGridRef)

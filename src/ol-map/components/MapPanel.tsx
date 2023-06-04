@@ -97,7 +97,6 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     getPaperHeight() {
-        console.log(this.state.mapHeight, this.maxMapHeight)
         return this.state.mapHeight <= this.maxMapHeight ? this.state.drawerHeight + this.state.mapHeight : this.state.mapHeight
     }
 

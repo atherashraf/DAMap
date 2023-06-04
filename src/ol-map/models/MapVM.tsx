@@ -461,6 +461,9 @@ class MapVM {
 
     openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], title:string="", tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null) {
         const mapBoxRef = this.getMapPanelRef()
+        if(!mapBoxRef.current.isBottomDrawerOpen()) {
+            mapBoxRef.current.openBottomDrawer(tableHeight)
+        }
         const table = <AttributeGrid ref={daGridRef} columns={columns}
                                      data={rows}
                                      title={title}

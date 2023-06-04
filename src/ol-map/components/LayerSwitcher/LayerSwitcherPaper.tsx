@@ -5,6 +5,7 @@ import "./LayerSwitcher.css";
 import {Group} from "ol/layer";
 import Legend from "ol-ext/legend/Legend";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
+import {useEffect} from "react";
 // import Legend from "./legend/Legend"
 // import '../static/css/custom_layerswitcher.css'
 
@@ -16,15 +17,6 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     const {mapVM} = props
     const [isLSAdeed, setLSAded] = React.useState(false);
     const legendSize = [60, 40]
-    React.useEffect(() => {
-        if (!isLSAdeed) {
-            const elem = document.getElementById('div-layer-switcher') as HTMLElement
-            elem.innerHTML = "";
-            // mapVM.addLayerSwitcher(elem)
-            addLayerSwitcher(elem)
-            setLSAded(true)
-        }
-    }, [])
     const addLayerSwitcher = (target: HTMLElement) => {
         let lswitcher = new LayerSwitcher({
             target: target,
@@ -49,7 +41,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                 const graphic = layer?.legend['graphic']
                 const imageSize = [60, 40]
                 let image = null;
-                    switch (layer.legend['sType']) {
+                switch (layer.legend['sType']) {
                     case "sld":
                         layer.legend['graphic'].render(e.li);
                         break
@@ -79,10 +71,22 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
         })
         mapVM.getMap()?.addControl(lswitcher)
     }
+    useEffect(()=>{
+        if (!isLSAdeed) {
+            const elem = document.getElementById('div-layer-switcher') as HTMLElement
+            elem.innerHTML = "";
+            // mapVM.addLayerSwitcher(elem)
+            addLayerSwitcher(elem)
+            setLSAded(true)
+        }
+    }, [])
+
+
+
 
     return (
         <React.Fragment>
-            <Paper elevation={2} sx={{height: "100%", width:"100%", m: 0, p: 0}}>
+            <Paper elevation={2} sx={{height: "100%", width: "100%", m: 0, p: 0}}>
                 <div id={"div-layer-switcher"} style={{width: "100%", height: "auto"}}/>
             </Paper>
         </React.Fragment>
