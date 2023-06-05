@@ -24,6 +24,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from "ol/source/Vector";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
+//@ts-ignore
 import MapControls from "../layers/MapControls";
 import AttributeGrid from "../../widgets/grid/AttributeGrid";
 import SelectionLayer from "../layers/SelectionLayer";
@@ -66,6 +67,7 @@ class MapVM {
     legendPanel: any = null;
     selectionLayer: SelectionLayer
     mapInfo: IMapInfo = null;
+    additionalToolbarButtons: JSX.Element[] = []
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
         this._domRef = domRef
@@ -132,6 +134,7 @@ class MapVM {
             legend: this.legendPanel,
             // collapsed: true
         });
+        //@ts-ignore
         this.map.addControl(legendCtrl);
     }
 
@@ -458,15 +461,30 @@ class MapVM {
     //     extent && this.map.getView().fit(extent, this.map.getSize());
     //
     // }
-
-    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], title:string="", tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null) {
+    openBottomDrawer(tableHeight: number){
         const mapBoxRef = this.getMapPanelRef()
         if(!mapBoxRef.current.isBottomDrawerOpen()) {
+            const mapHeight = mapBoxRef.current.getMapHeight();
+            const maxMapHeight=mapBoxRef?.current?.getMaxMapHeight() || 300
+            // console.log("map height", mapHeight, maxMapHeight);
+            tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
+            // console.log("table height", tableHeight)
             mapBoxRef.current.openBottomDrawer(tableHeight)
+
         }
+        return tableHeight;
+    }
+    getAdditionalToolbarButtons(){
+        return this.additionalToolbarButtons
+    }
+    addAdditionalToolbarButton(elem: JSX.Element){
+        this.additionalToolbarButtons.push(elem)
+    }
+    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null) {
+        const mapBoxRef = this.getMapPanelRef()
+        this.openBottomDrawer(tableHeight)
         const table = <AttributeGrid ref={daGridRef} columns={columns}
                                      data={rows}
-                                     title={title}
                                      pkCols={pkCols}
                                      tableHeight={tableHeight}
                                      tableWidth={'auto'}

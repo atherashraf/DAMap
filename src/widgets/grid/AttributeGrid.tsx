@@ -11,7 +11,6 @@ import AttributeGridToolbar, {IToolbarButton} from "./AttributeGridToolbar";
 interface IDataGridProps {
     columns: Column[];
     data: Row[];
-    title?: string
     tableHeight: number,
     tableWidth?: number | 'auto'
     pkCols: string[]
@@ -204,7 +203,8 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     filterable={true}
                     sortable={true}
                     pageable={true}
-                    groupable={false}
+                    pagesize={20}
+                    groupable={true}
                     columnsresize={true}
                     selectionmode={"singlerow"}
                     showtoolbar={true}

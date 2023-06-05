@@ -42,7 +42,7 @@ const AttributeTable = (props: IControlProps) => {
                                 .then((payload) => {
                                     if (payload) {
                                         props.mapVM?.openAttributeTable(payload.columns, payload.rows,
-                                            payload.pkCols, "Attributes Information", tableHeight, daGridRef)
+                                            payload.pkCols,  tableHeight, daGridRef)
 
 
                                     } else {

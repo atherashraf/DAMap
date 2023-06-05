@@ -49,7 +49,7 @@ class MapToolbar extends Control {
                 {!optOptions.isDesigner &&
                     <LOISelector mapVM={mapVM}/>
                 }
-
+                {mapVM.getAdditionalToolbarButtons().map((elem: JSX.Element) => elem)}
             </React.Fragment>
         );
     }
