@@ -207,7 +207,6 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                     columns={this.state?.columns}
                     height={this.state?.height}
                     filterable={true}
-                    filtermode={'excel'}
                     sortable={true}
                     pageable={true}
                     pagesize={30}
