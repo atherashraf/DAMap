@@ -39,15 +39,16 @@ class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
     constructor(props) {
         super(props);
         this.state = {
-            buttons: [{
-                id: 'reloadButton',
-                value: 'Reload',
-                imgSrc: reloadBtn,
-                onClick: (event?: any) => {
-                    // this.myGrid.current!.setOptions({source: this.myGrid.getAdapter()});
-                    alert("relaod...")
-                }
-            },
+            buttons: [
+                // {
+                //     id: 'reloadButton',
+                //     value: 'Reload',
+                //     imgSrc: reloadBtn,
+                //     onClick: (event?: any) => {
+                //         // this.myGrid.current!.setOptions({source: this.myGrid.getAdapter()});
+                //         alert("relaod...")
+                //     }
+                // },
                 //     {
                 //     id: 'zoomButton',
                 //     onClick: (event?: any) => {
@@ -111,22 +112,22 @@ class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
         return (
             <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
                 {this.state.buttons.map((btn) => (
-                    <div id={"div-" + btn.id} key={"div-" + btn.id} style={style} >
-                        <DATooltip content={btn.value} width={btnStyle.width}
-                                    height={btnStyle.height}  name={"tooltip-"+btn.id} >
-                            {/*<img height={btnStyle.height} src={btn.imgSrc} />*/}
+                    <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
+                        {/*<DATooltip content={btn.value} width={btnStyle.width}*/}
+                        {/*            height={btnStyle.height}  name={"tooltip-"+btn.id} >*/}
+                        {/*<img height={btnStyle.height} src={btn.imgSrc} />*/}
 
-                            <JqxButton
-                                    onClick={btn.onClick}
-                                    key={"btn-" + btn.id}
-                                    width={btnStyle.width} height={btnStyle.height}
-                                    // value={btn.value}
-                                    imgSrc={btn.imgSrc}
-                                    imgPosition={'center'}
-                                    textPosition={'center'}
-                                    textImageRelation={'imageBeforeText'}
-                                />
-                        </DATooltip>
+                        <JqxButton
+                            onClick={btn.onClick}
+                            key={"btn-" + btn.id}
+                            width={btnStyle.width} height={btnStyle.height}
+                            // value={btn.value}
+                            imgSrc={btn.imgSrc}
+                            imgPosition={'center'}
+                            textPosition={'center'}
+                            textImageRelation={'imageBeforeText'}
+                        />
+                        {/*</DATooltip>*/}
 
                     </div>
 

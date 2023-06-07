@@ -63,9 +63,10 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                 // column model
                 columns.push({
                     text: col.label,
-                    cellsalign: col.type == "string" ? "left" : "right",
+                    cellsalign: col.type == "string" ? "left" : "center",
+                    align: 'center',
                     datafield: dataKey,
-                    width: col.type == "string" ? 200 : 80
+                    width: col.type == "string" ? 200 : 100
                 })
                 //data field
                 dataFields.push({
@@ -133,8 +134,12 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     }
 
     updateRow(updatedRow: any){
-        const rowId = this.getSelectedRowIndex()
-        this.jqxGridRef.current.updaterow(rowId, updatedRow)
+        try {
+            const rowId = this.getSelectedRowIndex()
+            this.jqxGridRef?.current?.updaterow(rowId, updatedRow)
+        } catch(e){
+            // console.error("failed to update row")
+        }
     }
     handleRowSelect(e){
         const row  = this.getSelectedRowData()

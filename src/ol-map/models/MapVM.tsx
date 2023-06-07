@@ -1,5 +1,6 @@
 import 'ol/ol.css';
 import 'ol-ext/dist/ol-ext.css';
+import '../../static/css/da-ol.css';
 import * as React from "react";
 // @ts-ignore
 import RedPinIcon from "../static/img/red_pin_icon_16.png"
