@@ -13,6 +13,7 @@ import LOISelector from "./controls/LOISelector";
 import RasterArea from "./controls/RasterArea";
 import AddLayer from "./controls/AddLayer";
 import SaveMap from "./controls/SaveMap";
+import RefreshMap from "./controls/RefreshMap";
 
 
 class MapToolbar extends Control {
@@ -36,6 +37,7 @@ class MapToolbar extends Control {
         const root = createRoot(element)
         root.render(<React.Fragment>
                 {/*<AddClassificationSurface mapVM={mapVM}/>*/}
+                <RefreshMap mapVM={mapVM} />
                 {optOptions.isCreateMap && <SaveMap mapVM={mapVM}/>}
                 <AddLayer mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>

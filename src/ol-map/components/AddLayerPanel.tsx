@@ -65,7 +65,7 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
             <div className="panel">
                 <h3>Add New Layer</h3>
                 <FormControl style={{display: "flex"}}>
-                    <TypeAhead data={options} inputLabel={"Select Layer"}
+                    <TypeAhead data={props.layers} inputLabel={"Select Layer"}
                                optionLabelKey={"title"} onChange={handleOptionChange}/>
                 </FormControl>
                 <Button style={{marginTop: "5px"}} variant="contained" color="primary" onClick={handelAddButton}>Add

@@ -137,14 +137,15 @@ class AbstractDALayer {
     }
 
     refreshLayer() {
-        this.mapVM.showSnackbar("Refreshing Layer", 11000)
-        // console.log("refreshing layer"
+        const source = this.layer?.getSource();
+        if(source) {
+            source.refresh()
+        }
     }
 
     getDataSource() {
         if (!this.dataSource)
             this.setDataSource();
-
 
         return this.dataSource;
     }

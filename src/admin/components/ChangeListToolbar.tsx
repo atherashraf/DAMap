@@ -1,16 +1,14 @@
-import * as ReactDOM from "react-dom";
 import JqxButton from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons";
 import * as React from "react";
-import MapVM from "../../ol-map/models/MapVM";
 import {RefObject} from "react";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
-import DATooltip from "../../widgets/grid/DATooltip";
 import ChangeList from "./ChangeList";
+import {Tooltip} from "@mui/material";
 
 
 export interface IToolbarButton {
     id: string
-    value: string
+    title: string
     onClick: (e?: Event) => void
     imgSrc: any
 }
@@ -39,24 +37,11 @@ class ChangeListToolbar extends React.PureComponent<IProps, IState> {
     }
 
     getBasicButtons(): IToolbarButton[] {
-        const reloadButtonIcon = require("../../static/img/refresh.png");
         const editButtonIcon = require("../../static/img/pencil-icon.png");
-        const saveButtonIcon = require("../../static/img/Save-as-icon.png");
         const buttons: IToolbarButton[] = [
-            //     {
-            //
-            //     id: 'reloadButton',
-            //     value: 'Reload',
-            //     imgSrc: reloadButtonIcon,
-            //     onClick: (event?: any) => {
-            //         // this.props.daGrid.current!.setOptions({source: this.props.parent.getAdapter()});
-            //         // alert("relaod...")
-            //         this.props.parent.updateSource()
-            //     }
-            // },
             {
                 id: "edit-button",
-                value: "Edit",
+                title: "Edit",
                 imgSrc: editButtonIcon,
                 onClick: () => {
                     // alert("working...")
@@ -67,45 +52,11 @@ class ChangeListToolbar extends React.PureComponent<IProps, IState> {
         return buttons;
     }
 
-    // componentDidMount() {
-    //     this.createButtons();
-    // }
 
     addButton(newButton: IToolbarButton[]) {
         this.setState(() => ({buttons: [...this.state.buttons, ...newButton]}))
     }
 
-    // componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
-    //     if (prevState?.buttons?.length != this.state?.buttons?.length) {
-    //         this.createButtons()
-    //     }
-    // }
-
-    createButtons(): void {
-        // this.state.buttons.forEach((btn: IToolbarButton) => {
-        //     const reloadRenderer = createRoot(document.getElementById("div-" + btn.id))
-        //     const btnProps = {
-        //         width: 80,
-        //         height: 25,
-        //         imgPosition: 'center',
-        //         textPosition: 'center'
-        //     }
-        //     reloadRenderer.render(
-        //         <JqxButton
-        //             onClick={btn.onClick}
-        //             key={"btn-" + btn.id}
-        //             width={btnProps.width} height={btnProps.height}
-        //             value={btn.value} imgSrc={btn.imgSrc}
-        //             //@ts-ignore
-        //             imgPosition={btnProps.imgPosition} textPosition={btnProps.textPosition}
-        //             textImageRelation={'imageBeforeText'}/>);
-        // });
-
-    }
-
-    // clearBtnOnClick(): void {
-    //     this.myGrid.current!.clearfilters();
-    // }
 
     render() {
         const style: React.CSSProperties = {float: 'left', marginLeft: '5px'};
@@ -118,21 +69,20 @@ class ChangeListToolbar extends React.PureComponent<IProps, IState> {
         return (
             <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
                 {this.state.buttons.map((btn) => (
-                    <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
-                        {/*<DATooltip content={btn.value} width={btnStyle.width}*/}
-                        {/*           height={btnStyle.height}  name={"tooltip-"+btn.id} >*/}
-                        <JqxButton
-                            onClick={btn.onClick}
-                            key={"btn-" + btn.id}
-                            width={btnStyle.width} height={btnStyle.height}
-                            // value={btn.value}
-                            imgSrc={btn.imgSrc}
-                            imgPosition={'center'}
-                            textPosition={'center'}
-                            textImageRelation={'imageBeforeText'}
-                        />
-                        {/*</DATooltip>*/}
-                    </div>
+                    <Tooltip title={btn.title} key={"tooltip" + btn.id}>
+                        <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
+                            <JqxButton
+                                onClick={btn.onClick}
+                                key={"btn-" + btn.id}
+                                width={btnStyle.width} height={btnStyle.height}
+                                // value={btn.value}
+                                imgSrc={btn.imgSrc}
+                                imgPosition={'center'}
+                                textPosition={'center'}
+                                textImageRelation={'imageBeforeText'}
+                            />
+                        </div>
+                    </Tooltip>
 
                 ))}
             </div>

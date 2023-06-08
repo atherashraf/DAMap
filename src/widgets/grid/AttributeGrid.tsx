@@ -3,9 +3,13 @@ import JqxGrid, {IGridProps, jqx} from 'jqwidgets-scripts/jqwidgets-react-tsx/jq
 import MapVM from "../../ol-map/models/MapVM";
 import {Column, Row} from "./GridTypeDeclaration";
 import autoBind from "auto-bind";
-import { MapAPIs } from "../../ol-map/utils/MapApi";
+import {MapAPIs} from "../../ol-map/utils/MapApi";
 import {createRoot} from "react-dom/client";
 import AttributeGridToolbar, {IToolbarButton} from "./AttributeGridToolbar";
+import DAFullScreenDialog from "../../common/DAFullScreenDialog";
+import {RefObject} from "react";
+import AddRasterLayerInfo from "../../admin/components/forms/AddRasterLayerInfo";
+import PivotTable from "./PivotTable.";
 
 
 interface IDataGridProps {
@@ -16,35 +20,40 @@ interface IDataGridProps {
     pkCols: string[]
     mapVM: MapVM
 }
-interface IDataGridState extends IGridProps{
+
+interface IDataGridState extends IGridProps {
     isToolbarRendered: boolean
 }
+
 class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> {
     private jqxGridRef = React.createRef<JqxGrid>();
     private toolbarRef = React.createRef<AttributeGridToolbar>()
-    // private adapter: jqxDataAdapter
-    // private gridToolbar = new GridToolbar(this.myGrid, this.props.mapVM);
+    private dialogRef: RefObject<DAFullScreenDialog> = React.createRef<DAFullScreenDialog>()
+    private tableMargin: number = 15;
 
     constructor(props: IDataGridProps) {
         super(props);
         const {columns, dataFields} = this.getGridColumnsDataField();
         this.state = {
             width: "100%",
-            height: this.props.tableHeight + "px",
+            height: (this.props.tableHeight - this.tableMargin) + "px",
             columns: columns,
             source: this.createSource(dataFields),
             isToolbarRendered: false
         }
         autoBind(this)
     }
-    getJqxGrid(){
+
+    getJqxGrid() {
         return this.jqxGridRef;
     }
-    getToolbbar(){
+
+    getToolbbar() {
         return this.toolbarRef;
     }
-    getGridColumnsDataField(){
-        const columns : any[] = [];
+
+    getGridColumnsDataField() {
+        const columns: any[] = [];
         const dataFields: any[] = [];
         if (this.props.data.length > 0) {
             this.props.columns.forEach((col) => {
@@ -79,9 +88,10 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         }
         return {columns, dataFields}
     }
-    createSource(dataFields:any): any {
+
+    createSource(dataFields: any): any {
         const {data} = this.props
-        data.forEach((d, index)=>{
+        data.forEach((d, index) => {
             data[index]["geom"] = null
         })
         dataFields.push({
@@ -111,39 +121,42 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     //         // this.gridToolbar.createButtons();
     //     });
     // }
-    updateTableHeight(newHeight){
-        this.setState({height: newHeight})
+    updateTableHeight(newHeight) {
+        this.setState({height: newHeight - this.tableMargin})
     }
-    getSelectedRowIndex(){
+
+    getSelectedRowIndex() {
         // console.log(this.clGrid.current.getselectedrowindex())
         return this.jqxGridRef?.current?.getselectedrowindex()
     }
 
-    getSelectedRowData(){
+    getSelectedRowData() {
         const rowIndex = this.getSelectedRowIndex()
         return this.jqxGridRef.current?.getrowdata(rowIndex)
     }
-    getSelectedRowPKValue(){
+
+    getSelectedRowPKValue() {
         const rowData = this.getSelectedRowData()
-        let pkVal =""
-        this.props.pkCols.forEach((col)=>{
+        let pkVal = ""
+        this.props.pkCols.forEach((col) => {
             // console.log(col, rowData[col])
             pkVal += rowData[col]
         })
         return pkVal
     }
 
-    updateRow(updatedRow: any){
+    updateRow(updatedRow: any) {
         try {
             const rowId = this.getSelectedRowIndex()
             this.jqxGridRef?.current?.updaterow(rowId, updatedRow)
-        } catch(e){
+        } catch (e) {
             // console.error("failed to update row")
         }
     }
-    handleRowSelect(e){
-        const row  = this.getSelectedRowData()
-        if(!row["geom"]) {
+
+    handleRowSelect(e) {
+        const row = this.getSelectedRowData()
+        if (!row["geom"]) {
             const pkVal = this.getSelectedRowPKValue()
             this.props.mapVM.getApi().get(MapAPIs.DCH_GET_FEATURE_GEOMETRY,
                 {uuid: this.props.mapVM.getLayerOfInterest(), pk_values: pkVal})
@@ -153,48 +166,61 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     this.updateRow(row)
                 })
 
-        }else{
+        } else {
             this.props.mapVM.selectionLayer.addWKT2Selection(row["geom"])
         }
 
     }
-    addZoomButton(){
+
+    addToolbarButtons() {
         const me = this;
         const zoomBtn = require("../../static/img/search.png")
         const clearBtn = require("../../static/img/selection_delete.png")
-        const btn: IToolbarButton[]=[{
+        const pivotBtn = require("../../static/img/pivot-table.png")
+        const btn: IToolbarButton[] = [{
             id: "zoomButton",
-            value: "Zoom To Selection",
+            title: "Zoom To Selection",
             imgSrc: zoomBtn,
-            onClick: (e)=>{
+            onClick: (e) => {
                 // alert("zoom to layer")
                 me.props.mapVM.selectionLayer.zoomToSelection()
             }
-        },{
+        }, {
             id: "clearSelection",
-            value: "Clear Selection",
+            title: "Clear Selection",
             imgSrc: clearBtn,
-            onClick: (e)=>{
+            onClick: (e) => {
                 me.props.mapVM.selectionLayer.clearSelection()
                 me.props.mapVM.zoomToFullExtent()
             }
+        }, {
+            id: "pivotTable",
+            title: "Pivot Table",
+            imgSrc: pivotBtn,
+            onClick: (e) => {
+                this.dialogRef.current?.handleClickOpen()
+                this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={this.props.data} />)
+
+            }
         }]
-        if(this.toolbarRef.current) {
+        if (this.toolbarRef.current) {
             this.toolbarRef.current.addButton(btn)
-        }else{
+        } else {
             console.error("Attribute Grid toolbar is not available")
         }
     }
-    renderToolbar(toolbar){
-        if(!this.state.isToolbarRendered) {
+
+    renderToolbar(toolbar) {
+        if (!this.state.isToolbarRendered) {
             const toolbarElem = toolbar[0] as HTMLElement
             const root = createRoot(toolbarElem)
             root.render(<React.Fragment><AttributeGridToolbar ref={this.toolbarRef} mapVM={this.props.mapVM}
                                                               daGrid={this.jqxGridRef}/></React.Fragment>)
-            this.setState(()=>({isToolbarRendered: true}))
-            setTimeout(() => this.addZoomButton(), 1000)
+            this.setState(() => ({isToolbarRendered: true}))
+            setTimeout(() => this.addToolbarButtons(), 1000)
         }
     }
+
     render() {
         return (
             <React.Fragment>
@@ -218,6 +244,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     // scrollmode={"default"}
                     // filtermode={"excel"}
                     altrows={true}/>
+                <DAFullScreenDialog ref={this.dialogRef}/>
             </React.Fragment>
         )
     }

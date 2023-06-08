@@ -193,15 +193,27 @@ class MapVM {
         return this._layerOfInterest;
     }
 
-    setLayerOfInterest(value: string) {
-        this._layerOfInterest = value;
+    setLayerOfInterest(uuid: string, closeDrawer: boolean = true) {
+        this._layerOfInterest = uuid;
+        setTimeout(()=>{
+            const sel: HTMLSelectElement =  document.getElementById("loi-select") as HTMLSelectElement
+            sel.selectedIndex= [...sel.options].findIndex(option => option.value==uuid)
+        }, 1000)
+
         const mapBoxRef = this.getMapPanelRef();
         let open = mapBoxRef.current?.isBottomDrawerOpen();
-        if (open) {
+        if (open && closeDrawer) {
             mapBoxRef.current?.closeBottomDrawer()
         }
     }
-
+    isLayerExist(uuid: string){
+        // const k: string[] = Object.keys(this.daLayers)
+        for(let key in this.daLayers){
+            if (key == uuid)
+                return true
+        }
+        return false
+    }
     addBaseLayers() {
         const bl = new BaseLayers(this)
         bl.addBaseLayers()
@@ -225,9 +237,14 @@ class MapVM {
 
     refreshMap() {
         setTimeout(() => {
+            this.map?.render()
             this.map?.updateSize()
             this.map?.setSize(this.map.getSize())
             this.map?.updateSize()
+            this.showSnackbar("Refreshing map...")
+            Object.keys(this.daLayers).forEach((key)=>{
+               this.daLayers[key].refreshLayer()
+            });
         }, 100);
     }
 

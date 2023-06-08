@@ -23,7 +23,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             //tipLabel: 'Legend', // Optional label for button
             //groupSelectStyle: 'children',
             show_progress: true,
-            //selection: true,
+            selection: true,
             //@ts-ignore
             extent: true,
             trash: true,
