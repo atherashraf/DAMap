@@ -60,8 +60,8 @@ class MVTLayer extends AbstractDALayer {
     refreshLayer() {
         // console.log("refreshing source and map")
         super.refreshLayer()
-        this.layer.getSource().clear()
-        this.layer.getSource().refresh();
+        // this.layer.getSource().clear()
+        // this.layer.getSource().refresh();
         // this.mapVM.refreshMap()
     }
     // setStyle(style: IFeatureStyle) {
@@ -75,9 +75,9 @@ class MVTLayer extends AbstractDALayer {
             url: `${this.getDataURL()}{z}/{x}/{y}/?${this.urlParams}`,
             attributions: "Digital Arz MVT Layer",
             tileLoadFunction: (tile, url) => {
-                // console.log("url", url);
                 const z = tile.tileCoord[0];
                 const zoomRange = this.layerInfo.zoomRange || [0, 30]
+                // console.log(z, zoomRange)
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
                     let cols: string[] = []
                     if (this.style && this.style.type !== "single" && this.style.type !== "sld") {
@@ -90,8 +90,10 @@ class MVTLayer extends AbstractDALayer {
                     }
                     //@ts-ignore
                     tile.setLoader((extent, resolution, projection) => {
+                        // console.log(this.layerInfo.extent3857, extent)
                         if(this.layerInfo.extent3857 && intersects(extent, this.layerInfo.extent3857)) {
                             url = url +"&resolution="+resolution
+                            // console.log("url", url);
                             fetch(url, {
                                 headers: new Headers({
                                     // "Authorization": "Bearer " + accessToken

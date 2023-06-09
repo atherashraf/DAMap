@@ -22,7 +22,6 @@ const LayerInfo = () => {
     const getTableData=()=>{
         api.get(MapAPIs.DCH_ALL_LAYER_INFO).then((payload) => {
             if (payload) {
-                console.log(payload)
                 setData(payload.rows)
                 setColumns(payload.columns)
             }

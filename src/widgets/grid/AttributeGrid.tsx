@@ -29,7 +29,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     private jqxGridRef = React.createRef<JqxGrid>();
     private toolbarRef = React.createRef<AttributeGridToolbar>()
     private dialogRef: RefObject<DAFullScreenDialog> = React.createRef<DAFullScreenDialog>()
-    private tableMargin: number = 15;
+    private tableMargin: number = 5;
 
     constructor(props: IDataGridProps) {
         super(props);

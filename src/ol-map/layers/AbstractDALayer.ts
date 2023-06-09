@@ -139,6 +139,7 @@ class AbstractDALayer {
     refreshLayer() {
         const source = this.layer?.getSource();
         if(source) {
+            source.clear()
             source.refresh()
         }
     }

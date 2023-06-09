@@ -9,7 +9,7 @@ interface IProps {
 const DAMap = (props: IProps) => {
     const {mapId} = useParams()
     return (
-        <div style={{"width": "100%", height: "calc(100% - 60px)"}}>
+        <div style={{"width": "100%", height: "calc(100% - 30px)"}}>
             {props.isEditor ?
                 <MapView uuid={mapId} isMap={true} isEditor={props.isEditor}/> :
                 <MapView uuid={mapId} isMap={true}/>

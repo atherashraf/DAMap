@@ -34,15 +34,19 @@ const AttributeTable = (props: IControlProps) => {
                         props.mapVM.showSnackbar("Please select a layer to view its attributes");
                     } else if (!open) {
                         const mapHeight = mapBoxRef.current.getMapHeight()
-                        tableHeight = mapHeight <= mapBoxRef.current.getMaxMapHeight() ? tableHeight : mapHeight / 2
+                        const maxMapHeight: number = mapBoxRef.current.getMaxMapHeight();
+                        tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
                         // tableHeight = mapHeight / 2;
+                        console.log("map", mapHeight)
+                        console.log("max map", maxMapHeight)
+                        console.log("table height", tableHeight)
                         mapBoxRef.current?.openBottomDrawer(tableHeight)
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                                 .then((payload) => {
                                     if (payload) {
                                         props.mapVM?.openAttributeTable(payload.columns, payload.rows,
-                                            payload.pkCols,  tableHeight, daGridRef)
+                                            payload.pkCols, tableHeight, daGridRef)
 
 
                                     } else {

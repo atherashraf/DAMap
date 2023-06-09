@@ -197,7 +197,9 @@ class MapVM {
         this._layerOfInterest = uuid;
         setTimeout(()=>{
             const sel: HTMLSelectElement =  document.getElementById("loi-select") as HTMLSelectElement
-            sel.selectedIndex= [...sel.options].findIndex(option => option.value==uuid)
+            if(sel) {
+                sel.selectedIndex = [...sel.options].findIndex(option => option.value == uuid)
+            }
         }, 1000)
 
         const mapBoxRef = this.getMapPanelRef();
