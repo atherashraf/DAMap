@@ -12,7 +12,7 @@ import MapToolbar from "../components/MapToolbar";
 import MVTLayer from "../layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {RefObject} from "react";
-import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo, IGeoJSON} from "../TypeDeclaration";
+import {IFeatureStyle, IDomRef, ILayerInfo, IMapInfo} from "../TypeDeclaration";
 import RightDrawer from "../components/drawers/RightDrawer";
 import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
@@ -500,7 +500,7 @@ class MapVM {
     addAdditionalToolbarButton(elem: JSX.Element){
         this.additionalToolbarButtons.push(elem)
     }
-    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null) {
+    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc:string=null) {
         const mapBoxRef = this.getMapPanelRef()
         this.openBottomDrawer(tableHeight)
         const table = <AttributeGrid ref={daGridRef} columns={columns}
@@ -508,6 +508,7 @@ class MapVM {
                                      pkCols={pkCols}
                                      tableHeight={tableHeight}
                                      tableWidth={'auto'}
+                                     pivotTableSrc={pivotTableSrc}
                                      mapVM={this}/>
 
 

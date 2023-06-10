@@ -1,7 +1,6 @@
 import * as React from "react";
-import {Box, CircularProgress, Paper} from "@mui/material";
+import { CircularProgress, Paper} from "@mui/material";
 import MapVM from "../models/MapVM";
-import BottomDrawerResizer from "./drawers/BottomDrawerResizer";
 
 
 interface IProps {
@@ -10,9 +9,10 @@ interface IProps {
 
 interface IState {
     drawerHeight: number,
-    mapHeight: number,
+    totalMapHeight: number,
     display: "none" | "block"
     contents: JSX.Element
+    mapDivHeight: any
 }
 
 class MapPanel extends React.PureComponent<IProps, IState> {
@@ -24,16 +24,20 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         this.mapDivId = "map"
         this.state = {
             drawerHeight: 0,
-            mapHeight: 0,
+            totalMapHeight: 0,
             contents: <React.Fragment/>,
             display: "none",
+            mapDivHeight: "100%"
         }
     }
-    getMaxMapHeight(): number{
+
+    getMaxMapHeight(): number {
         return this.maxMapHeight
     }
+
     getMapHeight(): number {
-        return document.getElementById(this.mapDivId)?.clientHeight || 0
+        // return document.getElementById(this.mapDivId)?.clientHeight || 0
+        return this.state.totalMapHeight
     }
 
 
@@ -46,7 +50,8 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeBottomDrawer() {
-        this.setState({drawerHeight: 0, display: "none", contents: <React.Fragment/>})
+        this.setState({display: "none", contents: <React.Fragment/>})
+        this.resizeDrawer(0)
         this.props.mapVM.refreshMap();
     }
 
@@ -71,8 +76,13 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     resizeDrawer(height: number) {
+        console.log("table Height", height)
+        const {totalMapHeight} = this.state
+        const mapDivHeight = height == 0 || totalMapHeight < height ? totalMapHeight + "px" : (totalMapHeight - height) + "px"
+        console.log("map div height", totalMapHeight, mapDivHeight)
         this.setState({
             drawerHeight: height,
+            mapDivHeight: mapDivHeight
         })
     }
 
@@ -81,7 +91,8 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        this.setState({mapHeight: this.getMapHeight()})
+        const mapHeight = document.getElementById(this.mapDivId).clientHeight
+        this.setState({totalMapHeight: mapHeight})
     }
 
     setContent(contents: JSX.Element = <React.Fragment/>) {
@@ -97,7 +108,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     getPaperHeight() {
-        return this.state.mapHeight <= this.maxMapHeight ? this.state.drawerHeight + this.state.mapHeight : this.state.mapHeight
+        return this.state.totalMapHeight <= this.maxMapHeight ? this.state.drawerHeight + this.state.totalMapHeight : this.state.totalMapHeight
     }
 
     render() {
@@ -105,24 +116,29 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         return (
             <Paper sx={{
                 width: "100%",
-                height: (this.state.display == "none") ? "100%" : this.getPaperHeight()
+                // height: "auto"
+                // height: (this.state.display == "none") ? "100%" : this.getPaperHeight()
                 // height: "100%",
             }}
                    elevation={6}>
                 <div id={this.mapDivId} style={{
                     width: "100%",
-                    height:`calc(100% - ${this.state.drawerHeight}px)`,
+                    height: this.state.mapDivHeight
                 }}/>
                 <div style={{
                     display: this.state.display,
                     width: "100%",
                     height: this.state.drawerHeight
                 }}>
-                    <BottomDrawerResizer newMousePos={(mousePosY: number) => {
-                        const newSize = document.body.offsetHeight - (mousePosY - document.body.offsetTop + 50)
-                        // const newSize = mousePosY - 50
-                        this.resizeDrawer(newSize)
-                    }}/>
+                    {/*<BottomDrawerResizer newMousePos={(mousePosY: number) => {*/}
+                    {/*    // const newSize = document.body.offsetHeight - (mousePosY - document.body.offsetTop)*/}
+                    {/*    // const newSize = mousePosY - 50*/}
+                    {/*    const elem = document.getElementById(this.mapDivId)*/}
+                    {/*    const paperHeight = this.getPaperHeight()*/}
+                    {/*    const newSize = paperHeight - (mousePosY - elem.offsetTop)*/}
+                    {/*    console.log("new Size", newSize)*/}
+                    {/*    this.resizeDrawer(newSize)*/}
+                    {/*}}/>*/}
                     <div id={"bottom-drawer-div"}
                          style={{boxSizing: "border-box", height: this.state.drawerHeight}}
                     >

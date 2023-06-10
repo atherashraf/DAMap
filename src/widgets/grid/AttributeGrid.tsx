@@ -1,5 +1,5 @@
 import * as React from "react";
-import JqxGrid, {IGridProps, jqx} from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
+import JqxGrid, {IGridProps} from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
 import MapVM from "../../ol-map/models/MapVM";
 import {Column, Row} from "./GridTypeDeclaration";
 import autoBind from "auto-bind";
@@ -8,8 +8,11 @@ import {createRoot} from "react-dom/client";
 import AttributeGridToolbar, {IToolbarButton} from "./AttributeGridToolbar";
 import DAFullScreenDialog from "../../common/DAFullScreenDialog";
 import {RefObject} from "react";
-import AddRasterLayerInfo from "../../admin/components/forms/AddRasterLayerInfo";
 import PivotTable from "./PivotTable.";
+
+const zoomBtn = require("../../static/img/search.png")
+const clearBtn = require("../../static/img/selection_delete.png")
+const pivotBtn = require("../../static/img/pivot-table.png")
 
 
 interface IDataGridProps {
@@ -19,10 +22,12 @@ interface IDataGridProps {
     tableWidth?: number | 'auto'
     pkCols: string[]
     mapVM: MapVM
+    pivotTableSrc?: string
 }
 
 interface IDataGridState extends IGridProps {
     isToolbarRendered: boolean
+    pivotTableData: { [key: string]: any }[]
 }
 
 class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> {
@@ -39,7 +44,8 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
             height: (this.props.tableHeight - this.tableMargin) + "px",
             columns: columns,
             source: this.createSource(dataFields),
-            isToolbarRendered: false
+            isToolbarRendered: false,
+            pivotTableData: this.props.pivotTableSrc == null ? this.props.data : []
         }
         autoBind(this)
     }
@@ -98,17 +104,12 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
             name: "geom",
             type: 'json',
         })
-        const source: any = {
+        return {
             datatype: "json",
             datafields: dataFields,
             localdata: data,
             // async: false,
         }
-        // return new jqx.dataAdapter(source, {
-        //     autoBind: true,
-        // })
-        return source;
-
     }
 
     componentDidCatch(error: any, errorInfo: any) {
@@ -116,11 +117,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         console.error(error, errorInfo);
     }
 
-    // public componentDidMount() {
-    //     setTimeout(() => {
-    //         // this.gridToolbar.createButtons();
-    //     });
-    // }
+
     updateTableHeight(newHeight) {
         this.setState({height: newHeight - this.tableMargin})
     }
@@ -154,7 +151,16 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         }
     }
 
-    handleRowSelect(e) {
+    pinColumn(dataField: string) {
+        this.jqxGridRef?.current?.pincolumn(dataField)
+    }
+    getJqxGridRef(): RefObject<JqxGrid>{
+        return this.jqxGridRef
+    }
+    getToolbarRef(): RefObject<AttributeGridToolbar>{
+        return this.toolbarRef
+    }
+    handleRowSelect() {
         const row = this.getSelectedRowData()
         if (!row["geom"]) {
             const pkVal = this.getSelectedRowPKValue()
@@ -174,14 +180,12 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
 
     addToolbarButtons() {
         const me = this;
-        const zoomBtn = require("../../static/img/search.png")
-        const clearBtn = require("../../static/img/selection_delete.png")
-        const pivotBtn = require("../../static/img/pivot-table.png")
+
         const btn: IToolbarButton[] = [{
             id: "zoomButton",
             title: "Zoom To Selection",
             imgSrc: zoomBtn,
-            onClick: (e) => {
+            onClick: () => {
                 // alert("zoom to layer")
                 me.props.mapVM.selectionLayer.zoomToSelection()
             }
@@ -189,7 +193,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
             id: "clearSelection",
             title: "Clear Selection",
             imgSrc: clearBtn,
-            onClick: (e) => {
+            onClick: () => {
                 me.props.mapVM.selectionLayer.clearSelection()
                 me.props.mapVM.zoomToFullExtent()
             }
@@ -197,9 +201,18 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
             id: "pivotTable",
             title: "Pivot Table",
             imgSrc: pivotBtn,
-            onClick: (e) => {
+            onClick: () => {
                 this.dialogRef.current?.handleClickOpen()
-                this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={this.props.data} />)
+                // console.log(this.state.pivotTableData)
+                if (this.state.pivotTableData.length > 0) {
+                    this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={this.state.pivotTableData}/>)
+                } else {
+                    const api = this.props.mapVM.getApi()
+                    api.getFetch(this.props.pivotTableSrc).then((payload) => {
+                        this.setState(() => ({pivotTableData: payload}))
+                        this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={payload}/>)
+                    })
+                }
 
             }
         }]

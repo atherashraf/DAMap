@@ -3,7 +3,6 @@ import {IconButton, Tooltip} from "@mui/material";
 import TableChartIcon from '@mui/icons-material/TableChart';
 import {IControlProps} from "../../TypeDeclaration";
 import {MapAPIs} from "../../utils/MapApi";
-import {useState} from "react";
 import AttributeGrid from "../../../widgets/grid/AttributeGrid";
 
 const daGridRef = React.createRef<AttributeGrid>()
@@ -36,15 +35,15 @@ const AttributeTable = (props: IControlProps) => {
                         const mapHeight = mapBoxRef.current.getMapHeight()
                         const maxMapHeight: number = mapBoxRef.current.getMaxMapHeight();
                         tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
-                        // tableHeight = mapHeight / 2;
-                        console.log("map", mapHeight)
-                        console.log("max map", maxMapHeight)
-                        console.log("table height", tableHeight)
+                        // console.log("map", mapHeight)
+                        // console.log("max map", maxMapHeight)
+                        // console.log("table height", tableHeight)
                         mapBoxRef.current?.openBottomDrawer(tableHeight)
                         if (uuid) {
                             props.mapVM.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                                 .then((payload) => {
                                     if (payload) {
+                                        // const ptSrc: string = "http://127.0.0.1:8000/api/lbdc/crop_stats_pivotTable/070df2ba-ea05-11ed-8338-acde48001122/";
                                         props.mapVM?.openAttributeTable(payload.columns, payload.rows,
                                             payload.pkCols, tableHeight, daGridRef)
 

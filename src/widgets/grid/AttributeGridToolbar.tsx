@@ -16,6 +16,7 @@ interface IProps {
 
 interface IState {
     buttons: IToolbarButton[]
+    toolbarElements: JSX.Element
 }
 
 export interface IToolbarButton {
@@ -26,12 +27,6 @@ export interface IToolbarButton {
 }
 
 class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
-    // private myGrid: any  //React.RefObject<DAGrid>
-    // private mapVM: MapVM
-    // constructor(myGrid: any, mapVM: MapVM) {
-    //     this.myGrid = myGrid;
-    //     this.mapVM = mapVM;
-    // }
     constructor(props) {
         super(props);
         this.state = {
@@ -40,9 +35,7 @@ class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
                     id: 'reloadButton',
                     title: 'Reload',
                     imgSrc: reloadBtn,
-                    onClick: (event?: any) => {
-                        // this.myGrid.current!.setOptions({source: this.myGrid.getAdapter()});
-                        // alert("relaod...")
+                    onClick: () => {
                         props.mapVM?.refreshMap()
                     }
                 },
@@ -53,33 +46,36 @@ class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
                 //         alert("zoom...")
                 //     }
                 // }
-            ]
+            ],
+            toolbarElements: <React.Fragment></React.Fragment>
         }
 
     }
 
-    // componentDidMount() {
-    //     this.createButtons();
-    // }
 
     addButton(newButton: IToolbarButton[]) {
         this.setState(() => ({buttons: [...this.state.buttons, ...newButton]}))
+    }
+
+    addToolbarElements(content: JSX.Element){
+        this.setState(()=>({toolbarElements: content}))
+        console.log(content)
     }
 
 
     render() {
         const style: React.CSSProperties = {float: 'left', marginLeft: '5px'};
         const btnStyle = {
-            width: 60,
+            width: 40,
             height: 25,
 
         }
 
         return (
-            <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
+            <div style={{overflow: 'hidden', position: 'relative', margin: '3px'}}>
                 {this.state.buttons.map((btn) => (
-                    <Tooltip title={btn.title} key={"tooltip"+ btn.id}>
-                        <div className={"tooltip"} id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
+                    <Tooltip title={btn.title} key={"tooltip" + btn.id}>
+                        <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
 
                             <JqxButton
                                 onClick={btn.onClick}
@@ -95,6 +91,7 @@ class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
 
                     </Tooltip>
                 ))}
+                {this.state.toolbarElements}
             </div>
         )
     }
