@@ -75,7 +75,7 @@ you can use all the function mentioned in following Api
 Reference https://www.jqwidgets.com/jquery-widgets-demo/demos/jqxgrid/index.htm#demos/jqxgrid/defaultfunctionality.htm
 like
 
-    gridRef?.current?.pincolumn(dataField)
+    gridRef?.current?.pinColumns(['division'])
 
 ### Grid Toolbar
 

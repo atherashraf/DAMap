@@ -151,15 +151,21 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         }
     }
 
-    pinColumn(dataField: string) {
-        this.jqxGridRef?.current?.pincolumn(dataField)
+    pinColumns(columnIds: string[]) {
+        columnIds.forEach((id) => {
+            this.jqxGridRef?.current?.pincolumn(id)
+        })
+
     }
-    getJqxGridRef(): RefObject<JqxGrid>{
+
+    getJqxGridRef(): RefObject<JqxGrid> {
         return this.jqxGridRef
     }
-    getToolbarRef(): RefObject<AttributeGridToolbar>{
+
+    getToolbarRef(): RefObject<AttributeGridToolbar> {
         return this.toolbarRef
     }
+
     handleRowSelect() {
         const row = this.getSelectedRowData()
         if (!row["geom"]) {

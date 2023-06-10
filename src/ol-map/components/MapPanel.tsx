@@ -76,10 +76,10 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     resizeDrawer(height: number) {
-        console.log("table Height", height)
+        // console.log("table Height", height)
         const {totalMapHeight} = this.state
         const mapDivHeight = height == 0 || totalMapHeight < height ? totalMapHeight + "px" : (totalMapHeight - height) + "px"
-        console.log("map div height", totalMapHeight, mapDivHeight)
+        // console.log("map div height", totalMapHeight, mapDivHeight)
         this.setState({
             drawerHeight: height,
             mapDivHeight: mapDivHeight
