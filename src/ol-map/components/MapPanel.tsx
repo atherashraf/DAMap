@@ -81,7 +81,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         const mapDivHeight = height == 0 || totalMapHeight < height ? totalMapHeight + "px" : (totalMapHeight - height) + "px"
         // console.log("map div height", totalMapHeight, mapDivHeight)
         this.setState({
-            drawerHeight: height,
+            drawerHeight: height -10,
             mapDivHeight: mapDivHeight
         })
     }
