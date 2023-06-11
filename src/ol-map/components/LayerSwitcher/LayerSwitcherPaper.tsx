@@ -1,9 +1,8 @@
-import {AppBar, Paper} from "@mui/material";
+import {Paper} from "@mui/material";
 import * as React from "react"
 import MapVM from "../../models/MapVM";
 import "./LayerSwitcher.css";
 import {Group} from "ol/layer";
-import Legend from "ol-ext/legend/Legend";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import {useEffect} from "react";
 // import Legend from "./legend/Legend"
@@ -22,13 +21,15 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             target: target,
             //tipLabel: 'Legend', // Optional label for button
             //groupSelectStyle: 'children',
-            show_progress: true,
-            selection: true,
-            //@ts-ignore
-            extent: true,
+            show_progress:true,
+            extent: mapVM.mapExtent,
             trash: true,
             // oninfo: function (l) // alert(l.get("title")); }
         });
+        // lswitcher.on('change', (e)=>{
+        //     console.log(e)
+        //     alert("changed");
+        // })
         //@ts-ignore
         lswitcher.on('drawlist', function (e) {
             const layer: any = e.layer;

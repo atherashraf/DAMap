@@ -7,7 +7,6 @@ import olLegendImage from "ol-ext/legend/Image";
 
 class RasterTileLayer extends AbstractDALayer {
     setLayer() {
-        const me = this;
         const {title, uuid} = this.layerInfo || {};
         // @ts-ignore
         this.layer = new TileLayer({
@@ -15,6 +14,7 @@ class RasterTileLayer extends AbstractDALayer {
             name: uuid,
             title: title,
             visible: true,
+            show_progress: true,
             source: this.getDataSource(),
             // style: this.styleFunction.bind(me),
             // declutter: true
@@ -48,15 +48,13 @@ class RasterTileLayer extends AbstractDALayer {
 
     refreshLayer() {
         super.refreshLayer();
-        const source = this.getDataSource()
-        source.tileCache.expireCache({});
-        source.tileCache.clear();
-        source.setTileUrlFunction(source.getTileUrlFunction(), (new Date()).getTime().toLocaleString());
-        setTimeout(() => source.refresh(), 1000)
-        this.mapVM.refreshMap()
-        this.mapVM.getSnackbarRef().current?.show("Note: if Map is not refreshed. Please reload page or Zoom in to see changes", null, 15000)
-
-
+        // const source = this.getDataSource()
+        // source.tileCache.expireCache({});
+        // source.tileCache.clear();
+        // source.setTileUrlFunction(source.getTileUrlFunction(), (new Date()).getTime().toLocaleString());
+        // setTimeout(() => source.refresh(), 1000)
+        // this.mapVM.refreshMap()
+        // this.mapVM.getSnackbarRef().current?.show("Note: if Map is not refreshed. Please reload page or Zoom in to see changes", null, 15000)
     }
 }
 

@@ -34,6 +34,18 @@ class AbstractDALayer {
         this.style = info && "style" in info && info["style"];
         this.setLayer();
         this.layer && this.mapVM.getMap().addLayer(this.layer)
+        this.layer && this.addLayerChangeEvent()
+    }
+
+    addLayerChangeEvent() {
+        this.layer.on("propertychange", (e) => {
+            if (e.key == "map" && e.target.values_[e.key] == null) {
+                this.mapVM.removeDALayer(this.layerInfo.uuid)
+            }
+            if (e.key == "map" && e.oldValue == null) {
+                this.mapVM.daLayers[this.layerInfo.uuid] = this
+            }
+        })
     }
 
     setSlDStyleAndLegendToLayer() {
@@ -75,7 +87,7 @@ class AbstractDALayer {
     updateStyle() {
         // this.mapVM.showSnackbar("Updating layer style")
         // console.log("layer Info", this.layerInfo)
-        if(this.layerInfo.dataModel=="V") {
+        if (this.layerInfo.dataModel == "V") {
             this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid}).then((payload) => {
                 if (payload) {
                     this.style = payload
@@ -137,11 +149,11 @@ class AbstractDALayer {
     }
 
     refreshLayer() {
-        const source = this.layer?.getSource();
-        if(source) {
-            source.clear()
-            source.refresh()
-        }
+        // const source = this.layer?.getSource();
+        // if(source) {
+        //     source.clear()
+        //     source.refresh()
+        // }
     }
 
     getDataSource() {
@@ -151,11 +163,11 @@ class AbstractDALayer {
         return this.dataSource;
     }
 
-    clearAllDataSources(){
+    clearAllDataSources() {
         let source = this.layer.getSource();
-        while(source){
+        while (source) {
             source.clear()
-            source = typeof source.getSource === "function"?  source.getSource() : null
+            source = typeof source.getSource === "function" ? source.getSource() : null
         }
     }
 

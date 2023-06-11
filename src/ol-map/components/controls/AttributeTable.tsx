@@ -29,6 +29,7 @@ const AttributeTable = (props: IControlProps) => {
                 <IconButton sx={{padding: "3px"}} onClick={() => {
                     let open = mapBoxRef.current?.isBottomDrawerOpen();
                     const uuid = props.mapVM.getLayerOfInterest();
+
                     if (!uuid) {
                         props.mapVM.showSnackbar("Please select a layer to view its attributes");
                     } else if (!open) {

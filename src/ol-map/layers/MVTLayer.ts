@@ -4,9 +4,7 @@ import VectorTileSource from "ol/source/VectorTile";
 import AbstractDALayer from "./AbstractDALayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
-import {IFeatureStyle, IGeomStyle, IRule} from "../TypeDeclaration";
-import SLDStyleParser from "./styling/SLDStyleParser";
-import ol_legend_Legend from "ol-ext/legend/Legend";
+import {IGeomStyle, IRule} from "../TypeDeclaration";
 import {intersects} from "ol/extent";
 
 
@@ -41,7 +39,7 @@ class MVTLayer extends AbstractDALayer {
 
 
     getDataURL() {
-        let apiURL, params;
+        let apiURL;
         if (this.layerInfo.dataURL) {
             apiURL = this.layerInfo.dataURL
         } else {
@@ -60,9 +58,11 @@ class MVTLayer extends AbstractDALayer {
     refreshLayer() {
         // console.log("refreshing source and map")
         super.refreshLayer()
-        // this.layer.getSource().clear()
-        // this.layer.getSource().refresh();
-        // this.mapVM.refreshMap()
+        const source = this.layer?.getSource();
+        if(source) {
+            source.clear()
+            source.refresh()
+        }
     }
     // setStyle(style: IFeatureStyle) {
     //     this.style = style;
@@ -121,7 +121,6 @@ class MVTLayer extends AbstractDALayer {
 
 
     styleFunction(feature: Feature, resolution: number) {
-        let me = this;
         let style: IGeomStyle;
         let rules: IRule[]
         let properties: any

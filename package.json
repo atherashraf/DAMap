@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.0.79",
+  "version": "0.0.81",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -45,7 +45,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.10.1",
     "@mui/x-date-pickers": "^6.3.0",
-    "@types/geojson": "^7946.0.10",
+    "@types/geojson": "^1.0.6",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^2.2.0",
     "@types/react-color": "^3.0.6",
     "auto-bind": "^5.0.1",

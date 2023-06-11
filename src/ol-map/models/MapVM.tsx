@@ -55,7 +55,7 @@ class MapVM {
     // @ts-ignore
     currentMapInteraction = null;
     // leftDrawerRef: any
-    mapExtent: number[] = [
+    mapExtent: Array<number> = [
         7031250.271849444,
         2217134.3474655207,
         8415677.728150556,
@@ -112,7 +112,6 @@ class MapVM {
             mapInfo?.layers?.forEach(async (layer) => {
                 // console.log(layer)
                 await this.addDALayer(layer)
-
             });
         }
         this.addSidebarController();
@@ -195,9 +194,9 @@ class MapVM {
 
     setLayerOfInterest(uuid: string, closeDrawer: boolean = true) {
         this._layerOfInterest = uuid;
-        setTimeout(()=>{
-            const sel: HTMLSelectElement =  document.getElementById("loi-select") as HTMLSelectElement
-            if(sel) {
+        setTimeout(() => {
+            const sel: HTMLSelectElement = document.getElementById("loi-select") as HTMLSelectElement
+            if (sel) {
                 sel.selectedIndex = [...sel.options].findIndex(option => option.value == uuid)
             }
         }, 1000)
@@ -208,14 +207,16 @@ class MapVM {
             mapBoxRef.current?.closeBottomDrawer()
         }
     }
-    isLayerExist(uuid: string){
+
+    isLayerExist(uuid: string) {
         // const k: string[] = Object.keys(this.daLayers)
-        for(let key in this.daLayers){
+        for (let key in this.daLayers) {
             if (key == uuid)
                 return true
         }
         return false
     }
+
     addBaseLayers() {
         const bl = new BaseLayers(this)
         bl.addBaseLayers()
@@ -244,8 +245,8 @@ class MapVM {
             this.map?.setSize(this.map.getSize())
             this.map?.updateSize()
             this.showSnackbar("Refreshing map...")
-            Object.keys(this.daLayers).forEach((key)=>{
-               this.daLayers[key].refreshLayer()
+            Object.keys(this.daLayers).forEach((key) => {
+                this.daLayers[key].refreshLayer()
             });
         }, 100);
     }
@@ -481,11 +482,11 @@ class MapVM {
     //     extent && this.map.getView().fit(extent, this.map.getSize());
     //
     // }
-    openBottomDrawer(tableHeight: number){
+    openBottomDrawer(tableHeight: number) {
         const mapBoxRef = this.getMapPanelRef()
-        if(!mapBoxRef.current.isBottomDrawerOpen()) {
+        if (!mapBoxRef.current.isBottomDrawerOpen()) {
             const mapHeight = mapBoxRef.current.getMapHeight();
-            const maxMapHeight=mapBoxRef?.current?.getMaxMapHeight() || 300
+            const maxMapHeight = mapBoxRef?.current?.getMaxMapHeight() || 300
             // console.log("map height", mapHeight, maxMapHeight);
             tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
             // console.log("table height", tableHeight)
@@ -494,13 +495,16 @@ class MapVM {
         }
         return tableHeight;
     }
-    getAdditionalToolbarButtons(){
+
+    getAdditionalToolbarButtons() {
         return this.additionalToolbarButtons
     }
-    addAdditionalToolbarButton(elem: JSX.Element){
+
+    addAdditionalToolbarButton(elem: JSX.Element) {
         this.additionalToolbarButtons.push(elem)
     }
-    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc:string=null) {
+
+    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc: string = null) {
         const mapBoxRef = this.getMapPanelRef()
         this.openBottomDrawer(tableHeight)
         const table = <AttributeGrid ref={daGridRef} columns={columns}
@@ -521,6 +525,10 @@ class MapVM {
         drawerRef?.current?.openDrawer()
         // props.drawerRef?.current?.addHeading()
         this.refreshMap();
+    }
+
+    removeDALayer(uuid: string) {
+        delete (this.daLayers[uuid])
     }
 
 }

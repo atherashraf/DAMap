@@ -46,13 +46,13 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     isBottomDrawerOpen() {
-        return (this.state.drawerHeight !== 0)
+        return (this.state.drawerHeight > 0)
     }
 
     closeBottomDrawer() {
         this.setState({display: "none", contents: <React.Fragment/>})
         this.resizeDrawer(0)
-        this.props.mapVM.refreshMap();
+        // this.props.mapVM.refreshMap();
     }
 
     openBottomDrawer(height: number, contents: JSX.Element = null) {
@@ -68,7 +68,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         }
 
         this.setContent(contents)
-
+        this.resizeDrawer(height)
     }
 
     getDrawerHeight() {
