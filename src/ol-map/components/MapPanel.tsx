@@ -16,17 +16,16 @@ interface IState {
 }
 
 class MapPanel extends React.PureComponent<IProps, IState> {
-    private mapDivId: string;
+    private readonly mapDivId: string="map";
     public maxMapHeight: number = 300
 
     constructor(props: IProps) {
         super(props);
-        this.mapDivId = "map"
         this.state = {
             drawerHeight: 0,
             totalMapHeight: 0,
             contents: <React.Fragment/>,
-            display: "none",
+            display: "block",
             mapDivHeight: "100%"
         }
     }
@@ -50,7 +49,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeBottomDrawer() {
-        this.setState({display: "none", contents: <React.Fragment/>})
+        this.setState({contents: <React.Fragment/>})
         this.resizeDrawer(0)
         // this.props.mapVM.refreshMap();
     }
@@ -104,7 +103,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     closeDrawer() {
-        this.setState(() => ({drawerHeight: 0, display: "none"}))
+        this.setState(() => ({drawerHeight: 0}))
     }
 
     getPaperHeight() {
