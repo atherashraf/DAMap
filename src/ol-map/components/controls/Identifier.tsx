@@ -9,7 +9,7 @@ const Identifier = (props: IControlProps) => {
     const handleClick = () => {
         props.drawerRef?.current?.addContents("Identifier", <IdentifyResult mapVM={props.mapVM}/>)
         props.drawerRef?.current?.openDrawer()
-        props.mapVM.refreshMap();
+        // props.mapVM.refreshMap();
         // props.mapVM.identifyFeature();
 
     }

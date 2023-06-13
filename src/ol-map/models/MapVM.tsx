@@ -238,15 +238,15 @@ class MapVM {
 
     }
 
-    refreshMap() {
+    refreshMap(clearFeatures:boolean=false) {
         setTimeout(() => {
-            this.map?.render()
-            this.map?.updateSize()
-            this.map?.setSize(this.map.getSize())
-            this.map?.updateSize()
+            // this.map?.render()
+            // this.map?.updateSize()
+            // this.map?.setSize(this.map.getSize())
+            // this.map?.updateSize()
             this.showSnackbar("Refreshing map...")
             Object.keys(this.daLayers).forEach((key) => {
-                this.daLayers[key].refreshLayer()
+                this.daLayers[key].refreshLayer(clearFeatures)
             });
         }, 100);
     }
@@ -524,13 +524,16 @@ class MapVM {
         drawerRef?.current?.addContents("Table of Content", <LayerSwitcherPaper mapVM={this}/>)
         drawerRef?.current?.openDrawer()
         // props.drawerRef?.current?.addHeading()
-        this.refreshMap();
+        // this.refreshMap();
     }
 
     removeDALayer(uuid: string) {
         delete (this.daLayers[uuid])
     }
 
+    getSelectionLayer() {
+        return this.selectionLayer
+    }
 }
 
 export default MapVM;

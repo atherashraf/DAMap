@@ -46,8 +46,8 @@ class RasterTileLayer extends AbstractDALayer {
         return this.dataSource;
     }
 
-    refreshLayer() {
-        super.refreshLayer();
+    refreshLayer(isClear: boolean=false) {
+        super.refreshLayer(isClear);
         // const source = this.getDataSource()
         // source.tileCache.expireCache({});
         // source.tileCache.clear();

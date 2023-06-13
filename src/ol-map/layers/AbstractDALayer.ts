@@ -148,7 +148,7 @@ class AbstractDALayer {
         return this.layer;
     }
 
-    refreshLayer() {
+    refreshLayer(clearFeature:boolean=false) {
         // const source = this.layer?.getSource();
         // if(source) {
         //     source.clear()

@@ -140,7 +140,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
                                 backgroundColor: '#f4f7f9'
                             }}
                         />
-                        <Box sx={{flexGrow: 1, color:"black", width:"90%"}}>
+                        <Box sx={{flexGrow: 1, color:"black", width:"auto"}}>
                             {this.state.content}
                         </Box>
                     </DrawerPaper>

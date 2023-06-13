@@ -119,7 +119,7 @@ export default class MapApi {
             if (!token) {
                 const url = MapApi.getURL(MapAPIs.API_TOKEN);
                 let response = await fetch(url, {
-                    method: "GET",
+                    method: "POST",
                     mode: "cors",
                     cache: "no-cache",
                     credentials: "same-origin",

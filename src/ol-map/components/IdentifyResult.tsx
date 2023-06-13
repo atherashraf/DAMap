@@ -13,7 +13,7 @@ const IdentifyResult = (props: IdentifyResultProps) => {
     }, [])
     return (
         <React.Fragment>
-            <div id={"div-identify-result"} style={{width: "100%", height: "auto"}}/>
+            <div id={"div-identify-result"} style={{width: "auto", height: "auto"}}/>
         </React.Fragment>
     )
 }

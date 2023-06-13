@@ -11,7 +11,7 @@ const SymbologyControl = (props: IControlProps) => {
         drawerRef?.current?.addContents("Layer Styler", <SymbologySetting key={"symbology-setting"}
                                                                           mapVM={props.mapVM}/>)
         drawerRef?.current?.openDrawer()
-        props.mapVM?.refreshMap()
+        // props.mapVM?.refreshMap()
     }
     return (
         <React.Fragment>

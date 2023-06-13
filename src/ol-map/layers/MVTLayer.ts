@@ -55,12 +55,12 @@ class MVTLayer extends AbstractDALayer {
         source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}`);
     }
 
-    refreshLayer() {
+    refreshLayer(clearFeature:boolean=false) {
         // console.log("refreshing source and map")
-        super.refreshLayer()
+        super.refreshLayer(clearFeature)
         const source = this.layer?.getSource();
         if(source) {
-            source.clear()
+            if(clearFeature) source.clear()
             source.refresh()
         }
     }

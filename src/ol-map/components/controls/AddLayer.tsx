@@ -20,7 +20,7 @@ const AddLayer = (props: IControlProps) => {
             if (payload) {
                 props.drawerRef?.current?.addContents("Add Layer",
                     <AddLayerPanel mapVM={props.mapVM} layers={payload}/>)
-                props.mapVM.refreshMap();
+                // props.mapVM.refreshMap();
             } else {
                 props.drawerRef?.current?.addContents("Add Layer",
                     <Box>No Layer Found</Box>)

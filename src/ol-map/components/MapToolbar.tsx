@@ -10,10 +10,10 @@ import Identifier from "./controls/Identifier";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 import AttributeTable from "./controls/AttributeTable";
 import LOISelector from "./controls/LOISelector";
-import RasterArea from "./controls/RasterArea";
 import AddLayer from "./controls/AddLayer";
 import SaveMap from "./controls/SaveMap";
 import RefreshMap from "./controls/RefreshMap";
+import ClearSelection from "./controls/ClearSelection";
 
 
 class MapToolbar extends Control {
@@ -44,6 +44,7 @@ class MapToolbar extends Control {
                 <Zoom2Extent mapVM={mapVM}/>
                 {/*<RasterArea mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>*/}
                 <Identifier mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
+                <ClearSelection mapVM={mapVM} />
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }

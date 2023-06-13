@@ -44,7 +44,7 @@ class MapControls {
         });
         me.getRasterPixelValue(coord, mapVm, targetElem)
         if (features.length > 0) {
-            let vectorSource = mapVm.selectionLayer.getSelectionLayer()?.getSource();
+            let vectorSource = mapVm.selectionLayer.getOlLayer()?.getSource();
             vectorSource.clear();
             let feature = features[0];
             if(feature['layer_name'] ==="weather_data"){

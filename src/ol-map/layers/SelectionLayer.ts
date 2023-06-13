@@ -33,14 +33,14 @@ class SelectionLayer {
     clearSelection(){
         this.getSource().clear()
     }
-    getSelectionLayer(): VectorLayer<VectorSource> {
+    getOlLayer(): VectorLayer<VectorSource> {
         if (!this.layer) {
            this.createSelectionLayer()
         }
         return this.layer
     }
     getSource(): VectorSource{
-        return this.getSelectionLayer().getSource()
+        return this.getOlLayer().getSource()
     }
 
     addGeoJson2Selection(geojson: IGeoJSON, clearPreviousSelection:boolean=true){

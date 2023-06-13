@@ -88,7 +88,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     return (
         <React.Fragment>
             <Paper elevation={2} sx={{height: "100%", width: "100%", m: 0, p: 0}}>
-                <div id={"div-layer-switcher"} style={{width: "100%", height: "auto"}}/>
+                <div id={"div-layer-switcher"} style={{width: "auto", height: "auto"}}/>
             </Paper>
         </React.Fragment>
     )

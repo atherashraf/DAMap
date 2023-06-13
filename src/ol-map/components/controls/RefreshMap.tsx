@@ -6,7 +6,12 @@ import * as React from "react";
 
 const RefreshMap = (props: IControlProps) => {
     const handleClick = () => {
-        props.mapVM?.refreshMap()
+        const map = props.mapVM.getMap();
+        map?.render()
+        map?.updateSize()
+        map?.setSize(map.getSize())
+        map?.updateSize()
+        props.mapVM?.refreshMap(true)
     }
     return (
         <React.Fragment>

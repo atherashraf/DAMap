@@ -10,7 +10,7 @@ const RasterArea = (props: IControlProps) => {
         // console.log("click working...", props.drawerRef);
         props.drawerRef?.current?.addContents("Zonal Stats", <RasterAreaResult mapVM={props.mapVM}/>)
         props.drawerRef?.current?.openDrawer()
-        props.mapVM.refreshMap();
+        // props.mapVM.refreshMap();
         // props.mapVM.drawPolygonForRasterArea()
 
     }
