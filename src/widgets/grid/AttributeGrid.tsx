@@ -61,6 +61,18 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     getGridColumnsDataField() {
         const columns: any[] = [];
         const dataFields: any[] = [];
+        let serial_no_column = {
+            text: 'Sr.No.',
+            datafield: '',
+            columntype: 'number',
+            width: 50,
+            pinned: true,
+            align: 'center',
+            cellsrenderer: function (row: any, column: any, value: any) {
+                return "<div style='margin: 5px;'>" + (value + 1) + "</div>";
+            }
+        };
+        columns.push(serial_no_column)
         if (this.props.data.length > 0) {
             this.props.columns.forEach((col) => {
                 let dataKey = col.id
@@ -157,7 +169,6 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         })
 
     }
-
     getJqxGridRef(): RefObject<JqxGrid> {
         return this.jqxGridRef
     }
