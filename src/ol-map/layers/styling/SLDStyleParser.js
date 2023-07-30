@@ -16,8 +16,9 @@ class SLDStyleParser {
         sldText = sldText.replaceAll("SvgParameter", "CssParameter");
         const olParser = new OlParser();
         const sldParser = new SldParser();
-        (async ()=>{
+        (async () => {
             const geostylerStyle = await sldParser.readStyle(sldText);
+            // console.log("sld style", geostylerStyle);
             const renderer = new LegendRenderer({
                 // maxColumnWidth: 250,
                 // maxColumnHeight: 300,

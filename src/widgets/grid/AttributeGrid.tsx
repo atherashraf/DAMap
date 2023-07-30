@@ -45,7 +45,8 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
             columns: columns,
             source: this.createSource(dataFields),
             isToolbarRendered: false,
-            pivotTableData: this.props.pivotTableSrc == null ? this.props.data : []
+            pivotTableData: this.props.pivotTableSrc == null ? this.props.data : [],
+            pagesize: this.props.data.length
         }
         autoBind(this)
     }
@@ -264,7 +265,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     filterable={true}
                     sortable={true}
                     pageable={true}
-                    pagesize={20}
+                    pagesize={this.state.pagesize}
                     groupable={true}
                     columnsresize={true}
                     selectionmode={"singlerow"}

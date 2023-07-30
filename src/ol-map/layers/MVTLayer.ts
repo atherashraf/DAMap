@@ -23,7 +23,7 @@ class MVTLayer extends AbstractDALayer {
             show_progress: true,
             visible: true,
             source: this.getDataSource(),
-            style: this.styleFunction.bind(me),
+            style: this.vectorStyleFunction.bind(me),
             declutter: true
         });
         this.setSlDStyleAndLegendToLayer()
@@ -81,7 +81,7 @@ class MVTLayer extends AbstractDALayer {
                 if (zoomRange[0] <= z && z <= zoomRange[1]) {
                     let cols: string[] = []
                     if (this.style && this.style.type !== "single" && this.style.type !== "sld") {
-                        this.style.style.rules.forEach((rule) => {
+                        this.style?.style?.rules?.forEach((rule) => {
                             cols.push(rule.filter.field)
                         })
                         cols = cols.filter((v, i, a) => a.indexOf(v) === i);
@@ -120,56 +120,7 @@ class MVTLayer extends AbstractDALayer {
     }
 
 
-    styleFunction(feature: Feature, resolution: number) {
-        let style: IGeomStyle;
-        let rules: IRule[]
-        let properties: any
-        const type = this.style?.type || ""
-        switch (type) {
-            case "single":
-                style = this.style["style"]["default"];
-                break;
-            case "multiple":
-                style = this.style["style"]["default"];
-                rules = this.style.style.rules
-                properties = feature.getProperties();
-                rules.forEach((rule: IRule) => {
-                    if (rule.filter.field in properties && properties[rule.filter.field] == rule.filter.value) {
-                        style = rule.style;
-                    }
-                });
 
-                break;
-            case "density":
-                // style = this.style["style"]["default"];
-                rules = this.style.style.rules
-                properties = feature.getProperties();
-                rules.forEach((rule: IRule) => {
-                    if (rule.filter.field in properties) {
-                        const x = properties[rule.filter.field]
-                        if (rule.filter.value[0] <= x && rule.filter.value[1] >= x) {
-                            style = rule.style;
-                        }
-                    }
-                });
-                break;
-            case "sld":
-                // let layer = this.layer;
-                // let prop = this.layer.getProperties()
-                // if (prop.hasOwnProperty('sldStyle')) {
-                //     let sldStyle = prop.sldStyle
-                //
-                //     // let k = new SLDStyleParser(this)
-                //     // console.log(prop.sldStyle)
-                // }
-                break;
-            default:
-                break;
-        }
-
-        return this.createOLStyle(feature, style);
-
-    }
 
     getFeatures() {
         // @ts-ignore

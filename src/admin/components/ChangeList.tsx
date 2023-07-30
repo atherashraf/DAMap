@@ -66,7 +66,6 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
             let dataKey = col.id
             // problematic columns updating key of data
             const errorFields = ["group"]
-
             this.columns.push({
                 text: col.label,
                 cellsalign: col.type == "string" ? "left" : "right",
@@ -78,15 +77,24 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                 name: dataKey,
                 type: col.type
             })
-
         });
     }
 
     getAdapter(data?: Row[]): any {
+        data = data ? data : [...this.props.data]
+        console.log("data", this.props.data);
+        data?.forEach((row) => {
+            // console.log(row)
+            for (let key in row) {
+                if (row[key] && typeof row[key] == "object") {
+                    row[key] = JSON.stringify(row[key])
+                }
+            }
+        })
         const source: any = {
             datatype: "json",
             datafields: this.dataFields,
-            localdata: data ? data : this.props.data,
+            localdata: data,
             // async: false,
             // deleterow: function (rowid, commit) {
             //     // synchronize with the server - send delete command

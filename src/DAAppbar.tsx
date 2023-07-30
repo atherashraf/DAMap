@@ -14,7 +14,7 @@ import UserUtils from "./admin/UserUtils";
 import {useNavigate} from "react-router-dom";
 import MapApi from "./ol-map/utils/MapApi";
 
-export default function DAAppBar() {
+export default function DAAppBar({snackbarRef}) {
     const [auth, setAuth] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate()
@@ -41,7 +41,7 @@ export default function DAAppBar() {
     }
     const handleLogin = () => {
         UserUtils.isLoggedIn().then((res) => {
-            console.log("is logedin ")
+            // console.log("is logedin ")
             if (!res) {
                 setAuth(false)
                 // snackbarRef?.current?.show("Login in process...")
@@ -50,12 +50,13 @@ export default function DAAppBar() {
                 formData.append("password", "abcd@1234")
                 MapApi.authenticate(formData).then((payload) => {
                     if (payload) {
+                        console.log("payload", payload)
                         // setIsAuthenticated(true)
                         UserUtils.saveUser(payload)
                         setAuth(true)
                         // snackbarRef?.current?.hide()
                     } else {
-                        // snackbarRef?.current?.show("Login Faileds...")
+                        snackbarRef?.current?.show("Login Failed. Please check your credentials")
                     }
 
                 })

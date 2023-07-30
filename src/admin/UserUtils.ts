@@ -1,8 +1,8 @@
 import MapApi from "../ol-map/utils/MapApi";
 
 export interface UserInfo{
-    access: string
-    refresh: string
+    access_token: string
+    refresh_token: string
     updatedTime: number
     userInfo: {
         email: string
@@ -12,6 +12,7 @@ export interface UserInfo{
         isSuperUser: boolean
     }
 }
+const AccessExpireTime: number= 30 * 60 * 1000
 class UserUtils{
 
     static saveUser(userInfo: UserInfo){
@@ -29,7 +30,6 @@ class UserUtils{
     }
     static async isLoggedIn(){
         const userInfo = this.getUser()
-        // console.log(userInfo);
         if(userInfo) {
             const r = await this.getAccessToken()
             return !!r
@@ -37,13 +37,13 @@ class UserUtils{
             return false
         }
     }
-    static isUpdateAccessRequired(){
+    static isUpdateAccessRequired(): boolean{
         try {
             const userInfo = this.getUser()
             if(userInfo) {
                 const d: Date = new Date()
                 const diff = Math.abs(d.getTime() - userInfo?.updatedTime)
-                return diff >= 60000 // true if differnce is more than a min
+                return diff <= AccessExpireTime // true if differnce is more than a min
             }else{
                 return true
             }
@@ -55,14 +55,14 @@ class UserUtils{
         const userInfo = this.getUser()
         if(userInfo) {
             if (this.isUpdateAccessRequired()) {
-                const r = await MapApi.getAccessToken(userInfo.refresh)
+                const r = await MapApi.getAccessToken(userInfo.refresh_token)
                 if (r) {
                     const u = Object.assign(userInfo, {access: r, updatedTime: (new Date()).getTime()})
                     this.saveUser(u)
                 }
                 return r
             } else {
-                return userInfo.access
+                return userInfo.access_token
             }
         }else{
             return null

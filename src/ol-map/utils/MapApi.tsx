@@ -32,6 +32,7 @@ export const MapAPIs = Object.freeze({
     DCH_UPDATE_MAP: "api/dch/update_map/{uuid}/",
     DCH_LAYER_CATEGORIES: "api/dch/layer_categories/",
     DCH_ADD_RASTER_INFO: "api/dch/add_raster_layer_info/",
+    DCH_UPLOAD_SHP_FILE: "api/dch/upload_shp_file/",
     DCH_GET_FEATURE_GEOMETRY: "api/dch/get_feature_geometry/{uuid}/{pk_values}/",
     DCH_ADD_MODEL_ROW: "api/dch/add_model_row/",
     DCH_DELETE_MODEL_ROW: "api/dch/delete_model_row/",
@@ -39,6 +40,7 @@ export const MapAPIs = Object.freeze({
     DCH_DELETE_LAYER_INFO: "api/dch/delete_layerinfo_row/{uuid}/",
     DCH_DOWNLOAD_SLD: "api/dch/download_sld_style/{uuid}/",
 
+    DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
 
@@ -116,35 +118,36 @@ export default class MapApi {
                     return data.access;
                 }
             }
-            if (!token) {
-                const url = MapApi.getURL(MapAPIs.API_TOKEN);
-                let response = await fetch(url, {
-                    method: "POST",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
-                    headers: new Headers({
-                        "Content-Type": "application/json"
-                    }),
-                    redirect: "follow", // manual, *follow, error
-                    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                });
-                if (response.status == 200) {
-                    const data = await response.json();
-                    localStorage.setItem("token", data.refresh)
-                    return data.access
-                }
-
-            }
+            // if (!token) {
+            //     const url = MapApi.getURL(MapAPIs.API_TOKEN);
+            //     let response = await fetch(url, {
+            //         method: "POST",
+            //         mode: "cors",
+            //         cache: "no-cache",
+            //         credentials: "same-origin",
+            //         headers: new Headers({
+            //             "Content-Type": "application/json"
+            //         }),
+            //         redirect: "follow", // manual, *follow, error
+            //         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            //     });
+            //     if (response.status == 200) {
+            //         const data = await response.json();
+            //         localStorage.setItem("token", data.refresh)
+            //         return data.access
+            //     }
+            //
+            // }
 
         } catch (e) {
             // this.snackbarRef?.current?.show("Failed to contact to server. Please ask system administrator.");
         }
-    }
+        }
 
     async get(apiKey: string, params: any = {}, isJSON: boolean = true) {
 
         const url = MapApi.getURL(apiKey, params);
+        console.log(url)
         return await this.getFetch(url, isJSON);
 
     }
@@ -423,6 +426,7 @@ export default class MapApi {
             //     // "Content-Type": "application/x-www-form-urlencoded",
             // });
             const url = MapApi.getURL(MapAPIs.API_LOGIN);
+            console.log("login url", url)
             const response = await fetch(url, {
                 method: "POST",
                 // mode: "cors",
@@ -442,5 +446,19 @@ export default class MapApi {
             // CommonUtils.showSnackbar("Failed to authenticate user", AlertType.error);
             console.error(e);
         }
+    }
+
+    static syncGet(url: string, isJson: boolean = true) {
+        const request = new XMLHttpRequest();
+        request.open('GET', url, false);  // `false` makes the request synchronous
+        request.send(null);
+        if(request.status === 200){
+            if(isJson){
+                return JSON.parse(request.responseText)
+            }else {
+                return request.responseText
+            }
+        }
+
     }
 }

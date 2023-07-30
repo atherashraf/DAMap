@@ -6,15 +6,12 @@ import LayerInfo from "./admin/containers/LayerInfo";
 import MapInfo from "./admin/containers/MapInfo";
 import MapAdmin from "./admin/containers/MapAdmin";
 import DAMap from "./ol-map/containers/DAMap";
-import MapApi from "./ol-map/utils/MapApi";
 import DASnackbar from "./ol-map/components/common/DASnackbar";
 import UserUtils from "./admin/UserUtils";
-import {FormGroup, Typography} from "@mui/material";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import {RefObject} from "react";
 import DAAppBar from "./DAAppbar";
 
+const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
 interface IProps {
     children: JSX.Element
 }
@@ -26,8 +23,14 @@ const Protected = (props: IProps) => {
     const {children} = props;
     UserUtils.isLoggedIn().then((r) => {
         // console.log("isLogged in", r)
-        setAuth(r)
-        if (!r) navigate("/")
+
+        if (!r) {
+            navigate("/")
+            snackbarRef.current.show("Failed to login. " +
+                "Please check your credentials")
+        }else{
+            setAuth(r)
+        }
 
     })
 
@@ -57,7 +60,7 @@ const MapRoutes = () => {
 
     )
 }
-const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
+
 const App = () => {
     const [auth, setAuth] = React.useState<boolean>(null)
     // const [userName, setUserName] = React.useState<string>("")
@@ -76,7 +79,7 @@ const App = () => {
         // <RouterProvider router={router} />
         <React.Fragment>
             <BrowserRouter>
-                <DAAppBar/>
+                <DAAppBar snackbarRef={snackbarRef}/>
                 <MapRoutes/>
                 <DASnackbar ref={snackbarRef}/>
             </BrowserRouter>

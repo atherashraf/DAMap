@@ -21,7 +21,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             target: target,
             //tipLabel: 'Legend', // Optional label for button
             //groupSelectStyle: 'children',
-            show_progress:true,
+            show_progress: true,
             extent: mapVM.mapExtent,
             trash: true,
             // oninfo: function (l) // alert(l.get("title")); }
@@ -37,9 +37,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                 && layer.hasOwnProperty('legend') && layer?.legend['graphic'] !== 'undefined') {
                 const li = document.createElement("li");
                 e.li.appendChild(li);
-
-
-                const graphic = layer?.legend['graphic']
+                // const graphic = layer?.legend['graphic']
                 const imageSize = [60, 40]
                 let image = null;
                 switch (layer.legend['sType']) {
@@ -55,14 +53,27 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                         e.li.appendChild(document.createElement('br'))
                         e.li.appendChild(image);
                         break;
-                    case "ol":
-                        // e.li.appendChild(layer?.legend['graphic']);
-                        image = new Image();
-                        image.src = graphic.toDataURL();
-                        image.width = imageSize[0]
-                        image.height = imageSize[1]
+                    case "canvas":
+                        // layer.legend['graphic'].render(e.li);
+                        e.li.appendChild(layer?.legend['graphic']);
+                        // const graphic = layer?.legend['graphic']
+                        // if(Array.isArray(graphic)){
+                        //     graphic.forEach((g)=>{
+                        //         image = new Image();
+                        //         image.src = g.toDataURL();
+                        //         image.width = imageSize[0]
+                        //         image.height = imageSize[1]
+                        //         e.li.appendChild(image);
+                        //         e.li.appendChild(document.createElement('br'))
+                        //     })
+                        // }else {
+                        // image = new Image();
+                        // image.src = graphic.toDataURL();
+                        // image.width = imageSize[0]
+                        // image.height = imageSize[1]
                         // e.li.appendChild(document.createElement('br'))
-                        e.li.appendChild(image);
+                        // e.li.appendChild(image);
+                        // }
                         break;
                     default:
                         break;
@@ -72,7 +83,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
         })
         mapVM.getMap()?.addControl(lswitcher)
     }
-    useEffect(()=>{
+    useEffect(() => {
         if (!isLSAdeed) {
             const elem = document.getElementById('div-layer-switcher') as HTMLElement
             elem.innerHTML = "";
@@ -81,8 +92,6 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             setLSAded(true)
         }
     }, [])
-
-
 
 
     return (

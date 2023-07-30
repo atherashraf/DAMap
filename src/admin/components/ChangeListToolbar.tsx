@@ -65,7 +65,6 @@ class ChangeListToolbar extends React.PureComponent<IProps, IState> {
             height: 25,
 
         }
-        console.log(this.state.buttons);
         return (
             <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
                 {this.state.buttons.map((btn) => (

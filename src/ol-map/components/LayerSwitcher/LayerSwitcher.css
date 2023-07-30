@@ -2,6 +2,8 @@
 .ol-layerswitcher .panel  > li {
     border: 3px solid #17176255;
     padding:1px;
+    max-height: 200px !important;
+    overflow: auto !important;
     /*margin:2px;*/
 }
 
