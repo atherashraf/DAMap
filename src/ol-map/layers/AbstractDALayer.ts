@@ -65,11 +65,11 @@ class AbstractDALayer {
     }
 
     addLegendGraphic(layer: any) {
-        const style = this.style.type;
+        const style = this.style?.type || "single";
         const iconSize = [20, 10]
         switch (style) {
             case "single":
-                const fStyle = this.createOLStyle(this.layerInfo.geomType[0], this.style.style.default);
+                const fStyle = this.createOLStyle(this.layerInfo.geomType[0], this.style?.style?.default);
                 const img = ol_legend_Legend.getLegendImage({
                     feature: undefined,
                     margin: 2,

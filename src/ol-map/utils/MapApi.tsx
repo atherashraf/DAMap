@@ -39,6 +39,9 @@ export const MapAPIs = Object.freeze({
     DCH_EDIT_MODEL_ROW: "api/dch/edit_model_row/{modelName}/",
     DCH_DELETE_LAYER_INFO: "api/dch/delete_layerinfo_row/{uuid}/",
     DCH_DOWNLOAD_SLD: "api/dch/download_sld_style/{uuid}/",
+    DCH_DB_CONNECTION: "api/dch/get_db_connection/",
+    DCH_DB_TABLE_LIST: "api/dch/db_table_list/{db_id}/",
+    DCH_SAVE_DB_LAYER_INFO: "api/dch/save_db_layer_info/{db_id}/{table_name}/{layer_category_id}/",
 
     DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
@@ -142,7 +145,7 @@ export default class MapApi {
         } catch (e) {
             // this.snackbarRef?.current?.show("Failed to contact to server. Please ask system administrator.");
         }
-        }
+    }
 
     async get(apiKey: string, params: any = {}, isJSON: boolean = true) {
 
@@ -181,7 +184,7 @@ export default class MapApi {
         }
     }
 
-    async postFetch(url,  data, isJSON){
+    async postFetch(url, data, isJSON) {
         const headers = await this.getHeaders();
         const response = await fetch(url, {
             method: "POST",
@@ -195,6 +198,7 @@ export default class MapApi {
         });
         return await this.apiResponse(response, isJSON);
     }
+
     async getHeaders(isJson: boolean = true) {
         const accessToken = await UserUtils.getAccessToken(); //state.user.accessToken
         const csrfToken = MapApi.getCookie("csrftoken")
@@ -418,6 +422,7 @@ export default class MapApi {
         }
         return cookieValue;
     }
+
     static async authenticate(formData) {
         try {
             // const headers = new Headers({
@@ -437,9 +442,9 @@ export default class MapApi {
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: formData, // body data type must match "Content-Type" header
             });
-            if(response.status==200) {
+            if (response.status == 200) {
                 return await response.json();
-            }else{
+            } else {
                 return null;
             }
         } catch (e) {
@@ -452,10 +457,10 @@ export default class MapApi {
         const request = new XMLHttpRequest();
         request.open('GET', url, false);  // `false` makes the request synchronous
         request.send(null);
-        if(request.status === 200){
-            if(isJson){
+        if (request.status === 200) {
+            if (isJson) {
                 return JSON.parse(request.responseText)
-            }else {
+            } else {
                 return request.responseText
             }
         }

@@ -10,7 +10,7 @@ interface IProps {
 }
 
 
-const LayerCategory = (props: IProps) => {
+const AddLayerCategoryForm = (props: IProps) => {
     const [mainCategory, setMainCategory] = React.useState<string>("")
     const [subCategory, setSubCategory] = React.useState<string>("")
     const handleSubmit = (e) => {
@@ -81,4 +81,4 @@ const LayerCategory = (props: IProps) => {
     )
 }
 
-export default LayerCategory
+export default AddLayerCategoryForm

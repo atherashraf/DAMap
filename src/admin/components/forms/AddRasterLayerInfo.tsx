@@ -12,8 +12,9 @@ import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {useNavigate} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
-import LayerCategory from "./LayerCategory";
+import AddLayerCategoryForm from "./AddLayerCategoryForm";
 import DAFullScreenDialog from "../../../common/DAFullScreenDialog";
+import LayerCategoryControl from "./LayerCategoryControl";
 
 interface IProps {
     snackbarRef: React.RefObject<DASnackbar>
@@ -35,7 +36,6 @@ const AddRasterLayerInfo = (props: IProps) => {
     const [rasterType, setRasterType] = React.useState("new");
     const [sldFile, setSldFile] = useState<File>();
     const [layerTitle, setLayerTitle] = useState<string>("");
-    const [layerCategories, setLayerCategories] = useState<any>([])
     const [selectLayerCat, setSelectLayerCat] = useState<ILayerCategory>()
     const [temporalRes, setTemporalRes] = useState<any>(null)
     const [uuid, setUUID] = useState<string>()
@@ -45,7 +45,7 @@ const AddRasterLayerInfo = (props: IProps) => {
             setRasterFilePath(e.target.files[0].name)
         }
     };
-    const handleWorldFileChange = (e: ChangeEvent<HTMLInputElement>) =>{
+    const handleWorldFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setWorldFile(e.target.files[0]);
             setWorldFilePath(e.target.files[0].name)
@@ -70,14 +70,6 @@ const AddRasterLayerInfo = (props: IProps) => {
         }
     };
     const api = new MapApi(props.snackbarRef);
-    const updateLayerCategories = () =>{
-        api.get(MapAPIs.DCH_LAYER_CATEGORIES).then((payload) => {
-            setLayerCategories(payload)
-        })
-    }
-    React.useEffect(() => {
-        updateLayerCategories()
-    }, [])
     const handleSubmit = (event) => {
         event.preventDefault()
 
@@ -101,18 +93,12 @@ const AddRasterLayerInfo = (props: IProps) => {
         })
 
     }
-    // const url = MapApi.getURL(MapAPIs.DCH_ADD_RASTER_INFO)
-
-    const handleAddLayerCategory = () => {
-        setFormType("LayerCategory")
-    }
     return (
         <React.Fragment>
-            {formType === "LayerCategory" ? <LayerCategory snackbarRef={props.snackbarRef} handleBack={
-                ()=> {
-                    setFormType(null)
-                    updateLayerCategories()
-                }}/>
+            {formType === "LayerCategory" ? <AddLayerCategoryForm snackbarRef={props.snackbarRef} handleBack={
+                    () => {
+                        setFormType(null)
+                    }}/>
                 :
                 <Box sx={{
                     display: "block",
@@ -129,26 +115,9 @@ const AddRasterLayerInfo = (props: IProps) => {
                             />
                         </Box>
                         <Box sx={{margin: "30px"}}>
-                            <FormControl variant="standard" fullWidth={true}>
-                                <Stack direction={"row"}>
-                                    <InputLabel id="layer-category-labell">
-                                        Layer Category
-                                    </InputLabel>
-                                    <Select
-                                        labelId="layer-category-label"
-                                        id="demo-simple-select-standard"
-                                        value={selectLayerCat}
-                                        // autoWidth
-                                        onChange={handleLayerCategoryChange}
-                                        sx={{flexGrow: 1}}
-
-                                    >
-                                        {layerCategories && layerCategories.map((item) =>
-                                            (<MenuItem key={"key-" + item.name} value={item}>{item.name}</MenuItem>))}
-                                    </Select>
-                                    <Button onClick={handleAddLayerCategory}><EditIcon/></Button>
-                                </Stack>
-                            </FormControl>
+                            <LayerCategoryControl api={api} setLayerCategory={
+                                (layerCategory: ILayerCategory) => setSelectLayerCat(layerCategory)}
+                                                  handleAddLayerCategory={() => setFormType("LayerCategory")}/>
                         </Box>
                         <Box sx={{margin: "30px"}}>
                             <FormControl variant="standard" fullWidth={true}>
@@ -188,7 +157,7 @@ const AddRasterLayerInfo = (props: IProps) => {
                             />
                         </Box>
                         {rasterType === "new" &&
-                        <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
+                            <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
 
                                 <><InputLabel>Select World File</InputLabel>
                                     <Button variant="contained" component="label">
@@ -197,10 +166,10 @@ const AddRasterLayerInfo = (props: IProps) => {
                                     </Button><br/></>
 
 
-                            <TextField id="worldfile-path-id" label="World File Path" variant="standard"
-                                       value={worldFilePath}
-                            />
-                        </Box>}
+                                <TextField id="worldfile-path-id" label="World File Path" variant="standard"
+                                           value={worldFilePath}
+                                />
+                            </Box>}
 
                         <Box sx={{margin: "30px", display: "flex", flexDirection: "column"}}>
                             <InputLabel>Temporal Resolution</InputLabel>
@@ -239,7 +208,7 @@ const AddRasterLayerInfo = (props: IProps) => {
                             </Button>
                             &nbsp; &nbsp;
                             <Button type="submit" sx={{backgroundColor: "black", color: "white"}}
-                                    variant="contained" onClick={()=>{
+                                    variant="contained" onClick={() => {
                                 props.dialogRef.current.handleClose()
                                 window.location.reload()
                             }}>

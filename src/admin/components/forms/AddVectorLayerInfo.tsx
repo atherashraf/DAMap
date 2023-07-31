@@ -7,6 +7,7 @@ import Select, {SelectChangeEvent} from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import PostGISInfo from "./PostGISInfo";
 
 interface IProps {
     snackbarRef: React.RefObject<DASnackbar>
@@ -14,12 +15,14 @@ interface IProps {
 }
 
 const AddVectorLayerInfo = (props: IProps) => {
-    const selectItems = ["Shapefile", "Postgis"]
+    const selectItems = ["Shapefile", "Postgis", "URL"]
     const [selectedItem, setSelectedItem] = React.useState<string>("")
     const getSelectedForm = () => {
         switch (selectedItem) {
             case "Shapefile":
                 return <ShpFileUploader snackbarRef={props.snackbarRef}/>
+            case "Postgis":
+                return <PostGISInfo snackbarRef={props.snackbarRef} />
             default:
                 props.snackbarRef?.current?.show("Please select form type")
         }
