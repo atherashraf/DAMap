@@ -15,7 +15,7 @@ interface IProps {
 }
 
 const AddVectorLayerInfo = (props: IProps) => {
-    const selectItems = ["Shapefile", "Postgis", "URL"]
+    const selectItems = ["Shapefile", "Postgis"]
     const [selectedItem, setSelectedItem] = React.useState<string>("")
     const getSelectedForm = () => {
         switch (selectedItem) {

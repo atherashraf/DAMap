@@ -18,6 +18,22 @@ import MapVM from "../models/MapVM";
 import autoBind from "auto-bind";
 import ol_legend_Legend from "ol-ext/legend/Legend";
 import ol_legend_Item from "ol-ext/legend/Item";
+import MapApi from "../utils/MapApi";
+
+export interface IWeatherLayer {
+    uuid: string
+    title: string
+    layer_name: string
+    op: string
+}
+
+export const weatherLayers: IWeatherLayer[] = [
+    {"uuid": "1", "title": "Clouds", "layer_name": "clouds_new", op: "CL"},
+    {"uuid": "2", "title": "Precipitation", "layer_name": "precipitation_new", op: "PAR0"},
+    {"uuid": "3", "title": "Wind Speed", "layer_name": "wind_new", op: "WND"},
+    {"uuid": "4", "title": "Temperature", "layer_name": "temp_new", op: "TA2"},
+    {"uuid": "5", "title": "Weather Data", "layer_name": "weather_data", op: null}
+]
 
 class WeatherLayers {
     mapVM: MapVM
@@ -29,7 +45,8 @@ class WeatherLayers {
         layers: []
     });
     weatherLayers: any = null;
-    open_weather_map_key = 'e9c0f98767ed96cefc3dd01adf8aacf2'
+    // open_weather_map_key = 'e9c0f98767ed96cefc3dd01adf8aacf2'
+    open_weather_map_key = process.env.REACT_APP_OPENWEATHER_KEY
 
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM
@@ -37,23 +54,41 @@ class WeatherLayers {
         autoBind(this)
     }
 
-    addTileWeatherMap = function (layer_type: string) {
+    getOpenWeather2TileURL(layer_type): string {
+        console.log(layer_type)
+        let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API key}"
+        url = url.replace(`{op}`, layer_type)
+        url = url.replace(`{API key}`, this.open_weather_map_key)
+        return url
+    }
+
+    getOpenWeatherTileURL(layer_type): string {
+        let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
+        url = url.replace(`{layer}`, layer_type)
+        url = url.replace(`{API key}`, this.open_weather_map_key)
+        return url
+    }
+
+    addTileWeatherMap = function (selectedOption: IWeatherLayer) {
         let me = this;
-        let layer_name = me.getLayerName(layer_type)
+        // let layer_title = selectedOption.title
         if (me.weatherLayers === null) {
             me.weatherLayers = [];
             me.mapVM.getMap().addLayer(me.weatherLayersGroup);
         }
-        let url = 'https://tile.openweathermap.org/map/' + layer_type + '/{z}/{x}/{y}.png?appid=e9c0f98767ed96cefc3dd01adf8aacf2'
 
+        // const url = this.getOpenWeatherTileURL(selectedOption.layer_name);
+        console.log(selectedOption)
+        const url = this.getOpenWeather2TileURL(selectedOption.op)
+        // console.log(url)
         let layer = new Tile({
             // @ts-ignore
-            title: layer_name,
+            title: selectedOption.title,
             info: 'weather',
-            name: layer_name,
+            name: selectedOption.layer_name,
             properties: {
-                title: layer_name,
-                name: layer_name,
+                title: selectedOption.title,
+                name: selectedOption.layer_name,
             },
             source: new XYZ({
                 url: url,
@@ -63,13 +98,13 @@ class WeatherLayers {
             visible: true,
             opacity: 0.9
         });
-        if (!me.weatherLayers[layer_name]) {
-            me.weatherLayers[layer_name] = layer;
+        if (!me.weatherLayers[selectedOption.uuid]) {
+            me.weatherLayers[selectedOption.uuid] = layer;
             let layers = me.weatherLayersGroup.getLayers();
             layers.insertAt(layers.getLength(), layer);
             // me.map.addLayer(me.weatherLayers[layer_name]);
         }
-        this.addLegendGraphic(layer, layer_type, layer_name)
+        this.addLegendGraphic(layer, selectedOption.layer_name, selectedOption.title)
     };
     addLegendGraphic = function (layer, layer_type: any, layer_name: any) {
         let me = this;
@@ -96,17 +131,17 @@ class WeatherLayers {
             me.mapVM.legendPanel.addItem(img)
         }
     }
-    getLayerName = function (layer_type) {
-        let data =
-            {
-                "clouds_new": "Clouds",
-                "precipitation_new": "Precipitation",
-                "wind_new": "Wind Speed",
-                "temp_new": "Temperature",
-                "weather_data": "Weather Data"
-            };
-        return data[layer_type]
-    }
+    // getLayerName = function (layer_type) {
+    //     let data =
+    //         {
+    //             "clouds_new": "Clouds",
+    //             "precipitation_new": "Precipitation",
+    //             "wind_new": "Wind Speed",
+    //             "temp_new": "Temperature",
+    //             "weather_data": "Weather Data"
+    //         };
+    //     return data[layer_type]
+    // }
     getWeatherData = function (layer_name) {
         let me = this;
         if (me.weatherLayers === null) {
@@ -114,10 +149,12 @@ class WeatherLayers {
             me.mapVM.map.addLayer(me.weatherLayersGroup);
         }
         if (!me.weatherLayers[layer_name]) {
-            let westLng = 70;
-            let northLat = 30;
-            let eastLng = 74;
-            let southLat = 34;
+            const extent = me.mapVM.getExtent()
+            console.log("extent", extent)
+            let westLng = extent[0];
+            let northLat = extent[3];
+            let eastLng = extent[2];
+            let southLat = extent[1];
             let geojson = new GeoJSON();
             let requestURLString = "http://api.openweathermap.org/data/2.5/box/city?bbox="
                 + westLng + "," + northLat + "," //left top

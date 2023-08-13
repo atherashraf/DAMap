@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import DAFullScreenDialog from "../../common/DAFullScreenDialog";
 import AddRasterLayerInfo from "../components/forms/AddRasterLayerInfo";
 import AddVectorLayerInfo from "../components/forms/AddVectorLayerInfo";
+import AddURLLayerInfo from "../components/forms/AddURLLayerInfo";
 
 
 const changeListRef = React.createRef<ChangeList>()
@@ -63,6 +64,12 @@ const LayerInfo = () => {
               dialogRef.current?.handleClickOpen()
               dialogRef.current?.setContent("Add Vector Layer", <AddVectorLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef}/>)
           }
+        },{
+            name: "Add Layer URL",
+            action: () =>{
+                dialogRef.current?.handleClickOpen()
+                dialogRef.current?.setContent("Add Layer URL", <AddURLLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef}/>)
+            }
         },
             {
             name: "Delete layer Info",

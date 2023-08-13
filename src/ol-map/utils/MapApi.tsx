@@ -42,6 +42,7 @@ export const MapAPIs = Object.freeze({
     DCH_DB_CONNECTION: "api/dch/get_db_connection/",
     DCH_DB_TABLE_LIST: "api/dch/db_table_list/{db_id}/",
     DCH_SAVE_DB_LAYER_INFO: "api/dch/save_db_layer_info/{db_id}/{table_name}/{layer_category_id}/",
+    DCH_ADD_URL_LAYER_INFO: "api/dch/add_layer_url_info/{layer_title}/{layer_category_id}/{layer_url}/{url_type}/",
 
     DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
@@ -70,7 +71,14 @@ export default class MapApi {
         }
         return keys;
     }
-
+    static getOpenWeatherTileURL(layer_type): string{
+        const apiKey = process.env.REACT_APP_OPENWEATHER_KEY;
+        // let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API Key}"
+        let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
+        url = url.replace(`{layer}`,layer_type)
+        url = url.replace(`{API key}`,apiKey)
+        return url
+    }
     static getURL(api: string, params: any = null) {
         let API_URL = process.env.REACT_APP_API_URL;
         API_URL = API_URL == "" ? window.location.protocol + "//" + window.location.host : API_URL
@@ -150,7 +158,6 @@ export default class MapApi {
     async get(apiKey: string, params: any = {}, isJSON: boolean = true) {
 
         const url = MapApi.getURL(apiKey, params);
-        console.log(url)
         return await this.getFetch(url, isJSON);
 
     }

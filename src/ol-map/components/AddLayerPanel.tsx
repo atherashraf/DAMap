@@ -2,7 +2,7 @@ import * as React from "react";
 import {useState} from "react"
 import MapVM from "../models/MapVM";
 import {Button, FormControl} from '@mui/material';
-import WeatherLayers from "../layers/WeatherLayers";
+import WeatherLayers, {IWeatherLayer, weatherLayers} from "../layers/WeatherLayers";
 import TypeAhead from "../../widgets/TypeAhead";
 
 interface AddLayerPanelProps {
@@ -28,33 +28,27 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
         }
         return 0;
     })
-    const weatherLayers = [
-        {"uuid": "1", "title": "Clouds", "layer_name": "clouds_new"},
-        {"uuid": "2", "title": "Precipitation", "layer_name": "precipitation_new"},
-        {"uuid": "3", "title": "Wind Speed", "layer_name": "wind_new"},
-        {"uuid": "4", "title": "Temperature", "layer_name": "temp_new"},
-        {"uuid": "5", "title": "Weather Data", "layer_name": "weather_data"}
-    ]
+
 
     // React.useEffect(() => {
     //     const elem = document.getElementById('div-add_layer') as HTMLElement
     //     mapVM.identifyFeature(elem)
     // }, [])
-    const [selectedOption, setSelectedOption] = useState(options[0].uuid);
-    const [selectedWeatherOption, setSelectedWeatherOption] = useState(weatherLayers[4].layer_name);
+    const [selectedOption, setSelectedOption] = useState<string>(options[0].uuid);
+    const [selectedWeatherOption, setSelectedWeatherOption] = useState<IWeatherLayer>(weatherLayers[4]);
     const handleOptionChange = (selectedOption: any) => {
         setSelectedOption(selectedOption.uuid);
     };
     const handleWeatherOptionChange = (selectedOption: any) => {
-        setSelectedWeatherOption(selectedOption.layer_name);
+        setSelectedWeatherOption(selectedOption);
     };
     const handelAddButton = async () => {
         await props.mapVM.addDALayer({uuid: selectedOption})
     }
     const handelAddWeatherButton = async () => {
         console.log(selectedWeatherOption)
-        if (selectedWeatherOption === "weather_data") {
-            wLayers.getWeatherData(selectedWeatherOption)
+        if (selectedWeatherOption.layer_name === "weather_data") {
+            wLayers.getWeatherData(selectedWeatherOption.layer_name)
         } else {
             wLayers.addTileWeatherMap(selectedWeatherOption)
         }
