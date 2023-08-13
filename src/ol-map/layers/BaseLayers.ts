@@ -82,7 +82,7 @@ class BaseLayers {
             // @ts-ignore
             baseLayer: true,
             source: new BingMaps({
-                key: 'VVIQpQ8x3kIlljZrkYFr~Xc04jVHyjiW9rZ7F1rtCdw~Ah1DK8585DXN-dhn2zmHNIKEvjn25a8AyUpYIOxDGcS2ML_XnHQTL-eF_IhMdKn4',
+                key: process.env.REACT_APP_BING_KEY,
                 imagerySet: info.imagerySet,
                 // use maxZoom 19 to see stretched tiles instead of the BingMaps
                 // "no photos at this zoom level" tiles
