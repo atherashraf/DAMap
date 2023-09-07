@@ -39,6 +39,9 @@ class AbstractDALayer {
         this.layer && this.addLayerChangeEvent()
     }
 
+    getZIndex(){
+        return this.layerInfo.zIndex;
+    }
     addLayerChangeEvent() {
         this.layer.on("propertychange", (e) => {
             if (e.key == "map" && e.target.values_[e.key] == null) {
@@ -51,7 +54,6 @@ class AbstractDALayer {
     }
 
     setSlDStyleAndLegendToLayer() {
-        console.log("style", this.style)
         const type = this.style?.type || ""
         let lyr = this.layer;
         if (type === 'sld') {
@@ -164,8 +166,9 @@ class AbstractDALayer {
         // this.mapVM.showSnackbar("Updating layer style")
         // console.log("layer Info", this.layerInfo)
         if (this.layerInfo.dataModel == "V") {
-            this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid}).then((payload) => {
+            this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid, map_uuid: this.mapVM.getMapUUID()}).then((payload) => {
                 if (payload) {
+                    console.log("new style", payload)
                     this.style = payload
                     this.setSlDStyleAndLegendToLayer()
                     this.refreshLayer()

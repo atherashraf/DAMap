@@ -18,7 +18,7 @@ interface IVectorStylingProps {
 const VectorStyling = (props: IVectorStylingProps) => {
     const styleFormRef = React.createRef<BaseStyleForm>()
     const [styleType, setStyleType] = React.useState('');
-    const styleTypes = [{name: "SLD", val: "sld"}, {name: "Single", val: "single"},
+    const styleTypes = [{name: "SLD / DA Style", val: "sld"}, {name: "Single", val: "single"},
         {name: "Multiple", val: "multiple"},
         {name: "Density", val: "density"}]
     const layerId = props.mapVM.getLayerOfInterest()
@@ -46,7 +46,8 @@ const VectorStyling = (props: IVectorStylingProps) => {
     const handleSaveStyle = () => {
         const style: IFeatureStyle = styleFormRef.current?.getFeatureStyle()
         props.mapVM.showSnackbar("Saving new style")
-        props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId}).then(() => {
+        const mapUUID = props.mapVM.isMapEditor()? props.mapVM.getMapUUID(): -1
+        props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId, map_uuid: mapUUID}).then(() => {
             props.mapVM.showSnackbar("Style save successfully")
             const daLayer = props.mapVM.getDALayer(layerId);
             daLayer.updateStyle();
@@ -56,11 +57,12 @@ const VectorStyling = (props: IVectorStylingProps) => {
     const handleRemoveStyle = () => {
         const style = ""
         props.mapVM.showSnackbar("Removing style")
-        props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId}).then(() => {
+        const mapUUID = props.mapVM.isMapEditor ? props.mapVM.getMapUUID() : -1
+        props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId, map_uuid: mapUUID}).then(() => {
             props.mapVM.showSnackbar("Style removed successfully")
             const daLayer = props.mapVM.getDALayer(layerId);
-            daLayer.setStyle(null)
-            // daLayer.updateStyle();
+            // daLayer.setStyle(null)
+            daLayer.updateStyle();
 
             // daLayer.refreshLayer()
             // props.mapVM.refreshMap()

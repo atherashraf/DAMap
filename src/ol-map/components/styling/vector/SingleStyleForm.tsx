@@ -28,10 +28,13 @@ class SingleStyleForm extends BaseStyleForm {
     }
 
     render() {
+        // const style: IGeomStyle = this.vectorStyleRef.current.getStyleParams()
+        const layerId = this.props.mapVM.getLayerOfInterest();
+        const currentStyle = this.props.mapVM.getDALayer(layerId)?.style;
         const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
         return (
             <React.Fragment>
-                <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType}/>
+                <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType} style={currentStyle.style?.default}/>
             </React.Fragment>
         );
     }

@@ -5,33 +5,47 @@ import "./LayerSwitcher.css";
 import {Group} from "ol/layer";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import {useEffect} from "react";
-// import Legend from "./legend/Legend"
-// import '../static/css/custom_layerswitcher.css'
+import LayerMenu, {IContextMenu} from "./LayerMenu";
 
 interface LayerSwitcherProps {
     mapVM: MapVM
 }
 
 const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
+    // const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [contextMenu, setContextMenu] = React.useState<IContextMenu | null>(null)
+    const [menuLayer, setMenuLayer] = React.useState(null)
     const {mapVM} = props
-    const [isLSAdeed, setLSAded] = React.useState(false);
+    const [isLSAdded, setLSAdded] = React.useState(false);
     const legendSize = [60, 40]
+    let mouseCoordinates = {x: 0, y: 0}
+    const mouseMoveHandler = (event) => {
+        mouseCoordinates = {
+            x: event.clientX,
+            y: event.clientY
+        }
+
+    }
+
     const addLayerSwitcher = (target: HTMLElement) => {
-        let lswitcher = new LayerSwitcher({
+        let switcher = new LayerSwitcher({
             target: target,
             //tipLabel: 'Legend', // Optional label for button
             //groupSelectStyle: 'children',
             show_progress: true,
             extent: mapVM.mapExtent,
             trash: true,
-            // oninfo: function (l) // alert(l.get("title")); }
+            oninfo: function (l) {
+                setMenuLayer(l)
+                setContextMenu({mouseX: mouseCoordinates.x, mouseY: mouseCoordinates.y})
+            }
         });
         // lswitcher.on('change', (e)=>{
         //     console.log(e)
         //     alert("changed");
         // })
         //@ts-ignore
-        lswitcher.on('drawlist', function (e) {
+        switcher.on('drawlist', function (e) {
             const layer: any = e.layer;
             if (layer && !(layer instanceof Group) && !(layer.get('baseLayer'))
                 && layer.hasOwnProperty('legend') && layer?.legend['graphic'] !== 'undefined') {
@@ -81,16 +95,19 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             }
             // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)
         })
-        mapVM.getMap()?.addControl(lswitcher)
+        mapVM.getMap()?.addControl(switcher)
     }
     useEffect(() => {
-        if (!isLSAdeed) {
+        window.addEventListener('mousedown', mouseMoveHandler);
+        if (!isLSAdded) {
             const elem = document.getElementById('div-layer-switcher') as HTMLElement
             elem.innerHTML = "";
             // mapVM.addLayerSwitcher(elem)
             addLayerSwitcher(elem)
-            setLSAded(true)
+            setLSAdded(true)
         }
+
+
     }, [])
 
 
@@ -99,6 +116,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             <Paper elevation={2} sx={{height: "100%", width: "100%", m: 0, p: 0}}>
                 <div id={"div-layer-switcher"} style={{width: "auto", height: "auto"}}/>
             </Paper>
+            <LayerMenu layer={menuLayer} contextMenu={contextMenu} mapVM={mapVM}/>
         </React.Fragment>
     )
 }

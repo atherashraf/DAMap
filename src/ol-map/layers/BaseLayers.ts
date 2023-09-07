@@ -4,35 +4,45 @@ import OSM from "ol/source/OSM";
 import {BingMaps} from "ol/source";
 import {Group} from "ol/layer";
 import {ILayerSources, ILayerSourcesInfo} from "../TypeDeclaration";
+import XYZ from "ol/source/XYZ";
+import WeatherLayers from "./WeatherLayers";
 
 
+export const baseLayerSources = {
+    osm: {title: "Open Street Map", source: "osm"},
+    googleTerrain: {title: "Google Physical", source: "google"},
+    bingRoad: {title: "Bing Roads", source: "osm", imagerySet: 'RoadOnDemand'},
+    // bingAerial: {title: "Bing Aerial", source: "bing", visible: false, imagerySet: 'Aerial'},
+    bingAerialLabel: {
+        title: "Bing Aerial",
+        source: "bing",
+        visible: false,
+        imagerySet: 'AerialWithLabelsOnDemand'
+    },
+    bingDark: {title: "Bing Dark Canvas", source: "bing", imagerySet: 'CanvasDark'},
+    // bingSurvey: {title: "Bing Ordnance Survey", source: "bing", visible: false, imagerySet: 'OrdnanceSurvey'},
+}
 
 class BaseLayers {
     private mapVM: MapVM;
     private readonly layersSources: ILayerSources;
-    private attributions =
-        '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+    private attributions = '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
+
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM;
-        this.layersSources = {
-            osm: {title: "Open Street Map", source: "osm", visible: false},
-            bingRoad: {title: "Bing Roads", source: "osm", visible: false, imagerySet: 'RoadOnDemand'},
-            // bingAerial: {title: "Bing Aerial", source: "bing", visible: false, imagerySet: 'Aerial'},
-            bingAerialLabel: {
-                title: "Bing Aerial",
-                source: "bing",
-                visible: true,
-                imagerySet: 'AerialWithLabelsOnDemand'
-            },
-            bingDark: {title: "Bing Dark Canvas", source: "bing", visible: false, imagerySet: 'CanvasDark'},
-            // bingSurvey: {title: "Bing Ordnance Survey", source: "bing", visible: false, imagerySet: 'OrdnanceSurvey'},
-        }
+
     }
 
-    addBaseLayers() {
+
+    addBaseLayers(title = null) {
         const layers = []
-        for (let key in this.layersSources) {
+        title = !title ? "Google Physical" : title
+        for (let key in baseLayerSources) {
             layers.push(this.getLayer(key))
+            if (baseLayerSources[key].title === title) {
+                // console.log("base Layer", layers[])
+                layers[layers.length - 1]?.setVisible(true)
+            }
         }
         const gLayer = new Group({
             //@ts-ignore
@@ -43,8 +53,12 @@ class BaseLayers {
         this.mapVM.getMap().addLayer(gLayer)
     }
 
-    getLayer(key: string): any {
-        const info = this.layersSources[key];
+    getLayer(key
+                 :
+                 string
+    ):
+        any {
+        const info = baseLayerSources[key];
         let layer: any
         switch (info?.source) {
             case "osm":
@@ -53,17 +67,42 @@ class BaseLayers {
             case "bing":
                 layer = this.getBingMapLayer(info)
                 break
+            case "google":
+                layer = this.getGoogleLayer(info)
             default:
                 break
         }
         return layer
     }
 
-    getOSMLLayer(info: ILayerSourcesInfo): TileLayer<OSM> {
+    getGoogleLayer(info
+                       :
+                       ILayerSourcesInfo
+    ):
+        TileLayer<any> {
         return new TileLayer({
             //@ts-ignore
             title: info.title,
-            visible: info.visible,
+            visible: false,
+            // @ts-ignore
+            baseLayer: true,
+            source: new XYZ({
+                attributions: "Google Layer",
+                url: "http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+                wrapX: true
+            })
+        });
+    }
+
+    getOSMLLayer(info
+                     :
+                     ILayerSourcesInfo
+    ):
+        TileLayer<OSM> {
+        return new TileLayer({
+            //@ts-ignore
+            title: info.title,
+            visible: false,
             // @ts-ignore
             baseLayer: true,
             source: new OSM({
@@ -77,7 +116,7 @@ class BaseLayers {
         return new TileLayer({
             //@ts-ignore
             title: info.title,
-            visible: info.visible,
+            visible: false,
             preload: Infinity,
             // @ts-ignore
             baseLayer: true,

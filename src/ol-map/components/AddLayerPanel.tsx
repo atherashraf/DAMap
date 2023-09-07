@@ -10,12 +10,9 @@ interface AddLayerPanelProps {
     layers: any
 }
 
-let wLayers: any = null;
+
 const AddLayerPanel = (props: AddLayerPanelProps) => {
     const mapVM = props.mapVM
-    if (!wLayers) {
-        wLayers = new WeatherLayers(mapVM)
-    }
     const options = props.layers.sort((a, b) => {
         let fa = a.title.toLowerCase(),
             fb = b.title.toLowerCase();
@@ -46,12 +43,7 @@ const AddLayerPanel = (props: AddLayerPanelProps) => {
         await props.mapVM.addDALayer({uuid: selectedOption})
     }
     const handelAddWeatherButton = async () => {
-        console.log(selectedWeatherOption)
-        if (selectedWeatherOption.layer_name === "weather_data") {
-            wLayers.getWeatherData(selectedWeatherOption.layer_name)
-        } else {
-            wLayers.addTileWeatherMap(selectedWeatherOption)
-        }
+        props.mapVM.addWeatherLayer(selectedWeatherOption)
     }
 
     return (

@@ -42,7 +42,8 @@ class WeatherLayers {
         title: 'Weather Layers',
         identify: false,
         openInLayerSwitcher: true,
-        layers: []
+        layers: [],
+        zIndex: 1,
     });
     weatherLayers: any = null;
     // open_weather_map_key = 'e9c0f98767ed96cefc3dd01adf8aacf2'
@@ -55,7 +56,6 @@ class WeatherLayers {
     }
 
     getOpenWeather2TileURL(layer_type): string {
-        console.log(layer_type)
         let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API key}"
         url = url.replace(`{op}`, layer_type)
         url = url.replace(`{API key}`, this.open_weather_map_key)
@@ -78,7 +78,6 @@ class WeatherLayers {
         }
 
         // const url = this.getOpenWeatherTileURL(selectedOption.layer_name);
-        console.log(selectedOption)
         const url = this.getOpenWeather2TileURL(selectedOption.op)
         // console.log(url)
         let layer = new Tile({
@@ -108,27 +107,28 @@ class WeatherLayers {
     };
     addLegendGraphic = function (layer, layer_type: any, layer_name: any) {
         let me = this;
-        let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
-        console.log("isLegendAdded", isLegendAdded)
-        if (!isLegendAdded) {
-            let legends = {
-                "clouds_new": clouds_new,
-                "precipitation_new": precipition_new,
-                "wind_new": wind_new,
-                "temp_new": temp_new
-            };
-            layer.legend = {
-                sType: 'src',
-                graphic: legends[layer_type],
-                width: "100%",
-                height: "30px"
+        if (me.mapVM.legendPanel) {
+            let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
+            if (!isLegendAdded) {
+                let legends = {
+                    "clouds_new": clouds_new,
+                    "precipitation_new": precipition_new,
+                    "wind_new": wind_new,
+                    "temp_new": temp_new
+                };
+                layer.legend = {
+                    sType: 'src',
+                    graphic: legends[layer_type],
+                    width: "100%",
+                    height: "30px"
+                }
+                // layer.set('legend', legends[layer_type])
+                const img: ol_legend_Item = new olLegendImage({
+                    title: layer_name,
+                    src: legends[layer_type]
+                })
+                me.mapVM.legendPanel.addItem(img)
             }
-            // layer.set('legend', legends[layer_type])
-            const img: ol_legend_Item = new olLegendImage({
-                title: layer_name,
-                src: legends[layer_type]
-            })
-            me.mapVM.legendPanel.addItem(img)
         }
     }
     // getLayerName = function (layer_type) {

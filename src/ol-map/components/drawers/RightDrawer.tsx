@@ -49,7 +49,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
     }
 
 
-    addContents( heading: string, content: JSX.Element) {
+    addContents(heading: string, content: JSX.Element) {
         this.setState(() => ({content: content, heading: heading}))
     }
 
@@ -72,7 +72,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         let minWidth = 50;
         let maxWidth = 600;
         if (offsetRight > minWidth && offsetRight < maxWidth) {
-            this.setState(()=>({width: offsetRight}))
+            this.setState(() => ({width: offsetRight}))
         }
     }
 
@@ -105,7 +105,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
                                 m: 0
                             }}
                             color={"secondary"}>
-                        <Toolbar style={{padding: 0, margin: 0, minHeight: "30px"}}>
+                        <Toolbar style={{padding: "5px", margin: 0, minHeight: "30px"}}>
                             <Typography variant="h6" component="div"
                                         sx={{flexGrow: 1}}>
                                 {this.state.heading}
@@ -140,7 +140,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
                                 backgroundColor: '#f4f7f9'
                             }}
                         />
-                        <Box sx={{flexGrow: 1, color:"black", width:"auto"}}>
+                        <Box sx={{flexGrow: 1, color: "black", width: "auto"}}>
                             {this.state.content}
                         </Box>
                     </DrawerPaper>

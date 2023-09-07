@@ -101,8 +101,12 @@ class SelectionLayer {
     }
 
     zoomToSelection() {
-        const extent = this.getSource().getExtent()
-        this.mapVM.zoomToExtent(extent)
+        if(this.getSource().getFeatures().length>0) {
+            const extent = this.getSource().getExtent()
+            this.mapVM.zoomToExtent(extent)
+        }else{
+            this.mapVM.showSnackbar("Please select feature before zoom to")
+        }
     }
 }
 

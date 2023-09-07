@@ -33,6 +33,7 @@ import SelectionLayer from "../layers/SelectionLayer";
 import LayerSwitcherPaper from "../components/LayerSwitcher/LayerSwitcherPaper";
 import autoBind from "auto-bind";
 import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
+import WeatherLayers, {weatherLayers} from "../layers/WeatherLayers";
 
 
 export interface IDALayers {
@@ -106,18 +107,44 @@ class MapVM {
                 zoom: 5
             }),
         });
-        this.addBaseLayers()
+        let baseLayer = null;
+        const weatherLayerInfos = []
         if (mapInfo) {
             if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
-            mapInfo?.layers?.forEach(async (layer) => {
-                // console.log(layer)
-                await this.addDALayer(layer)
+
+            mapInfo?.layers?.forEach(async (layer, index) => {
+
+                if (layer.uuid != "-1")
+                    await this.addDALayer(layer, index)
+                else if (layer.isBase) {
+                    baseLayer = layer.key
+                } else {
+                    const weatherLayerIndex = weatherLayers.findIndex((l) => l.layer_name == layer.key)
+                    if (weatherLayerIndex !== -1) {
+                        // weatherLayerInfos.push(weatherLayers[weatherLayerIndex])
+
+                    }
+                }
             });
+
         }
+
+        new BaseLayers(this).addBaseLayers(baseLayer)
         this.addSidebarController();
         this.isInit = true;
         this.selectionLayer = new SelectionLayer(this)
         this.addLegendControlToMap()
+        weatherLayerInfos.forEach((info) => this.addWeatherLayer(info))
+
+    }
+
+    addWeatherLayer(selectedWeatherOption) {
+        const wLayers = new WeatherLayers(this)
+        if (selectedWeatherOption.layer_name === "weather_data") {
+            wLayers.getWeatherData(selectedWeatherOption.layer_name)
+        } else {
+            wLayers.addTileWeatherMap(selectedWeatherOption)
+        }
     }
 
 
@@ -139,7 +166,7 @@ class MapVM {
     }
 
     isLegendItemExist(legend: any, title: string) {
-        let items = legend.getItems().getArray();
+        let items = legend?.getItems()?.getArray() || [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].get('title') === title) {
                 return true;
@@ -192,6 +219,14 @@ class MapVM {
         return this._layerOfInterest;
     }
 
+    getMapUUID(): string {
+        return this.mapInfo.uuid
+    }
+
+    isMapEditor(): boolean {
+        return this.mapInfo.isEditor
+    }
+
     setLayerOfInterest(uuid: string, closeDrawer: boolean = true) {
         this._layerOfInterest = uuid;
         setTimeout(() => {
@@ -217,12 +252,6 @@ class MapVM {
         return false
     }
 
-    addBaseLayers() {
-        const bl = new BaseLayers(this)
-        bl.addBaseLayers()
-        // const osm = bl.getBingMapLayer("AerialWithLabelsOnDemand")
-        // this.map.addLayer(osm)
-    }
 
     addSidebarController() {
         // let sidebarElem: HTMLElement = document.querySelector('.sidebar');
@@ -238,7 +267,7 @@ class MapVM {
 
     }
 
-    refreshMap(clearFeatures:boolean=false) {
+    refreshMap(clearFeatures: boolean = false) {
         setTimeout(() => {
             // this.map?.render()
             // this.map?.updateSize()
@@ -398,11 +427,17 @@ class MapVM {
     //     this.addIDWLayer()
     // }
 
-    async addDALayer(info: { uuid: string, style?: IFeatureStyle, visible?: boolean, zoomRange?: [number, number] }) {
+    async addDALayer(info: {
+        uuid: string,
+        style?: IFeatureStyle,
+        visible?: boolean,
+        zoomRange?: [number, number]
+    }, index: number = 0) {
         const {uuid, style, zoomRange} = info
         if (!(uuid in this.daLayers)) {
             const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
             if (payload) {
+                payload.zIndex = index
                 if (style)
                     payload.style = style
                 if (zoomRange)
@@ -417,8 +452,10 @@ class MapVM {
                     this.daLayers[payload.uuid] = daLayer
                 }
                 const visible = info.visible != undefined ? info.visible : true
-                daLayer.getOlLayer().setVisible(visible)
+                const olLayer = daLayer.getOlLayer()
+                olLayer.setVisible(visible)
                 window.dispatchEvent(this._daLayerAddedEvent)
+                setTimeout(() => olLayer.setZIndex(index), 3000)
             }
         }
     }
@@ -504,20 +541,6 @@ class MapVM {
         this.additionalToolbarButtons.push(elem)
     }
 
-    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc: string = null) {
-        const mapBoxRef = this.getMapPanelRef()
-        this.openBottomDrawer(tableHeight)
-        const table = <AttributeGrid ref={daGridRef} columns={columns}
-                                     data={rows}
-                                     pkCols={pkCols}
-                                     tableHeight={tableHeight}
-                                     tableWidth={'auto'}
-                                     pivotTableSrc={pivotTableSrc}
-                                     mapVM={this}/>
-
-
-        mapBoxRef.current?.setContent(table);
-    }
 
     openLayerSwitcher() {
         const drawerRef = this.getRightDrawerRef();
@@ -533,6 +556,60 @@ class MapVM {
 
     getSelectionLayer() {
         return this.selectionLayer
+    }
+
+    createAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc: string = null) {
+        const mapBoxRef = this.getMapPanelRef()
+        this.openBottomDrawer(tableHeight)
+        const table = <AttributeGrid ref={daGridRef} columns={columns}
+                                     data={rows}
+                                     pkCols={pkCols}
+                                     tableHeight={tableHeight}
+                                     tableWidth={'auto'}
+                                     pivotTableSrc={pivotTableSrc}
+                                     mapVM={this}/>
+
+
+        mapBoxRef.current?.setContent(table);
+    }
+
+    openAttributeTable(tableHeight = 300) {
+        const mapBoxRef = this.getMapPanelRef()
+        const daGridRef = this.getAttributeTableRef()
+        let open = mapBoxRef.current?.isBottomDrawerOpen();
+        const uuid = this.getLayerOfInterest();
+        if (!uuid) {
+            this.showSnackbar("Please select a layer to view its attributes");
+        } else if (!open) {
+            const mapHeight = mapBoxRef.current.getMapHeight()
+            const maxMapHeight: number = mapBoxRef.current.getMaxMapHeight();
+            tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
+            // console.log("map", mapHeight)
+            // console.log("max map", maxMapHeight)
+            // console.log("table height", tableHeight)
+            mapBoxRef.current?.openBottomDrawer(tableHeight)
+            if (uuid) {
+                this.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
+                    .then((payload) => {
+                        if (payload) {
+                            // const ptSrc: string = "http://127.0.0.1:8000/api/lbdc/crop_stats_pivotTable/070df2ba-ea05-11ed-8338-acde48001122/";
+                            this.createAttributeTable(payload.columns, payload.rows,
+                                payload.pkCols, tableHeight, daGridRef)
+
+
+                        } else {
+                            mapBoxRef.current?.closeBottomDrawer()
+                            this.getSnackbarRef()?.current?.show("No attribute found")
+                        }
+                    })
+                    .catch(() => {
+                        mapBoxRef.current?.closeBottomDrawer()
+                        this.getSnackbarRef()?.current?.show("No attribute found")
+                    });
+            }
+        } else {
+            mapBoxRef.current?.closeBottomDrawer()
+        }
     }
 }
 

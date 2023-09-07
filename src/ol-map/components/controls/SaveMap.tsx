@@ -3,29 +3,67 @@ import {IconButton, Tooltip} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import MapVM from "../../models/MapVM";
 import MapApi, {MapAPIs} from "../../utils/MapApi";
+import {baseLayerSources} from "../../layers/BaseLayers";
+import {weatherLayers} from "../../layers/WeatherLayers";
 
 interface IProps {
     mapVM: MapVM
 }
 
+interface IMapData {
+    uuid: string
+    mapName: string
+    extent: number[]
+    baseLayer: string
+    daLayers: { uuid: string, visible: boolean }[]
+    otherLayers: { name: string, type: string, params: { [key: string]: any } }[]
+}
+
 const SaveMap = (props: IProps) => {
     const handleClick = () => {
         // console.log("mapeInfo", props.mapVM.mapInfo)
-        const mapName = props.mapVM.mapInfo? props.mapVM.mapInfo.title :  prompt("Please enter map name")
-        const mapUUID = props.mapVM.mapInfo? props.mapVM.mapInfo.uuid : "-1"
-        const uuids = []
-        const visibility = []
-        Object.keys(props.mapVM.daLayers).forEach((uuid) => {
-            uuids.push(uuid);
-            visibility.push(props.mapVM.daLayers[uuid].getOlLayer().getVisible());
+        const mapName = props.mapVM.mapInfo ? props.mapVM.mapInfo.title : prompt("Please enter map name")
+        const mapUUID = props.mapVM.mapInfo ? props.mapVM.mapInfo.uuid : "-1"
+        const extent = props.mapVM.getCurrentExtent()
+        // const uuids: string[] = []
+        // const visibility: boolean[] = []
+        // let baseLayer: string
+        // const others = []
+        const mapData = {uuid: mapUUID, mapName: mapName, extent: extent, baseLayer: null, daLayers: [], otherLayers: []}
+        // Object.keys(props.mapVM.daLayers).forEach((uuid) => {
+        //     uuids.push(uuid);
+        //     visibility.push(props.mapVM.daLayers[uuid].getOlLayer().getVisible());
+        // })
+        props.mapVM.getMap().getAllLayers().forEach((layer) => {
+            const uuid: string = layer.get('name')
+            const title = layer.get('title')
+            const isWeatherLayer = weatherLayers.findIndex((l) => l.layer_name == uuid)
+            // console.log("is weather layer", isWeatherLayer)
+            if (!uuid && layer.get('baseLayer')) {
+                if (layer.getVisible()) {
+                    // const key = Object.keys(baseLayersSources).find((k: string) => baseLayersSources[k].title === title)
+                    // baseLayer = title
+                    mapData["baseLayer"] = title
+                }
+            } else if (isWeatherLayer !== -1) {
+                // others.push(uuid)
+                mapData["otherLayers"].push({"name": uuid, type: "weather", params: {}})
+            } else {
+                // uuids.push(uuid);
+                // visibility.push(layer.getVisible())
+                mapData["daLayers"].push({"uuid": uuid, visible: layer.getVisible()})
+            }
+
+
         })
 
-        const extent = props.mapVM.getCurrentExtent()
-        console.log(mapName, uuids, extent)
+
         let url = MapApi.getURL(MapAPIs.DCH_SAVE_MAP)
-        url += `?map_name=${mapName}&uuids=${String(uuids.reverse())}
-        &extent=${String(extent)}&visibility=${String(visibility)}&mapUUID=${mapUUID}`
-        props.mapVM.getApi().getFetch(url).then((payload) => {
+        // url += `?map_name=${mapName}&uuids=${String(uuids)}
+        // &baseLayer=${baseLayer}&otherLayers=${String(others)}
+        // &extent=${String(extent)}&visibility=${String(visibility)}&mapUUID=${mapUUID}`
+
+        props.mapVM.getApi().postFetch(url, mapData).then((payload) => {
             if (payload) {
                 props.mapVM.showSnackbar("Map created successfully")
             }

@@ -40,7 +40,7 @@ const SLDForm = (props: IProps) => {
             >
                 Upload File
                 <input
-                    type="file"
+                    type="file" accept=".json, .sld, .xml"
                     onChange={handleFilesChange}
                     hidden
                 />

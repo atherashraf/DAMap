@@ -1,5 +1,28 @@
 class _ {
     static isEqual = (...objects: any) => objects.every((obj: any) => JSON.stringify(obj) === JSON.stringify(objects[0]));
+
+    static getMaxValue = (data, key) => {
+        const max = data.reduce((maxValue, currentItem) => {
+            if (currentItem[key] > maxValue) {
+                return currentItem[key];
+            }
+            return maxValue;
+        }, -Infinity);
+        return max;
+    }
+    static groupBy = (arr, key) => {
+        return arr.reduce((result, currentItem) => {
+            const keyValue = currentItem[key];
+
+            if (!result[keyValue]) {
+                result[keyValue] = [];
+            }
+
+            result[keyValue].push(currentItem);
+
+            return result;
+        }, {});
+    }
     static randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16)
 
     static linearInterpolation = (x: number, p1: [number, number], p2: [number, number]): number => {

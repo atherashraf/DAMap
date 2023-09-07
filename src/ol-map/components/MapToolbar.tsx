@@ -7,6 +7,7 @@ import SymbologyControl from "./controls/SymbologyControl";
 import {IMapToolbarProps} from "../TypeDeclaration";
 import Zoom2Extent from "./controls/Zoom2Extent";
 import Identifier from "./controls/Identifier";
+import NavigationTreeControl from "./controls/NavigationTreeControl";
 import LayerSwitcherControl from "./controls/LayerSwitcherControl";
 import AttributeTable from "./controls/AttributeTable";
 import LOISelector from "./controls/LOISelector";
@@ -37,14 +38,16 @@ class MapToolbar extends Control {
         const root = createRoot(element)
         root.render(<React.Fragment>
                 {/*<AddClassificationSurface mapVM={mapVM}/>*/}
-                <RefreshMap mapVM={mapVM} />
-                {optOptions.isCreateMap && <SaveMap mapVM={mapVM}/>}
+
                 <AddLayer mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <LayerSwitcherControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
+                <NavigationTreeControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 <Zoom2Extent mapVM={mapVM}/>
                 {/*<RasterArea mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>*/}
                 <Identifier mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
-                <ClearSelection mapVM={mapVM} />
+                <RefreshMap mapVM={mapVM}/>
+                {optOptions.isCreateMap && <SaveMap mapVM={mapVM}/>}
+                <ClearSelection mapVM={mapVM}/>
                 {optOptions.isDesigner &&
                     <SymbologyControl mapVM={mapVM} drawerRef={mapVM?.getRightDrawerRef()}/>
                 }

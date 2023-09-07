@@ -60,7 +60,7 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
         if (this.props.isMap && this.props.uuid !== "-1") {
             this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
                 .then((payload: IMapInfo) => {
-                    // console.log("payload", payload)
+                    // console.log("mapInfo", payload)
                     const mapInfo = Object.assign(payload, {isEditor: props.isEditor})
                     if (!this.mapVM.isInit) {
                         this.mapVM.initMap(mapInfo);

@@ -12,9 +12,9 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_EXTENT: "api/dch/layer_extent/{uuid}/",
     DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
     DCH_LAYER_RASTER: "api/dch/raster_tile/{uuid}",
-    DCH_SAVE_STYLE: "api/dch/save_style/{uuid}",
+    DCH_SAVE_STYLE: "api/dch/save_style/{uuid}/{map_uuid}",
     DCH_SAVE_SLD: "api/dch/upload_sld_style/{uuid}",
-    DCH_GET_STYLE: "api/dch/get_style/{uuid}",
+    DCH_GET_STYLE: "api/dch/get_style/{uuid}/{map_uuid}/",
     DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
     DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",
     DCH_LAYER_FIELD_DISTINCT_VALUE: "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",
@@ -39,12 +39,14 @@ export const MapAPIs = Object.freeze({
     DCH_EDIT_MODEL_ROW: "api/dch/edit_model_row/{modelName}/",
     DCH_DELETE_LAYER_INFO: "api/dch/delete_layerinfo_row/{uuid}/",
     DCH_DOWNLOAD_SLD: "api/dch/download_sld_style/{uuid}/",
+    DCH_DOWNLOAD_DA_STYLE: "api/dch/download_da_style/{uuid}/",
     DCH_DB_CONNECTION: "api/dch/get_db_connection/",
     DCH_DB_TABLE_LIST: "api/dch/db_table_list/{db_id}/",
     DCH_SAVE_DB_LAYER_INFO: "api/dch/save_db_layer_info/{db_id}/{table_name}/{layer_category_id}/",
     DCH_ADD_URL_LAYER_INFO: "api/dch/add_layer_url_info/{layer_title}/{layer_category_id}/{layer_url}/{url_type}/",
-
     DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
+    DCH_NAVIGATION_LIST: "api/dch/navigation_list/{map_uuid}/",
+    DCH_NAVIGATION_GEOMETRY: "api/dch/navigation_geometry/{map_uuid}/{selected_key}/{node_id}/",
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
 
@@ -191,7 +193,7 @@ export default class MapApi {
         }
     }
 
-    async postFetch(url, data, isJSON) {
+    async postFetch(url, data, isJSON=true) {
         const headers = await this.getHeaders();
         const response = await fetch(url, {
             method: "POST",

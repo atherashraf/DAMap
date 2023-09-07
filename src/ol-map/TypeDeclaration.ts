@@ -58,12 +58,13 @@ export interface ILayerInfo {
     category?: string
     dataURL?: string
     extent3857?: []
+    zIndex: number
 }
 
 export interface IMapInfo {
     uuid: string
     title?: string
-    layers: { uuid: string, style: IFeatureStyle, visible: boolean }[]
+    layers: { uuid: string, style?: IFeatureStyle, visible?: boolean, isBase?:boolean, key?:string }[]
     extent?: number[]
     srid?: number
     units?: string
