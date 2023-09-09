@@ -172,9 +172,10 @@ const NavigationTree = (props: IProps) => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={selectedKey}
-                sx={{m:2}}
-                label="Age"
-                fullWidth={true}
+                sx={{mx: 2, my:1, width:"90%"}}
+                // label="Selec"
+                size ={"small"}
+                // fullWidth={true}
                 onChange={(e)=>{
                     const key = e?.target?.value as string
                     console.log("updated key", key)
@@ -195,12 +196,12 @@ const NavigationTree = (props: IProps) => {
                     setSelectedNode(nodeIds[0])
                     setValue(newValue);
                 }}
-                sx={{m: 2}}
+                sx={{mx: 2}}
                 autoHighlight
                 getOptionLabel={(option) => `${option.id}-${option.name}`}
                 // getOptionSelected={(option, value) => option.id === value.id}
                 renderInput={(params) => <TextField {...params} variant="standard" size={"small"}
-                                                    label={allNavigationList[selectedKey]?.name}/>}
+                                                    label={"Select Boundary"}/>}
             />
             <Box sx={{mb: 1}}>
                 <Button onClick={handleZoomToSelected}>

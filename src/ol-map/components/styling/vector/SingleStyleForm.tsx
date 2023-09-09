@@ -34,7 +34,7 @@ class SingleStyleForm extends BaseStyleForm {
         const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
         return (
             <React.Fragment>
-                <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType} style={currentStyle.style?.default}/>
+                <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType} style={currentStyle?.style?.default}/>
             </React.Fragment>
         );
     }

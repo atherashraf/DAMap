@@ -39,9 +39,10 @@ class AbstractDALayer {
         this.layer && this.addLayerChangeEvent()
     }
 
-    getZIndex(){
+    getZIndex() {
         return this.layerInfo.zIndex;
     }
+
     addLayerChangeEvent() {
         this.layer.on("propertychange", (e) => {
             if (e.key == "map" && e.target.values_[e.key] == null) {
@@ -68,10 +69,11 @@ class AbstractDALayer {
 
     addLegendGraphic(layer: any) {
         const style = this.style?.type || "single";
-        const iconSize = [20, 10]
+        const geomType = this.layerInfo.geomType[0]
+        const iconSize = geomType.toLowerCase().includes("point") ? [50, 30] : [20, 10]
         switch (style) {
             case "single":
-                const fStyle = this.createOLStyle(this.layerInfo.geomType[0], this.style?.style?.default);
+                const fStyle = this.createOLStyle(geomType, this.style?.style?.default);
                 const img = ol_legend_Legend.getLegendImage({
                     feature: undefined,
                     margin: 2,
@@ -166,7 +168,10 @@ class AbstractDALayer {
         // this.mapVM.showSnackbar("Updating layer style")
         // console.log("layer Info", this.layerInfo)
         if (this.layerInfo.dataModel == "V") {
-            this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {uuid: this.uuid, map_uuid: this.mapVM.getMapUUID()}).then((payload) => {
+            this.mapVM.getApi().get(MapAPIs.DCH_GET_STYLE, {
+                uuid: this.uuid,
+                map_uuid: this.mapVM.getMapUUID()
+            }).then((payload) => {
                 if (payload) {
                     console.log("new style", payload)
                     this.style = payload
