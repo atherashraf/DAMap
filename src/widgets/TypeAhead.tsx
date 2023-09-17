@@ -29,16 +29,24 @@ class TypeAhead extends React.PureComponent<IProps, IState> {
 
     render() {
         const {data, inputLabel, optionLabelKey} = this.props
+
         return (
             <>
                 <Autocomplete
                     disablePortal
                     id={"type-ahead-" + inputLabel}
                     options={data}
+                    // @ts-ignore
+                    PopperProps={{
+                        style: {
+                            // Add custom styles to the Popper component
+                            zIndex: 9999, // Example custom style
+                        },
+                    }}
                     onChange={(e, option)=>this.props.onChange(option)}
                     //@ts-ignore
                     getOptionLabel={(option) => option[optionLabelKey]}
-                    sx={{width: "90%", m:1}}
+                    sx={{width: "85%", m:1, overflow:"scroll"}}
                     renderInput={(params) => <TextField {...params} label={inputLabel}/>}
                 />
             </>

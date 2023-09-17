@@ -108,7 +108,7 @@ class MapVM {
             }),
         });
         let baseLayer = null;
-        const weatherLayerInfos = []
+        const weatherLayerInfos: any[] = []
         if (mapInfo) {
             if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
 
@@ -138,7 +138,7 @@ class MapVM {
 
     }
 
-    addWeatherLayer(selectedWeatherOption) {
+    addWeatherLayer(selectedWeatherOption: any) {
         const wLayers = new WeatherLayers(this)
         if (selectedWeatherOption.layer_name === "weather_data") {
             wLayers.getWeatherData(selectedWeatherOption.layer_name)
@@ -220,11 +220,16 @@ class MapVM {
     }
 
     getMapUUID(): string {
-        return this.mapInfo.uuid
+        if (this.mapInfo) {
+            return this.mapInfo?.uuid
+        } else {
+            this.showSnackbar("Please save map before proceeding")
+            return "-1"
+        }
     }
 
     isMapEditor(): boolean {
-        return this.mapInfo.isEditor
+        return this.mapInfo?.isEditor
     }
 
     setLayerOfInterest(uuid: string, closeDrawer: boolean = true) {

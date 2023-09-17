@@ -48,8 +48,8 @@ export const getPointSVG = (style: IGeomStyle, w: number = maxPointSize * 2 + 1,
             svgShape = <path d={d} style={svgStyle}/>
             break;
         default:
-            svgShape = <circle cx={w / 2} cy={h / 2} r={size / 2}
-                               style={svgStyle}>
+            svgShape = <circle cx={w} cy={h} r={size/2}
+                               style={svgStyle}>    
             </circle>
             // svgShape=<circle cx={250} cy={250} r={200} style={svgStyle}/>
             break;

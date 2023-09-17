@@ -3,7 +3,6 @@
     "sourceMap": true,
     "outDir": "./lib",
     "module": "esnext",
-    "noImplicitAny": false,
     "target": "es6",
     "jsx": "react",
     "allowJs": true,
@@ -13,6 +12,11 @@
     "esModuleInterop": true,
     "strict": false,
     "declaration": false,
+
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["src"],
