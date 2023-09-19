@@ -73,12 +73,12 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
                     {this.state.title && <DialogTitle style={{cursor: 'move'}}
                                                       id="draggable-dialog-title">{this.state.title}</DialogTitle>}
                     {this.state.content}
-                    {this.state.actions && <DialogActions>
+                    {this.state.actions} <DialogActions>
                         {this.state.actions}
                         <Button autoFocus onClick={this.closeDialog.bind(this)}>
                             Close
                         </Button>
-                    </DialogActions>}
+                    </DialogActions>
                 </Dialog>
             </React.Fragment>
         )

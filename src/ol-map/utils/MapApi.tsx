@@ -47,6 +47,9 @@ export const MapAPIs = Object.freeze({
     DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
     DCH_NAVIGATION_LIST: "api/dch/navigation_list/{map_uuid}/",
     DCH_NAVIGATION_GEOMETRY: "api/dch/navigation_geometry/{map_uuid}/{selected_key}/{node_id}/",
+
+    DCH_ADMIN_LAYER_INFO_EDIT: "admin/layer-info/edit/{id}/",
+
     WATER_QUALITY_DATA: "api/lbdc/water_quality_data/",
     LBDC_AOI: "api/lbdc/lbdc_aoi/",
 
@@ -73,7 +76,7 @@ export default class MapApi {
         }
         return keys;
     }
-    static getOpenWeatherTileURL(layer_type): string{
+    static getOpenWeatherTileURL(layer_type: any): string{
         const apiKey = process.env.REACT_APP_OPENWEATHER_KEY;
         // let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API Key}"
         let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
@@ -82,7 +85,7 @@ export default class MapApi {
         return url
     }
     static getURL(api: string, params: any = null) {
-        let API_URL = process.env.REACT_APP_API_URL;
+        let API_URL = process.env.REACT_APP_MAP_URL;
         API_URL = API_URL == "" ? window.location.protocol + "//" + window.location.host : API_URL
         API_URL = API_URL.slice(-1) === "/" ? API_URL.slice(0, -1) : API_URL
         api = api[0] == "/" ? api.substring(1) : api;
@@ -104,7 +107,7 @@ export default class MapApi {
         return url;
     }
 
-    static async getAccessToken(token) {
+    static async getAccessToken(token: string) {
         try {
             // const state = store.getState();
             // const token = state.auth.refreshToken;
@@ -193,7 +196,7 @@ export default class MapApi {
         }
     }
 
-    async postFetch(url, data, isJSON=true) {
+    async postFetch(url: string, data: any, isJSON: boolean=true) {
         const headers = await this.getHeaders();
         const response = await fetch(url, {
             method: "POST",
@@ -432,7 +435,7 @@ export default class MapApi {
         return cookieValue;
     }
 
-    static async authenticate(formData) {
+    static async authenticate(formData: any) {
         try {
             // const headers = new Headers({
             //     // "X-REQUESTED-WITH": "XMLHttpRequest",

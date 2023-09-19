@@ -70,13 +70,14 @@ class AbstractDALayer {
     addLegendGraphic(layer: any) {
         const style = this.style?.type || "single";
         const geomType = this.layerInfo.geomType[0]
-        const iconSize = geomType.toLowerCase().includes("point") ? [50, 30] : [20, 10]
+        // const iconSize = geomType.toLowerCase().includes("point") ? [50, 30] : [20, 10]
+        const iconSize = [20,10]
         switch (style) {
             case "single":
                 const fStyle = this.createOLStyle(geomType, this.style?.style?.default);
                 const img = ol_legend_Legend.getLegendImage({
                     feature: undefined,
-                    margin: 2,
+                    margin: 0,
                     // properties: undefined,
                     size: toSize(iconSize),
                     textStyle: undefined,
@@ -105,7 +106,7 @@ class AbstractDALayer {
                     })
                     canvas = ol_legend_Legend.getLegendImage({
                         feature: undefined,
-                        margin: 2,
+                        margin: 5,
                         // properties: undefined,
                         size: toSize(iconSize),
                         textStyle: undefined,
@@ -113,7 +114,7 @@ class AbstractDALayer {
                         style: [fStyle, label],
                         typeGeom: this.layerInfo.geomType[0],
                         className: ""
-                    }, canvas, index * (iconSize[1] + 5),);
+                    }, canvas, index * (iconSize[1] + 3),);
 
                 });
                 layer.legend = {sType: 'canvas', graphic: canvas}
@@ -289,6 +290,7 @@ class AbstractDALayer {
                     break;
             }
         } else {
+            // @ts-ignore
             featureStyle = styles[geomType];
         }
 

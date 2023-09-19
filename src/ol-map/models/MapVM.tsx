@@ -49,10 +49,10 @@ class MapVM {
     daLayers: IDALayers = {}
     overlayLayers: IOverlays = {}
     private _domRef: IDomRef
-    private _layerOfInterest: string = null;
+    private _layerOfInterest: string | null = null;
     private _daLayerAddedEvent = new Event('DALayerAdded');
     // @ts-ignore
-    mapControls = null;
+    mapControls : MapControls | null = null;
     // @ts-ignore
     currentMapInteraction = null;
     // leftDrawerRef: any
@@ -68,7 +68,7 @@ class MapVM {
     private readonly fullScreen: FullScreen;
     legendPanel: any = null;
     selectionLayer: SelectionLayer
-    mapInfo: IMapInfo = null;
+    mapInfo: IMapInfo | null = null;
     additionalToolbarButtons: JSX.Element[] = []
 
     constructor(domRef: IDomRef, isDesigner: boolean) {

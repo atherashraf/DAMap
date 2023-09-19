@@ -58,6 +58,7 @@ export interface ILayerInfo {
     category?: string
     dataURL?: string
     extent3857?: []
+    layerSetting?: any
     zIndex: number
 }
 

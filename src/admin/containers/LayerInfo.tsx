@@ -33,13 +33,13 @@ const LayerInfo = () => {
         initActions();
         getTableData()
     }, [])
-    const getRowData = () => {
+    const getSelectedRowData = () => {
         const rowData = changeListRef.current?.getSelectedRowData()
         return rowData
 
     }
     const getSelectedUUID = () => {
-        const rowData = getRowData()
+        const rowData = getSelectedRowData()
         if (rowData) {
             return rowData.uuid
         }
@@ -69,6 +69,16 @@ const LayerInfo = () => {
             action: () =>{
                 dialogRef.current?.handleClickOpen()
                 dialogRef.current?.setContent("Add Layer URL", <AddURLLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef}/>)
+            }
+        },{
+            name: "Update Layer Info",
+            action: () =>{
+                //@ts-ignore
+                const rowData = getSelectedRowData()
+                const id = rowData["id"]
+                const url = MapApi.getURL(MapAPIs.DCH_ADMIN_LAYER_INFO_EDIT, {id: id})
+                console.log("url", url)
+                window.open(url, "MapAdmin").focus()
             }
         },
             {

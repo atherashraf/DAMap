@@ -13,7 +13,7 @@
     "strict": false,
     "declaration": false,
 
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitThis": false,
     "strictNullChecks": false,
 

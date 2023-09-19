@@ -3,8 +3,6 @@ import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import AbstractDALayer from "./AbstractDALayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
-import {Feature} from "ol";
-import {IGeomStyle, IRule} from "../TypeDeclaration";
 import {intersects} from "ol/extent";
 
 
@@ -16,6 +14,8 @@ class MVTLayer extends AbstractDALayer {
     setLayer() {
         const me = this;
         const {title, uuid} = this.layerInfo || {};
+        const declutter = "declutter" in this.layerInfo.layerSetting ?
+            this.layerInfo.layerSetting["declutter"] === "true" : true
         this.layer = new VectorTileLayer({
             //@ts-ignore
             name: uuid,
@@ -24,18 +24,16 @@ class MVTLayer extends AbstractDALayer {
             visible: true,
             source: this.getDataSource(),
             style: this.vectorStyleFunction.bind(me),
-            declutter: true
+            declutter: declutter
         });
         this.setSlDStyleAndLegendToLayer()
     }
-
 
 
     getDataSource(): VectorTileSource {
         // @ts-ignore
         return super.getDataSource();
     }
-
 
 
     getDataURL() {
@@ -55,15 +53,16 @@ class MVTLayer extends AbstractDALayer {
         source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}`);
     }
 
-    refreshLayer(clearFeature:boolean=false) {
+    refreshLayer(clearFeature: boolean = false) {
         // console.log("refreshing source and map")
         super.refreshLayer(clearFeature)
         const source = this.layer?.getSource();
-        if(source) {
-            if(clearFeature) source.clear()
+        if (source) {
+            if (clearFeature) source.clear()
             source.refresh()
         }
     }
+
     // setStyle(style: IFeatureStyle) {
     //     this.style = style;
     //     this.refreshLayer();
@@ -91,8 +90,8 @@ class MVTLayer extends AbstractDALayer {
                     //@ts-ignore
                     tile.setLoader((extent, resolution, projection) => {
                         // console.log(this.layerInfo.extent3857, extent)
-                        if(this.layerInfo.extent3857 && intersects(extent, this.layerInfo.extent3857)) {
-                            url = url +"&resolution="+resolution
+                        if (this.layerInfo.extent3857 && intersects(extent, this.layerInfo.extent3857)) {
+                            url = url + "&resolution=" + resolution
                             // console.log("url", url);
                             fetch(url, {
                                 headers: new Headers({
@@ -118,8 +117,6 @@ class MVTLayer extends AbstractDALayer {
             }
         });
     }
-
-
 
 
     getFeatures() {

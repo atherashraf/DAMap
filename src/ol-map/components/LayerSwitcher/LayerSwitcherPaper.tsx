@@ -19,7 +19,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     const [isLSAdded, setLSAdded] = React.useState(false);
     const legendSize = [60, 40]
     let mouseCoordinates = {x: 0, y: 0}
-    const mouseMoveHandler = (event) => {
+    const mouseMoveHandler = (event: any) => {
         mouseCoordinates = {
             x: event.clientX,
             y: event.clientY
@@ -51,8 +51,8 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                 && layer.hasOwnProperty('legend') && layer?.legend['graphic'] !== 'undefined') {
                 const li = document.createElement("li");
                 e.li.appendChild(li);
-                // const graphic = layer?.legend['graphic']
-                const imageSize = [60, 40]
+                const elem = document.getElementById("div-layer-switcher")
+                const padding = 10
                 let image = null;
                 switch (layer.legend['sType']) {
                     case "sld":
@@ -68,26 +68,16 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                         e.li.appendChild(image);
                         break;
                     case "canvas":
-                        // layer.legend['graphic'].render(e.li);
-                        e.li.appendChild(layer?.legend['graphic']);
-                        // const graphic = layer?.legend['graphic']
-                        // if(Array.isArray(graphic)){
-                        //     graphic.forEach((g)=>{
-                        //         image = new Image();
-                        //         image.src = g.toDataURL();
-                        //         image.width = imageSize[0]
-                        //         image.height = imageSize[1]
-                        //         e.li.appendChild(image);
-                        //         e.li.appendChild(document.createElement('br'))
-                        //     })
-                        // }else {
-                        // image = new Image();
-                        // image.src = graphic.toDataURL();
-                        // image.width = imageSize[0]
-                        // image.height = imageSize[1]
-                        // e.li.appendChild(document.createElement('br'))
-                        // e.li.appendChild(image);
-                        // }
+                        const graphic = layer?.legend['graphic']
+                        const desireWidth = elem.clientWidth/1.5
+                        const divElem = document.createElement('div')
+                        divElem.style.padding = "15px"
+
+                        image = new Image();
+                        image.src = graphic.toDataURL();
+                        image.width = graphic.width < desireWidth ? graphic.width : desireWidth
+                        divElem.appendChild(image)
+                        e.li.appendChild(divElem);
                         break;
                     default:
                         break;

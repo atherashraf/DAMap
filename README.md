@@ -2,12 +2,21 @@
 
 A react component for visualizing and analysis data from DigitalArzNode Developed on top of Openlayers.
 
+after installation using npm i damap create .env file and add following lines
+
+```angular2html
+REACT_APP_MAP_URL="http://127.0.0.1:8887"
+REACT_APP_OPENWEATHER_KEY=***************
+REACT_APP_BING_KEY=**************
+
+```
+
 To add a Map panel on any page use following component
 
 ```angular2html
 import MapView from "damap/lib/ol-map/containers/MapView"
-const ref = React.createRef()
-<MapView ref="mapRef" uuid={uuid} isMap={true} isDesigner={false}/>
+const mapRef = React.createRef()
+<MapView ref="mapRef" uuid={uuid} isMap={true} isDesigner={false} />
 ```
 
 where
