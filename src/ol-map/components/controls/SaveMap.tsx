@@ -27,7 +27,8 @@ const SaveMap = (props: IProps) => {
         const extent = props.mapVM.getCurrentExtent()
         console.log("Map Name", mapName)
 
-       const mapData = {uuid: mapUUID, mapName: mapName, extent: extent, baseLayer: null, daLayers: [], otherLayers: []}
+       // @ts-ignore
+        const mapData = {uuid: mapUUID, mapName: mapName, extent: extent, baseLayer: null, daLayers: [], otherLayers: []}
         if(mapName) {
             props.mapVM.getMap().getAllLayers().forEach((layer) => {
                 const uuid: string = layer.get('name')
@@ -46,7 +47,8 @@ const SaveMap = (props: IProps) => {
                 } else {
                     // uuids.push(uuid);
                     // visibility.push(layer.getVisible())
-                    mapData["daLayers"].push({"uuid": uuid, visible: layer.getVisible()})
+
+                    mapData["daLayers"].push({"uuid": uuid, visible: layer.getVisible(), opacity: layer.getOpacity()})
                 }
 
 

@@ -1,4 +1,4 @@
-import {Paper} from "@mui/material";
+import {Box, Paper} from "@mui/material";
 import * as React from "react"
 import MapVM from "../../models/MapVM";
 import "./LayerSwitcher.css";
@@ -54,6 +54,13 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                 const elem = document.getElementById("div-layer-switcher")
                 const padding = 10
                 let image = null;
+                const divElem = document.createElement('div')
+                divElem.style.padding = "10px"
+                divElem.addEventListener("click", (e: any) => {
+                    const dialogRef = props.mapVM.getDialogBoxRef()
+                    dialogRef?.current?.openDialog({title: "Legend", content:
+                            <React.Fragment><Box sx={{flexGrow: 1, p:1}}><img src={e.target.src}/></Box></React.Fragment>})
+                })
                 switch (layer.legend['sType']) {
                     case "sld":
                         layer.legend['graphic'].render(e.li);
@@ -64,14 +71,15 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                         image.style.width = layer.legend.width
                         if (image.style.height)
                             image.style.height = layer.legend.height
-                        e.li.appendChild(document.createElement('br'))
-                        e.li.appendChild(image);
+                        // e.li.appendChild(document.createElement('br'))
+                        // e.li.appendChild(image);
+                        divElem.appendChild(image)
+                        e.li.appendChild(divElem);
                         break;
                     case "canvas":
                         const graphic = layer?.legend['graphic']
-                        const desireWidth = elem.clientWidth/1.5
-                        const divElem = document.createElement('div')
-                        divElem.style.padding = "15px"
+                        const desireWidth = elem.clientWidth / 1.5
+
 
                         image = new Image();
                         image.src = graphic.toDataURL();

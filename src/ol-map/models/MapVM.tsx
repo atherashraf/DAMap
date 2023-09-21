@@ -121,7 +121,7 @@ class MapVM {
                 } else {
                     const weatherLayerIndex = weatherLayers.findIndex((l) => l.layer_name == layer.key)
                     if (weatherLayerIndex !== -1) {
-                        // weatherLayerInfos.push(weatherLayers[weatherLayerIndex])
+                        weatherLayerInfos.push(weatherLayers[weatherLayerIndex])
 
                     }
                 }
@@ -437,6 +437,7 @@ class MapVM {
         style?: IFeatureStyle,
         visible?: boolean,
         zoomRange?: [number, number]
+        opacity?: number
     }, index: number = 0) {
         const {uuid, style, zoomRange} = info
         if (!(uuid in this.daLayers)) {
@@ -457,8 +458,10 @@ class MapVM {
                     this.daLayers[payload.uuid] = daLayer
                 }
                 const visible = info.visible != undefined ? info.visible : true
+                const opacity = info?.opacity != undefined ? info.opacity :1
                 const olLayer = daLayer.getOlLayer()
                 olLayer.setVisible(visible)
+                olLayer.setOpacity(opacity)
                 window.dispatchEvent(this._daLayerAddedEvent)
                 setTimeout(() => olLayer.setZIndex(index), 3000)
             }
