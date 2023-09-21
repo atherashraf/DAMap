@@ -2,7 +2,9 @@ import * as React from "react";
 import PivotTableUI from 'react-pivottable/PivotTableUI';
 import 'react-pivottable/pivottable.css';
 import TableRenderers from 'react-pivottable/TableRenderers';
+// @ts-ignore
 import Plotly from 'plotly.js/dist/plotly-cartesian';
+// @ts-ignore
 import createPlotlyComponent from 'react-plotlyjs';
 import createPlotlyRenderers from 'react-pivottable/PlotlyRenderers';
 
