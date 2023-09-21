@@ -8,7 +8,7 @@ import {createRoot} from "react-dom/client";
 import AttributeGridToolbar, {IToolbarButton} from "./AttributeGridToolbar";
 import DAFullScreenDialog from "../../common/DAFullScreenDialog";
 import {RefObject} from "react";
-import PivotTable from "./PivotTable.";
+import PivotTable from "./PivotTable";
 
 const zoomBtn = require("../../static/img/search.png")
 const clearBtn = require("../../static/img/selection_delete.png")
@@ -131,7 +131,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     }
 
 
-    updateTableHeight(newHeight) {
+    updateTableHeight(newHeight: number) {
         this.setState({height: newHeight - this.tableMargin})
     }
 
@@ -241,7 +241,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
         }
     }
 
-    renderToolbar(toolbar) {
+    renderToolbar(toolbar: any) {
         if (!this.state.isToolbarRendered) {
             const toolbarElem = toolbar[0] as HTMLElement
             const root = createRoot(toolbarElem)

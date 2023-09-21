@@ -28,7 +28,7 @@ interface IState {
 
 class ChangeListToolbar extends React.PureComponent<IProps, IState> {
 
-    constructor(props) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             buttons: [...this.getBasicButtons(), ...this.props.buttons]

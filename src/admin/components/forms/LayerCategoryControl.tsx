@@ -24,7 +24,7 @@ const LayerCategoryControl = (props: IProps) => {
     const [selectLayerCat, setSelectLayerCat] = useState<ILayerCategory>()
 
 
-    const handleLayerCategoryChange = (e) => {
+    const handleLayerCategoryChange = (e: any) => {
         const value = e.target.value as ILayerCategory
         props.setLayerCategory(value)
         setSelectLayerCat(value)
@@ -52,7 +52,7 @@ const LayerCategoryControl = (props: IProps) => {
                     sx={{flexGrow: 1}}
 
                 >
-                    {layerCategories && layerCategories.map((item) =>
+                    {layerCategories && layerCategories.map((item: any) =>
                         (<MenuItem key={"key-" + item.name} value={item}>{item.name}</MenuItem>))}
                 </Select>
                 <Button onClick={() => props.handleAddLayerCategory()}><EditIcon/></Button>

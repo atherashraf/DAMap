@@ -55,14 +55,14 @@ class WeatherLayers {
         autoBind(this)
     }
 
-    getOpenWeather2TileURL(layer_type): string {
+    getOpenWeather2TileURL(layer_type: any): string {
         let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API key}"
         url = url.replace(`{op}`, layer_type)
         url = url.replace(`{API key}`, this.open_weather_map_key)
         return url
     }
 
-    getOpenWeatherTileURL(layer_type): string {
+    getOpenWeatherTileURL(layer_type: any): string {
         let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
         url = url.replace(`{layer}`, layer_type)
         url = url.replace(`{API key}`, this.open_weather_map_key)
@@ -105,7 +105,7 @@ class WeatherLayers {
         }
         this.addLegendGraphic(layer, selectedOption.layer_name, selectedOption.title)
     };
-    addLegendGraphic = function (layer, layer_type: any, layer_name: any) {
+    addLegendGraphic = function (layer : any, layer_type: any, layer_name: any) {
         let me = this;
         if (me.mapVM.legendPanel) {
             let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
@@ -118,6 +118,7 @@ class WeatherLayers {
                 };
                 layer.legend = {
                     sType: 'src',
+                    // @ts-ignore
                     graphic: legends[layer_type],
                     width: "100%",
                     height: "30px"
@@ -125,6 +126,7 @@ class WeatherLayers {
                 // layer.set('legend', legends[layer_type])
                 const img: ol_legend_Item = new olLegendImage({
                     title: layer_name,
+                    // @ts-ignore
                     src: legends[layer_type]
                 })
                 me.mapVM.legendPanel.addItem(img)
@@ -142,7 +144,7 @@ class WeatherLayers {
     //         };
     //     return data[layer_type]
     // }
-    getWeatherData = function (layer_name) {
+    getWeatherData = function (layer_name: any) {
         let me = this;
         if (me.weatherLayers === null) {
             me.weatherLayers = [];
@@ -180,7 +182,7 @@ class WeatherLayers {
                 )
         }
     };
-    createWeatherClusterLayer = function (geo_json, layer_name) {
+    createWeatherClusterLayer = function (geo_json: any, layer_name: any) {
         let me = this;
         let vectorSource = new VectorSource({
             features: (new GeoJSON()).readFeatures(geo_json, {
@@ -209,10 +211,11 @@ class WeatherLayers {
         me.mapVM.getMap().addLayer(me.weatherLayers[layer_name]);
         // me.createWeatherPopUp();
     };
-    getWeatherFeatureStyle = function (feature, resolution) {
+    getWeatherFeatureStyle = function (feature: any, resolution: any) {
         let styleCache = {};
         let size = feature.get('features')[0];
         let urlIcon = size.get('icon');
+        // @ts-ignore
         let style = styleCache[urlIcon];
         if (!style) {
             style = [new Style({
@@ -220,11 +223,12 @@ class WeatherLayers {
                     src: urlIcon
                 }),
             })];
+            // @ts-ignore
             styleCache[size] = style;
         }
         return style;
     }
-    convertWeatherJsonToGeoJson = function (weatherItem) {
+    convertWeatherJsonToGeoJson = function (weatherItem: any) {
         let feature = {
             type: "Feature",
             properties: {

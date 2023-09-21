@@ -70,7 +70,7 @@ const AddRasterLayerInfo = (props: IProps) => {
         }
     };
     const api = new MapApi(props.snackbarRef);
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: any) => {
         event.preventDefault()
 
         const formData = new FormData()

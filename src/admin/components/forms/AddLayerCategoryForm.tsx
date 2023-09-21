@@ -13,7 +13,7 @@ interface IProps {
 const AddLayerCategoryForm = (props: IProps) => {
     const [mainCategory, setMainCategory] = React.useState<string>("")
     const [subCategory, setSubCategory] = React.useState<string>("")
-    const handleSubmit = (e) => {
+    const handleSubmit = (e:any) => {
         e.preventDefault();
         const formData = new FormData()
         formData.append("main", mainCategory);

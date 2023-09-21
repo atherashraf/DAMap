@@ -26,10 +26,10 @@ const ShpFileUploader = (props: IProps) => {
     const [selectedValue, setSelectedValues] = React.useState(null)
     const [disableUpload, setDisableUpload] = React.useState(null)
 
-    const handleSelectionChange = (e) => {
+    const handleSelectionChange = (e: any) => {
         setSelectedValues((e.currentTarget as HTMLInputElement).value);
     }
-    const handleOnChange = (e) => {
+    const handleOnChange = (e:any) => {
         const files = e.currentTarget.files;
         // console.log("files", files);
         const rows = [];
@@ -37,8 +37,8 @@ const ShpFileUploader = (props: IProps) => {
             const file = files[i];
             const fileParts = file.name.split(".");
             // console.log("fileparths", fileParts);
-            const index = rows.findIndex((item) => item.name === fileParts[0]);
-            const row = index === -1 ? {name: fileParts[0], files: []} : rows[index];
+            const index: number = rows.findIndex((item) => item.name === fileParts[0]);
+            const row : any = index === -1 ? {name: fileParts[0], files: []} : rows[index];
             row.files.push(file);
             switch (fileParts[1]) {
                 case "shp":
