@@ -27,7 +27,7 @@ const LayerMenu = (props: IProps) => {
     }
     const menuItems = {
         common: [
-            {name: "Open Attribute Table", id: "table", inEditor: false}
+            {name: "Open Attribute Table", id: "table"}
         ],
         inEditor: [
             {name: "Open Layer Designer", id: "designer"},

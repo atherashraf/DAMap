@@ -34,6 +34,8 @@ import LayerSwitcherPaper from "../components/LayerSwitcher/LayerSwitcherPaper";
 import autoBind from "auto-bind";
 import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 import WeatherLayers, {weatherLayers} from "../layers/WeatherLayers";
+import DAMapLoading from "../components/common/DAMapLoading";
+import TimeSlider from "../components/controls/TimeSlider";
 
 
 export interface IDALayers {
@@ -52,7 +54,7 @@ class MapVM {
     private _layerOfInterest: string | null = null;
     private _daLayerAddedEvent = new Event('DALayerAdded');
     // @ts-ignore
-    mapControls : MapControls | null = null;
+    mapControls: MapControls | null = null;
     // @ts-ignore
     currentMapInteraction = null;
     // leftDrawerRef: any
@@ -189,6 +191,18 @@ class MapVM {
     // }
     getMapPanelRef(): RefObject<MapPanel> {
         return this._domRef.mapPanelRef
+    }
+
+    getMapLoadingRef(): RefObject<DAMapLoading> {
+        return this._domRef.loadingRef;
+    }
+
+    setTimeSliderRef(timeSliderRef: RefObject<TimeSlider>) {
+        this._domRef.timeSliderRef = timeSliderRef
+    }
+
+    getTimeSliderRef(): RefObject<TimeSlider> {
+        return this._domRef.timeSliderRef;
     }
 
     getRightDrawerRef(): RefObject<RightDrawer> {
@@ -441,6 +455,7 @@ class MapVM {
     }, index: number = 0) {
         const {uuid, style, zoomRange} = info
         if (!(uuid in this.daLayers)) {
+            this.getMapLoadingRef()?.current?.openIsLoading()
             const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {uuid: uuid})
             if (payload) {
                 payload.zIndex = index
@@ -458,13 +473,14 @@ class MapVM {
                     this.daLayers[payload.uuid] = daLayer
                 }
                 const visible = info.visible != undefined ? info.visible : true
-                const opacity = info?.opacity != undefined ? info.opacity :1
+                const opacity = info?.opacity != undefined ? info.opacity : 1
                 const olLayer = daLayer.getOlLayer()
                 olLayer.setVisible(visible)
                 olLayer.setOpacity(opacity)
                 window.dispatchEvent(this._daLayerAddedEvent)
                 setTimeout(() => olLayer.setZIndex(index), 3000)
             }
+            this.getMapLoadingRef()?.current?.closeIsLoading()
         }
     }
 
@@ -582,20 +598,20 @@ class MapVM {
     }
 
     openAttributeTable(tableHeight = 300) {
-        const mapBoxRef = this.getMapPanelRef()
+        const mapPanelRef = this.getMapPanelRef()
         const daGridRef = this.getAttributeTableRef()
-        let open = mapBoxRef.current?.isBottomDrawerOpen();
+        let open = mapPanelRef.current?.isBottomDrawerOpen();
         const uuid = this.getLayerOfInterest();
         if (!uuid) {
             this.showSnackbar("Please select a layer to view its attributes");
         } else if (!open) {
-            const mapHeight = mapBoxRef.current.getMapHeight()
-            const maxMapHeight: number = mapBoxRef.current.getMaxMapHeight();
+            const mapHeight = mapPanelRef.current.getMapHeight()
+            const maxMapHeight: number = mapPanelRef.current.getMaxMapHeight();
             tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
             // console.log("map", mapHeight)
             // console.log("max map", maxMapHeight)
             // console.log("table height", tableHeight)
-            mapBoxRef.current?.openBottomDrawer(tableHeight)
+            mapPanelRef.current?.openBottomDrawer(tableHeight)
             if (uuid) {
                 this.getApi().get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
                     .then((payload) => {
@@ -606,17 +622,17 @@ class MapVM {
 
 
                         } else {
-                            mapBoxRef.current?.closeBottomDrawer()
+                            mapPanelRef.current?.closeBottomDrawer()
                             this.getSnackbarRef()?.current?.show("No attribute found")
                         }
                     })
                     .catch(() => {
-                        mapBoxRef.current?.closeBottomDrawer()
+                        mapPanelRef.current?.closeBottomDrawer()
                         this.getSnackbarRef()?.current?.show("No attribute found")
                     });
             }
         } else {
-            mapBoxRef.current?.closeBottomDrawer()
+            mapPanelRef.current?.closeBottomDrawer()
         }
     }
 }

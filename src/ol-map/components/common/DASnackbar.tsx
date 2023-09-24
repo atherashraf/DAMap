@@ -1,5 +1,8 @@
 import * as React from 'react';
 import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import {Button} from "@mui/material";
 
 interface IProp {
 
@@ -18,7 +21,8 @@ export default class DASnackbar extends React.PureComponent<IProp, IState> {
         this.state = {
             open: false,
             message: "",
-            autoHideDuration: 6000
+            autoHideDuration: 5000,
+            // actions:
         }
     }
 
@@ -51,7 +55,19 @@ export default class DASnackbar extends React.PureComponent<IProp, IState> {
                     autoHideDuration={this.state.autoHideDuration}
                     onClose={this.handleClose.bind(this)}
                     message={this.state.message}
-                    // action={this.state.actions}
+                    action={
+                        <React.Fragment>
+
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                sx={{ p: 0.5 }}
+                                onClick={this.handleClose.bind(this)}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </React.Fragment>
+                    }
                 />
             </div>
         )

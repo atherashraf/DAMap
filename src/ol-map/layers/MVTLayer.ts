@@ -43,24 +43,29 @@ class MVTLayer extends AbstractDALayer {
         } else {
             apiURL = MapAPIs.DCH_LAYER_MVT
         }
-        return MapApi.getURL(apiURL, {uuid: this.layerInfo.uuid})
+        // return MapApi.getURL(apiURL, {uuid: this.layerInfo.uuid})
+        return MapApi.getURL(apiURL)
     }
 
     setAdditionalUrlParams(params: string) {
+        this.mapVM.getMapLoadingRef()?.current?.openIsLoading();
         const url = this.getDataURL();
         super.setAdditionalUrlParams(params);
         const source: VectorTileSource = this.layer.getSource();
-        source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}`);
+        source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}&`);
+        setTimeout(()=>this.mapVM.getMapLoadingRef()?.current?.closeIsLoading(),500);
     }
 
     refreshLayer(clearFeature: boolean = false) {
         // console.log("refreshing source and map")
+
         super.refreshLayer(clearFeature)
         const source = this.layer?.getSource();
         if (source) {
             if (clearFeature) source.clear()
             source.refresh()
         }
+
     }
 
     // setStyle(style: IFeatureStyle) {

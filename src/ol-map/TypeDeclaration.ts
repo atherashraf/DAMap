@@ -8,6 +8,8 @@ import DASnackbar from "./components/common/DASnackbar";
 import {pointShapeTypes} from "./components/styling/vector/symbolizer/PointSymbolizer";
 import MapPanel from "./components/MapPanel";
 import AttributeGrid from "../widgets/grid/AttributeGrid";
+import DAMapLoading from "./components/common/DAMapLoading";
+import TimeSlider from "./components/controls/TimeSlider";
 
 export interface IBaseMapProps {
     mapVM: MapVM
@@ -28,6 +30,8 @@ export interface IDomRef {
     snackBarRef: RefObject<DASnackbar>
     mapPanelRef: RefObject<MapPanel>
     attributeTableRef?: RefObject<AttributeGrid>
+    loadingRef: RefObject<DAMapLoading>
+    timeSliderRef?: RefObject<TimeSlider>
 }
 
 export interface IMapToolbarProps {

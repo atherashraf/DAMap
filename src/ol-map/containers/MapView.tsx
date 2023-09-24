@@ -10,6 +10,7 @@ import MapPanel from "../components/MapPanel";
 import {RefObject} from "react";
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
 import "jqwidgets-scripts/jqwidgets/styles/jqx.web.css";
+import DAMapLoading from "../components/common/DAMapLoading";
 
 interface MapVMProps {
     height?: number
@@ -28,6 +29,7 @@ const rightDrawerRef: RefObject<RightDrawer> = React.createRef<RightDrawer>();
 // const leftDrawerRef = React.createRef<LeftDrawer>();
 const dialogBoxRef: RefObject<DADialogBox> = React.createRef<DADialogBox>();
 const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
+const loadingRef: RefObject<DAMapLoading> = React.createRef<DAMapLoading>()
 // const bottomDrawerRef: RefObject<BottomDrawer> = React.createRef<BottomDrawer>();
 // const mapBoxRef: RefObject<MapPanel> = React.createRef<MapPanel>();
 
@@ -38,7 +40,8 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
         // leftDrawerRef: leftDrawerRef
         dialogBoxRef: dialogBoxRef,
         snackBarRef: snackbarRef,
-        mapPanelRef: mapBoxRef
+        mapPanelRef: mapBoxRef,
+        loadingRef: loadingRef
     }
     private readonly mapVM: MapVM = null
 
@@ -109,6 +112,7 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
                     <RightDrawer ref={rightDrawerRef}/>
                     <DADialogBox ref={dialogBoxRef}/>
                     <DASnackbar ref={snackbarRef}/>
+                    <DAMapLoading ref={loadingRef}/>
                 </div>
             </React.Fragment>
         )

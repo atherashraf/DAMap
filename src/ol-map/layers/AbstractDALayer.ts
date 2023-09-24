@@ -174,7 +174,6 @@ class AbstractDALayer {
                 map_uuid: this.mapVM.getMapUUID()
             }).then((payload) => {
                 if (payload) {
-                    console.log("new style", payload)
                     this.style = payload
                     this.setSlDStyleAndLegendToLayer()
                     this.refreshLayer()
@@ -191,7 +190,6 @@ class AbstractDALayer {
     async getExtent(): Promise<number[]> {
         if (!this.extent) {
             this.extent = await this.mapVM.getApi().get(MapAPIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
-            console.log(this.extent);
         }
         return this.extent
     }

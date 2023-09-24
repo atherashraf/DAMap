@@ -4,7 +4,7 @@ import MapVM from "../../ol-map/models/MapVM";
 import {RefObject} from "react";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
 import {Tooltip} from "@mui/material";
-
+const closeBtn = require("../../static/img/close.png")
 const reloadBtn = require("../../static/img/refresh.png");
 
 
@@ -27,11 +27,18 @@ export interface IToolbarButton {
 }
 
 class AttributeGridToolbar extends React.PureComponent<IProps, IState> {
-    constructor(props) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             buttons: [
                 {
+                    id: 'closeButton',
+                    title: 'Close',
+                    imgSrc: closeBtn,
+                    onClick: () => {
+                        props.mapVM?.getMapPanelRef().current?.closeBottomDrawer()
+                    }
+                }, {
                     id: 'reloadButton',
                     title: 'Reload',
                     imgSrc: reloadBtn,

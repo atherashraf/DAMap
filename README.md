@@ -14,9 +14,12 @@ REACT_APP_BING_KEY=**************
 To add a Map panel on any page use following component
 
 ```angular2html
-import MapView from "damap/lib/ol-map/containers/MapView"
+import MapComponent from "damap/lib/ol-map/containers/MapComponent"
 const mapRef = React.createRef()
-<MapView ref="mapRef" uuid={uuid} isMap={true} isDesigner={false} />
+const mapUUID ="........."
+<MapComponent ref={mapViewRef} uuid={mapUUID} title='Flood Forecast'>
+    <button>Test</button>
+</MapComponent>
 ```
 
 where
