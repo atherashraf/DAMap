@@ -40,11 +40,11 @@ class MVTLayer extends AbstractDALayer {
         let apiURL;
         if (this.layerInfo.dataURL) {
             apiURL = this.layerInfo.dataURL
+            return MapApi.getURL(apiURL)
         } else {
             apiURL = MapAPIs.DCH_LAYER_MVT
+            return MapApi.getURL(apiURL, {uuid: this.layerInfo.uuid})
         }
-        // return MapApi.getURL(apiURL, {uuid: this.layerInfo.uuid})
-        return MapApi.getURL(apiURL)
     }
 
     setAdditionalUrlParams(params: string) {

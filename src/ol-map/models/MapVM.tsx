@@ -115,7 +115,6 @@ class MapVM {
             if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
 
             mapInfo?.layers?.forEach(async (layer, index) => {
-
                 if (layer.uuid != "-1")
                     await this.addDALayer(layer, index)
                 else if (layer.isBase) {
