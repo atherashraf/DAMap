@@ -6,7 +6,7 @@ import autoBind from "auto-bind";
 import {MapAPIs} from "../../ol-map/utils/MapApi";
 import {createRoot} from "react-dom/client";
 import AttributeGridToolbar, {IToolbarButton} from "./AttributeGridToolbar";
-import DAFullScreenDialog from "../../common/DAFullScreenDialog";
+import DAFullScreenDialog from "../../ol-map/components/common/DAFullScreenDialog";
 import {RefObject} from "react";
 import PivotTable from "./PivotTable";
 

@@ -1,6 +1,6 @@
 import * as React from "react"
 import DASnackbar from "../../../ol-map/components/common/DASnackbar";
-import DAFullScreenDialog from "../../../common/DAFullScreenDialog";
+import DAFullScreenDialog from "../../../ol-map/components/common/DAFullScreenDialog";
 import {Box, Container} from "@mui/material";
 import ShpFileUploader from "./ShpFileUploader";
 import Select, {SelectChangeEvent} from "@mui/material/Select";

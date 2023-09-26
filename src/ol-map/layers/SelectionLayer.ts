@@ -60,7 +60,7 @@ class SelectionLayer {
         this.getSource().addFeatures(features)
     }
 
-    getSelectStyle(feature) {
+    getSelectStyle(feature: any) {
         let g_type = feature.getGeometry().getType();
         let selStyle;
         if (!g_type) g_type = feature.f;

@@ -54,7 +54,7 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
     openDialog(data: DialogData) {
         this.setState({
             open: true, title: data.title,
-             content: data.content,
+            content: data.content,
             actions: data.actions
         })
     }
@@ -75,7 +75,7 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
                     {this.state.title && <DialogTitle key={"main-title"} style={{cursor: 'move'}}
                                                       id="draggable-dialog-title">{this.state.title}</DialogTitle>}
                     {this.state.content}
-                    {this.state.actions} <DialogActions>
+                    <DialogActions>
                         {this.state.actions}
                         <Button autoFocus onClick={this.closeDialog.bind(this)}>
                             Close

@@ -1,8 +1,8 @@
 class _ {
     static isEqual = (...objects: any) => objects.every((obj: any) => JSON.stringify(obj) === JSON.stringify(objects[0]));
 
-    static getMaxValue = (data, key) => {
-        const max = data.reduce((maxValue, currentItem) => {
+    static getMaxValue = (data: any, key: string) => {
+        const max = data.reduce((maxValue: any, currentItem: any) => {
             if (currentItem[key] > maxValue) {
                 return currentItem[key];
             }
@@ -10,8 +10,8 @@ class _ {
         }, -Infinity);
         return max;
     }
-    static groupBy = (arr, key) => {
-        return arr.reduce((result, currentItem) => {
+    static groupBy = (arr: any, key:string) => {
+        return arr.reduce((result: any, currentItem: any) => {
             const keyValue = currentItem[key];
 
             if (!result[keyValue]) {

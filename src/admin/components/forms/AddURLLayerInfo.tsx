@@ -5,7 +5,7 @@ import Select, {SelectChangeEvent} from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import DASnackbar from "../../../ol-map/components/common/DASnackbar";
-import DAFullScreenDialog from "../../../common/DAFullScreenDialog";
+import DAFullScreenDialog from "../../../ol-map/components/common/DAFullScreenDialog";
 import Box from "@mui/material/Box";
 import LayerCategoryControl, {ILayerCategory} from "./LayerCategoryControl";
 import MapApi, {MapAPIs} from "../../../ol-map/utils/MapApi";

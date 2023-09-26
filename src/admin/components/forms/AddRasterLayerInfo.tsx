@@ -13,7 +13,7 @@ import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {useNavigate} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import AddLayerCategoryForm from "./AddLayerCategoryForm";
-import DAFullScreenDialog from "../../../common/DAFullScreenDialog";
+import DAFullScreenDialog from "../../../ol-map/components/common/DAFullScreenDialog";
 import LayerCategoryControl from "./LayerCategoryControl";
 
 interface IProps {
@@ -52,7 +52,7 @@ const AddRasterLayerInfo = (props: IProps) => {
         }
     }
 
-    const handleLayerCategoryChange = (e) => {
+    const handleLayerCategoryChange = (e:any) => {
         setSelectLayerCat(e.target.value as ILayerCategory)
     }
 

@@ -5,7 +5,7 @@ import MapApi, {MapAPIs} from "../../ol-map/utils/MapApi";
 import DASnackbar from "../../ol-map/components/common/DASnackbar";
 import {RefObject} from "react";
 import {useNavigate} from "react-router-dom";
-import DAFullScreenDialog from "../../common/DAFullScreenDialog";
+import DAFullScreenDialog from "../../ol-map/components/common/DAFullScreenDialog";
 import AddRasterLayerInfo from "../components/forms/AddRasterLayerInfo";
 import AddVectorLayerInfo from "../components/forms/AddVectorLayerInfo";
 import AddURLLayerInfo from "../components/forms/AddURLLayerInfo";
