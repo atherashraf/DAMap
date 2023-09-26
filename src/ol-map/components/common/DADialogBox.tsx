@@ -53,7 +53,8 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
 
     openDialog(data: DialogData) {
         this.setState({
-            open: true, title: data.title, content: data.content,
+            open: true, title: data.title,
+             content: data.content,
             actions: data.actions
         })
     }
@@ -67,10 +68,11 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
     render() {
         return (
             <React.Fragment>
-                <Dialog scroll={"paper"} onClose={this.closeDialog} open={this.state.open}
-                        PaperComponent={PaperComponent} maxWidth={'xl'}
-                        aria-labelledby="draggable-dialog-title">
-                    {this.state.title && <DialogTitle style={{cursor: 'move'}}
+                {/*<Dialog scroll={"paper"} onClose={this.closeDialog} open={this.state.open}*/}
+                {/*        PaperComponent={PaperComponent} maxWidth={'xl'}*/}
+                {/*        aria-labelledby="draggable-dialog-title">*/}
+                <Dialog onClose={this.closeDialog} open={this.state.open}>
+                    {this.state.title && <DialogTitle key={"main-title"} style={{cursor: 'move'}}
                                                       id="draggable-dialog-title">{this.state.title}</DialogTitle>}
                     {this.state.content}
                     {this.state.actions} <DialogActions>

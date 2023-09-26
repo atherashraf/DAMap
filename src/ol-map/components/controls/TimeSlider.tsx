@@ -52,10 +52,6 @@ class TimeSlider extends React.PureComponent<IProps, IState> {
         if (data) {
             this.maxDate = data["maxDate"]
             this.minDate = data["minDate"]
-            console.log("date range", this.minDate, this.maxDate)
-            // NetworkUtils.updateDischargeDate(this.maxDate)
-            // const t = data["max_date"].getTime() - (span * 24 * 60 * 60 * 1000);
-            // this.minDate.setTime(t);
             this.setState({
                 value: this.getNoOfDays(),
                 max: this.getNoOfDays(),
