@@ -14,7 +14,7 @@ import UserUtils from "./admin/UserUtils";
 import {useNavigate} from "react-router-dom";
 import MapApi from "./ol-map/utils/MapApi";
 
-export default function DAAppBar({snackbarRef}) {
+export default function DAAppBar(props: any) {
     const [auth, setAuth] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate()
@@ -56,7 +56,7 @@ export default function DAAppBar({snackbarRef}) {
                         setAuth(true)
                         // snackbarRef?.current?.hide()
                     } else {
-                        snackbarRef?.current?.show("Login Failed. Please check your credentials")
+                        props.snackbarRef?.current?.show("Login Failed. Please check your credentials")
                     }
 
                 })

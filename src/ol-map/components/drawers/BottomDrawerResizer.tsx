@@ -18,13 +18,13 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
     }
     componentDidMount() {
         document.addEventListener('mousemove', e => this.handleMousemove(e));
-        document.addEventListener('mouseup', e => this.handleMouseup(e));
+        document.addEventListener('mouseup', e => this.handleMouseup());
     }
-    handleMousedown(e) {
+    handleMousedown(e: any) {
         this.setState({isResizing: true, lastDownY: e.clienYX});
     }
 
-    handleMousemove = e => {
+    handleMousemove = (e: any) => {
         // we don't want to do anything if we aren't resizing.
         if (!this.state.isResizing) {
             return;
@@ -42,7 +42,7 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
         // }
     }
 
-    handleMouseup = e => {
+    handleMouseup = () => {
         this.setState({isResizing: false});
     }
     render() {

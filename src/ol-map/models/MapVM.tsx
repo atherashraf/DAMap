@@ -366,7 +366,7 @@ class MapVM {
     //     return this.overlayLayers["sel_layer"]
     // }
 
-    getOverlayLayer(layer_name: string): VectorLayer<VectorSource> {
+    getOverlayLayer(layer_name: string): any {
         // @ts-ignore
         return this.overlayLayers[layer_name]
     }

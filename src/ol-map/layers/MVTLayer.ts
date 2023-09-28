@@ -49,10 +49,12 @@ class MVTLayer extends AbstractDALayer {
 
     setAdditionalUrlParams(params: string) {
         this.mapVM.getMapLoadingRef()?.current?.openIsLoading();
-        const url = this.getDataURL();
+        let url = this.getDataURL();
         super.setAdditionalUrlParams(params);
         const source: VectorTileSource = this.layer.getSource();
-        source.setUrl(`${url}{z}/{x}/{y}/?${this.urlParams}&`);
+        url = `${url}{z}/{x}/{y}/?${this.urlParams}&`
+        source.setUrl(url);
+        // console.log(url)
         setTimeout(()=>this.mapVM.getMapLoadingRef()?.current?.closeIsLoading(),500);
     }
 

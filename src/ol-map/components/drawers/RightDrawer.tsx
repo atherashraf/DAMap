@@ -57,11 +57,11 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         this.setState(() => ({heading: value}))
     }
 
-    handleMousedown(e) {
+    handleMousedown(e: any) {
         this.setState({isResizing: true, lastDownX: e.clientX});
     }
 
-    handleMousemove = e => {
+    handleMousemove = (e: any) => {
         // we don't want to do anything if we aren't resizing.
         if (!this.state.isResizing) {
             return;
@@ -76,7 +76,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         }
     }
 
-    handleMouseup = e => {
+    handleMouseup = (e: any) => {
         this.setState({isResizing: false});
     }
 
