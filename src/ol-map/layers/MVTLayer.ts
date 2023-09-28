@@ -23,7 +23,8 @@ class MVTLayer extends AbstractDALayer {
             show_progress: true,
             visible: true,
             source: this.getDataSource(),
-            style: this.vectorStyleFunction.bind(me),
+            //@ts-ignore
+            style: this?.vectorStyleFunction?.bind(me),
             declutter: declutter
         });
         this.setSlDStyleAndLegendToLayer()
@@ -88,7 +89,8 @@ class MVTLayer extends AbstractDALayer {
                     let cols: string[] = []
                     if (this.style && this.style.type !== "single" && this.style.type !== "sld") {
                         this.style?.style?.rules?.forEach((rule) => {
-                            cols.push(rule.filter.field)
+                            const s = rule?.filter?.field
+                            s && cols.push(s)
                         })
                         cols = cols.filter((v, i, a) => a.indexOf(v) === i);
                         if (cols.length > 0)

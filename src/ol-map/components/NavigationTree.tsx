@@ -1,13 +1,14 @@
 import * as React from "react"
 import MapVM from "../models/MapVM";
 import {Autocomplete, Box, Button, MenuItem, Paper, Select, TextField} from "@mui/material"
-import TreeView from '@mui/lab/TreeView';
-import TreeItem from '@mui/lab/TreeItem';
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {MapAPIs} from "../utils/MapApi";
 import _ from "../utils/lodash";
 import {IGeoJSON} from "../TypeDeclaration";
+import {TreeView} from '@mui/x-tree-view/TreeView';
+import {TreeItem} from '@mui/x-tree-view/TreeItem';
 
 interface IProps {
     mapVM: MapVM
@@ -43,9 +44,9 @@ const NavigationTree = (props: IProps) => {
     const [selectedNode, setSelectedNode] = React.useState<string>();
     const [selectedGeometries, setSelectedGeometries] = React.useState<ISelectedGeometry[]>([])
     const [allNavigationList, setAllNavigationList] = React.useState<INavigationType[]>([])
-    const [navigationList, setNavigationList] = React.useState<INavigationList>(null)
+    const [navigationList, setNavigationList] = React.useState<INavigationList>()
     const [maxLevel, setMaxLevel] = React.useState<number>(-1)
-    const [selectedKey, setSelectedKey] = React.useState<string>(null)
+    const [selectedKey, setSelectedKey] = React.useState<string>()
     const [rootIds, setRootIds] = React.useState<string[]>([])
     const [value, setValue] = React.useState(null);
     const [isZoomed, setIsZoomed] = React.useState<boolean>(false)
@@ -55,7 +56,6 @@ const NavigationTree = (props: IProps) => {
     };
 
     const handleSelect = (event: React.SyntheticEvent, nodeIds: string) => {
-        console.log(nodeIds)
         setSelectedNode(nodeIds);
 
     };
@@ -77,20 +77,15 @@ const NavigationTree = (props: IProps) => {
     }, [])
     React.useEffect(() => {
         const keys = Object.keys(allNavigationList)
-        console.log(keys)
         if (keys.length > 0) {
-            // console.log("all navigation list", allNavigationList)
             updateNavigationList(keys[0])
         }
     }, [allNavigationList])
 
     React.useEffect(() => {
-        console.log("selected node", selectedGeometries)
-
         if (selectedNode && selectedKey) {
             const node_geom = selectedGeometries.find((item) => item.nodeId == selectedNode)
             if (node_geom) {
-                console.log("already available")
                 props.mapVM.getSelectionLayer().addGeoJson2Selection(node_geom.geometry)
             } else {
                 props.mapVM.getApi().get(MapAPIs.DCH_NAVIGATION_GEOMETRY,
@@ -100,7 +95,6 @@ const NavigationTree = (props: IProps) => {
                         node_id: selectedNode
                     }).then((payload) => {
                     if (payload) {
-                        console.log(payload)
                         const lyr = props.mapVM.getSelectionLayer()
                         lyr.addGeoJson2Selection(payload)
                         // lyr.zoomToSelection()
@@ -116,25 +110,22 @@ const NavigationTree = (props: IProps) => {
 
     }, [selectedNode])
 
-    const updateNavigationList = (key) => {
+    const updateNavigationList = (key: any) => {
         let navList = []
         const data = allNavigationList[key]?.data
-        console.log("navigation data", data)
         // if (!("id" in data[0]))
         //     data = data?.map((items, index) => ({...items, id: index, parentId: -1}))
         const maxLevel = _.getMaxValue(data, "level")
         setMaxLevel(maxLevel)
-        console.log("max level", maxLevel)
         const finalData = _.groupBy(data, "level")
         setNavigationList(finalData)
-        console.log("final data", finalData)
         setSelectedKey(key)
-        const ids = finalData["0"].map((item) => String(item?.id))
+        const ids = finalData["0"].map((item: any) => String(item?.id))
         setRootIds(ids)
         setExpandedNode(ids)
     }
 
-    const getTreeItems = (data: INavigationList, level: number, parent) => {
+    const getTreeItems = (data: INavigationList, level: number, parent: any) => {
         if (level > maxLevel) return
         //@ts-ignore
         const d: INavigationItem[] = data[level]
@@ -149,7 +140,7 @@ const NavigationTree = (props: IProps) => {
         // handleExpandClick()
         return jsx;
     }
-    const getParentNodeIds = (nodeIds, parent, level) => {
+    const getParentNodeIds = (nodeIds: any, parent: any, level: any) => {
         if (level < 0) return
         // @ts-ignore
         const item = navigationList[level].find((item) => item.name == parent)
@@ -166,39 +157,43 @@ const NavigationTree = (props: IProps) => {
             setIsZoomed(false)
         }
     }
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
     return (
         <Paper elevation={6} sx={{mx: 1, flexGrow: 1, height: "99%", overflowY: 'auto'}}>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={selectedKey}
-                sx={{mx: 2, my:1, width:"90%"}}
+                sx={{mx: 2, my: 1, width: "90%"}}
                 // label="Selec"
-                size ={"small"}
+                size={"small"}
                 // fullWidth={true}
-                onChange={(e)=>{
+                onChange={(e) => {
                     const key = e?.target?.value as string
-                    console.log("updated key", key)
                     updateNavigationList(key)
                 }}
             >
-                {Object.keys(allNavigationList).map((k)=><MenuItem value={k}>{allNavigationList[k].name}</MenuItem>)}
+                {Object.keys(allNavigationList).map((k: any) => <MenuItem
+                    value={k}>{allNavigationList[k].name}</MenuItem>)}
             </Select>
             <Autocomplete
                 id="combo-box-demo"
+                //@ts-ignore
                 options={allNavigationList[selectedKey]?.data || []}
                 value={value}
-                onChange={(event, newValue) => {
-                    const nodeIds = [newValue.id]
-                    getParentNodeIds(nodeIds, newValue.parent, newValue.level - 1)
-                    // console.log(nodeIds)
+                onChange={(event, newValue: any) => {
+                    const nodeIds = [newValue?.id]
+                    getParentNodeIds(nodeIds, newValue?.parent, newValue?.level - 1)
                     setExpandedNode(nodeIds)
                     setSelectedNode(nodeIds[0])
                     setValue(newValue);
                 }}
                 sx={{mx: 2}}
                 autoHighlight
-                getOptionLabel={(option) => `${option.id}-${option.name}`}
+                getOptionLabel={(option) => `${option?.id}-${option?.name}`}
                 // getOptionSelected={(option, value) => option.id === value.id}
                 renderInput={(params) => <TextField {...params} variant="standard" size={"small"}
                                                     label={"Select Boundary"}/>}
@@ -215,15 +210,18 @@ const NavigationTree = (props: IProps) => {
 
             </Box>
             <TreeView
-                aria-label="controlled"
                 defaultCollapseIcon={<ExpandMoreIcon/>}
                 defaultExpandIcon={<ChevronRightIcon/>}
                 expanded={expandedNode}
                 selected={selectedNode}
                 onNodeToggle={handleToggle}
+                //@ts-ignore
                 onNodeSelect={handleSelect}
             >
-                {getTreeItems(navigationList, 0, null)}
+
+                {//@ts-ignore
+                    getTreeItems(navigationList, 0, null)
+                }
             </TreeView>
         </Paper>
     );

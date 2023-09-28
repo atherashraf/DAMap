@@ -91,10 +91,10 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                 // column model
                 columns.push({
                     text: col.label,
-                    cellsalign: col.type == "string" ? "left" : "center",
+                    cellsalign: col.type === "string" ? "left" : "center",
                     align: 'center',
                     datafield: dataKey,
-                    width: col.type == "string" ? 200 : 100
+                    width: col.type === "string" ? 200 : 100
                 })
                 //data field
                 dataFields.push({
@@ -141,7 +141,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
     }
 
     getSelectedRowData() {
-        const rowIndex = this.getSelectedRowIndex()
+        const rowIndex = this.getSelectedRowIndex() || -1
         return this.jqxGridRef.current?.getrowdata(rowIndex)
     }
 
@@ -157,7 +157,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
 
     updateRow(updatedRow: any) {
         try {
-            const rowId = this.getSelectedRowIndex()
+            const rowId = this.getSelectedRowIndex() || -1
             this.jqxGridRef?.current?.updaterow(rowId, updatedRow)
         } catch (e) {
             // console.error("failed to update row")
@@ -226,6 +226,7 @@ class AttributeGrid extends React.PureComponent<IDataGridProps, IDataGridState> 
                     this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={this.state.pivotTableData}/>)
                 } else {
                     const api = this.props.mapVM.getApi()
+                    // @ts-ignore
                     api.getFetch(this.props.pivotTableSrc).then((payload) => {
                         this.setState(() => ({pivotTableData: payload}))
                         this.dialogRef.current?.setContent("Pivot Table", <PivotTable data={payload}/>)

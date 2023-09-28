@@ -13,8 +13,8 @@ interface LayerSwitcherProps {
 
 const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
     // const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [contextMenu, setContextMenu] = React.useState<IContextMenu | null>(null)
-    const [menuLayer, setMenuLayer] = React.useState(null)
+    const [contextMenu, setContextMenu] = React.useState<IContextMenu>()
+    const [menuLayer, setMenuLayer] = React.useState<any>()
     const {mapVM} = props
     const [isLSAdded, setLSAdded] = React.useState(false);
     const legendSize = [60, 40]
@@ -35,7 +35,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             show_progress: true,
             extent: mapVM.mapExtent,
             trash: true,
-            oninfo: function (l) {
+            oninfo: function (l:any) {
                 setMenuLayer(l)
                 setContextMenu({mouseX: mouseCoordinates.x, mouseY: mouseCoordinates.y})
             }
@@ -50,7 +50,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
             if (layer && !(layer instanceof Group) && !(layer.get('baseLayer'))
                 && layer.hasOwnProperty('legend') && layer?.legend['graphic'] !== 'undefined') {
                 const li = document.createElement("li");
-                e.li.appendChild(li);
+                e?.li?.appendChild(li);
                 const elem = document.getElementById("div-layer-switcher")
                 const padding = 10
                 let image = null;
@@ -74,18 +74,18 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
                         // e.li.appendChild(document.createElement('br'))
                         // e.li.appendChild(image);
                         divElem.appendChild(image)
-                        e.li.appendChild(divElem);
+                        e?.li?.appendChild(divElem);
                         break;
                     case "canvas":
                         const graphic = layer?.legend['graphic']
-                        const desireWidth = elem.clientWidth / 1.5
+                        const desireWidth = (elem?.clientWidth || 0) / 1.5
 
 
                         image = new Image();
                         image.src = graphic.toDataURL();
                         image.width = graphic.width < desireWidth ? graphic.width : desireWidth
                         divElem.appendChild(image)
-                        e.li.appendChild(divElem);
+                        e.li?.appendChild(divElem);
                         break;
                     default:
                         break;

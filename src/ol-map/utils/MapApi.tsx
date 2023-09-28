@@ -81,14 +81,16 @@ export default class MapApi {
         // let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API Key}"
         let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
         url = url.replace(`{layer}`,layer_type)
+        //@ts-ignore
         url = url.replace(`{API key}`,apiKey)
         return url
     }
     static getURL(api: string, params: any = null) {
         let API_URL = process.env.REACT_APP_MAP_URL;
-        API_URL = API_URL == "" ? window.location.protocol + "//" + window.location.host : API_URL
-        API_URL = API_URL.slice(-1) === "/" ? API_URL.slice(0, -1) : API_URL
-        api = api[0] == "/" ? api.substring(1) : api;
+        API_URL = API_URL === "" ? window.location.protocol + "//" + window.location.host : API_URL
+        //@ts-ignore
+        API_URL = API_URL?.slice(-1) === "/" ? API_URL?.slice(0, -1) : API_URL
+        api = api[0] === "/" ? api.substring(1) : api;
         let url = `${API_URL}/${api}`;
         url = url.slice(-1) !== "/" ? url + "/" : url;
         let getParamsCount = 0;
@@ -96,7 +98,7 @@ export default class MapApi {
             if (url.includes(key)) {
                 url = url.replace(`{${key}}`, params[key]);
             } else {
-                if (getParamsCount == 0) {
+                if (getParamsCount === 0) {
                     url = `${url}?${key}=${params[key]}`
                 } else {
                     url = `${url}&${key}=${params[key]}`
@@ -109,10 +111,6 @@ export default class MapApi {
 
     static async getAccessToken(token: string) {
         try {
-            // const state = store.getState();
-            // const token = state.auth.refreshToken;
-            // const token = false;
-            // const token = localStorage.getItem("token")
             if (token) {
                 const url = MapApi.getURL(MapAPIs.API_REFRESH_TOKEN);
                 const response = await fetch(url, {
@@ -129,7 +127,7 @@ export default class MapApi {
                         refresh: token
                     })
                 });
-                if (response.status == 200) {
+                if (response.status === 200) {
                     const data = await response.json();
                     return data.access;
                 }
@@ -454,7 +452,7 @@ export default class MapApi {
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: formData, // body data type must match "Content-Type" header
             });
-            if (response.status == 200) {
+            if (response.status === 200) {
                 return await response.json();
             } else {
                 return null;

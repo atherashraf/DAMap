@@ -3,14 +3,15 @@ import {Fill, Stroke, Style, Text} from "ol/style";
 import {getPointShapes} from "../../components/styling/vector/symbolizer/PointSymbolizer";
 import {styles} from "./styles";
 import {Feature} from "ol";
+//@ts-ignore
 import ol_legend_Legend from "ol-ext/legend/Legend";
 import {toSize} from "ol/size";
 
 
 class StylingUtils {
-    static createOLStyle(geomType: string, style: IGeomStyle = null) {
+    static createOLStyle(geomType: string, style: IGeomStyle | undefined = undefined) {
         // const geomType = feature.getGeometry().getType();
-        let featureStyle: Style
+        let featureStyle: Style | undefined = undefined
         if (style) {
             switch (geomType) {
                 case "Point":
@@ -48,22 +49,26 @@ class StylingUtils {
 
     }
 
-    static vectorStyleFunction(feature: Feature, faatureStyle: IFeatureStyle): Style {
+    static vectorStyleFunction(feature: Feature, featureStyle: IFeatureStyle): Style {
         // return styles[feature.getGeometry().getType()];
         let style: IGeomStyle;
         let rules: IRule[]
         let properties: any
-        const type = faatureStyle?.type || ""
+        const type = featureStyle?.type || ""
         switch (type) {
             case "single":
-                style = faatureStyle["style"]["default"];
+                //@ts-ignore
+                style = featureStyle["style"]["default"];
                 break;
             case "multiple":
-                style = faatureStyle["style"]["default"];
-                rules = faatureStyle.style.rules
+                //@ts-ignore
+                style = featureStyle["style"]["default"];
+                //@ts-ignore
+                rules = featureStyle.style.rules
                 properties = feature.getProperties();
                 rules.forEach((rule: IRule) => {
-                    if (rule.filter.field in properties && properties[rule.filter.field] == rule.filter.value) {
+                    //@ts-ignore
+                    if (rule?.filter?.field in properties && properties[rule?.filter?.field] === rule?.filter?.value) {
                         style = rule.style;
                     }
                 });
@@ -71,32 +76,28 @@ class StylingUtils {
                 break;
             case "density":
                 // style = this.style["style"]["default"];
-                rules = faatureStyle.style.rules
+                //@ts-ignore
+                rules = featureStyle?.style?.rules
                 properties = feature.getProperties();
                 rules.forEach((rule: IRule) => {
-                    if (rule.filter.field in properties) {
-                        const x = properties[rule.filter.field]
-                        if (rule.filter.value[0] <= x && rule.filter.value[1] >= x) {
+                    //@ts-ignore
+                    if (rule?.filter?.field in properties) {
+                        //@ts-ignore
+                        const x = properties[rule?.filter?.field]
+                        //@ts-ignore
+                        if (rule?.filter?.value[0] <= x && rule?.filter?.value[1] >= x) {
                             style = rule.style;
                         }
                     }
                 });
                 break;
             case "sld":
-                // let layer = this.layer;
-                // let prop = this.layer.getProperties()
-                // if (prop.hasOwnProperty('sldStyle')) {
-                //     let sldStyle = prop.sldStyle
-                //
-                //     // let k = new SLDStyleParser(this)
-                //     // console.log(prop.sldStyle)
-                // }
                 break;
             default:
                 break;
         }
-
-        return this.createOLStyle(feature.getGeometry().getType(), style);
+        //@ts-ignore
+        return this.createOLStyle(feature?.getGeometry()?.getType(), style);
     }
 
     static addLegendGraphic(layer: any, featureStyle: IFeatureStyle, geomType: string) {
@@ -112,8 +113,11 @@ class StylingUtils {
                     margin: 0,
                     // properties: undefined,
                     size: toSize(iconSize),
+                    //@ts-ignore
                     textStyle: undefined,
+                    //@ts-ignore
                     title: "",
+                    //@ts-ignore
                     style: fStyle,
                     typeGeom: geomType,
                     className: ""
@@ -126,8 +130,9 @@ class StylingUtils {
                 const rules = featureStyle.style.rules;
                 let canvas: HTMLCanvasElement = document.createElement('canvas');
                 canvas.width = 200;
-                canvas.height = iconSize[1] * rules.length * 3;
-                rules.forEach((rule: IRule, index) => {
+                //@ts-ignore
+                canvas.height = iconSize[1] * rules?.length * 3;
+                rules?.forEach((rule: IRule, index) => {
                     const fStyle = this.createOLStyle(geomType, rule.style);
                     const label = new Style({
                         text: new Text({
@@ -141,8 +146,10 @@ class StylingUtils {
                         margin: 5,
                         // properties: undefined,
                         size: toSize(iconSize),
+                        //@ts-ignore
                         textStyle: undefined,
                         title: "",
+                        //@ts-ignore
                         style: [fStyle, label],
                         typeGeom: geomType,
                         className: ""

@@ -20,9 +20,9 @@ interface IProps {
 
 const PostGISInfo = (props: IProps) => {
     const [formType, setFormType] = useState<"LayerCategory" | null>(null)
-    const [selectedDBId, setSelectedDBId] = React.useState<string>(null);
+    const [selectedDBId, setSelectedDBId] = React.useState<string>("");
     const [dbConnections, setDBConnections] = React.useState<IDBConnection[]>([])
-    const [selectedTable, setSelectedTable] = React.useState<string>(null)
+    const [selectedTable, setSelectedTable] = React.useState<string>("")
     const [tableList, setTableList] = React.useState<string[]>([])
     const [layerCategory, setLayerCategory] = React.useState<ILayerCategory>()
     const mapApi = new MapApi(props.snackbarRef);
@@ -56,7 +56,7 @@ const PostGISInfo = (props: IProps) => {
     }
     const handleAddLayerInfo = () => {
         mapApi.get(MapAPIs.DCH_SAVE_DB_LAYER_INFO,
-            {db_id: selectedDBId, table_name: selectedTable, layer_category_id: layerCategory.pk}).then((payload) => {
+            {db_id: selectedDBId, table_name: selectedTable, layer_category_id: layerCategory?.pk}).then((payload) => {
             if (payload) {
                 props.snackbarRef.current?.show(payload.msg)
             }
@@ -74,7 +74,8 @@ const PostGISInfo = (props: IProps) => {
                                 label="Database Connection"
                                 onChange={handleDBChange}
                             >
-                                <MenuItem value={null}></MenuItem>
+                                //@ts-ignore
+                                <MenuItem value={""}></MenuItem>
                                 {dbConnections.map((d: IDBConnection) => <MenuItem value={d.id}>{d.name}</MenuItem>)}
                             </Select>
                         </FormControl>

@@ -22,7 +22,7 @@ const LOISelector = (props: IControlProps) => {
                 {layerIds.map(
                     (layerId, index) => {
                         const layer = props.mapVM.getDALayer(layerId)
-                        return <option key={"opt-" + index} value={layerId}>{layer.getLayerTitle()}</option>
+                        return <option key={"opt-" + index} value={layerId}>{layer?.getLayerTitle()}</option>
                     })}
             </select>
         </React.Fragment>

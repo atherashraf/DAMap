@@ -73,12 +73,12 @@ const LayerInfo = () => {
         },{
             name: "Update Layer Info",
             action: () =>{
-                //@ts-ignore
                 const rowData = getSelectedRowData()
+                //@ts-ignore
                 const id = rowData["id"]
                 const url = MapApi.getURL(MapAPIs.DCH_ADMIN_LAYER_INFO_EDIT, {id: id})
-                console.log("url", url)
-                window.open(url, "MapAdmin").focus()
+                //@ts-ignore
+                window?.open(url, "MapAdmin").focus()
             }
         },
             {
@@ -92,12 +92,12 @@ const LayerInfo = () => {
                         if(payload){
                             window.location.reload();
                             // getTableData();
-                            snackbarRef.current.show("Layer info deleted successfully")
+                            snackbarRef?.current?.show("Layer info deleted successfully")
 
                         }
                     })
                 }else{
-                    snackbarRef.current.show("Please select row to delete")
+                    snackbarRef?.current?.show("Please select row to delete")
                 }
             }
         }, {
@@ -125,6 +125,7 @@ const LayerInfo = () => {
     return (
         <React.Fragment>
             {columns.length > 0 ?
+                //@ts-ignore
                 <ChangeList ref={changeListRef} columns={columns} data={data}
                             tableHeight={'100%'} tableWidth={"100%"} modelName={"LayerInfo"}
                             actions={actions} api={api} pkColName={"uuid"}/> :

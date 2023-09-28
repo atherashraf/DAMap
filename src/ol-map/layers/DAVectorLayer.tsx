@@ -10,8 +10,10 @@ import GeoJSON from "ol/format/GeoJSON";
 import {WKT} from "ol/format";
 
 class DAVectorLayer {
-    layer: VectorLayer<VectorSource> = null
+    //@ts-ignore
+    layer: VectorLayer<VectorSource>
     mapVM: MapVM
+    //@ts-ignore
     title: string
     uuid: string
     style: IFeatureStyle
@@ -31,6 +33,7 @@ class DAVectorLayer {
             title: this.title,
             displayInLayerSwitcher: false,
             source: new VectorSource(),
+            //@ts-ignore
             style: this.vectorStyleFunction,
             zIndex: 1000
         });
@@ -68,6 +71,7 @@ class DAVectorLayer {
         this.getSource().clear()
     }
     getSource(): VectorSource{
+        //@ts-ignore
         return this.getOlLayer().getSource()
     }
     getOlLayer(): VectorLayer<VectorSource> {

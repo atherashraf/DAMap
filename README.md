@@ -1,146 +1,46 @@
-# Digital Arz Map
+# Getting Started with Create React App
 
-A react component for visualizing and analysis data from DigitalArzNode Developed on top of Openlayers.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-after installation using npm i damap create .env file and add following lines
+## Available Scripts
 
-```angular2html
-REACT_APP_MAP_URL="http://127.0.0.1:8887"
-REACT_APP_OPENWEATHER_KEY=***************
-REACT_APP_BING_KEY=**************
+In the project directory, you can run:
 
-```
+### `npm start`
 
-To add a Map panel on any page use following component
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-```angular2html
-import MapComponent from "damap/lib/ol-map/containers/MapComponent"
-const mapRef = React.createRef()
-const mapUUID ="........."
-<MapComponent ref={mapViewRef} uuid={mapUUID} title='Flood Forecast'>
-    <button>Test</button>
-</MapComponent>
-```
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-where
+### `npm test`
 
-    uuid is unique identifier for getting Map from DigitalArzNode
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Map View Model
+### `npm run build`
 
-To get Map View Model use
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```angular2html
-        const mapVM = mapRef.current?.getMapVM();
-```    
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-This View Model can be used for calling different functionalities like
-To add Digital Arz MVT Layer use
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-    mapVM.addDALayer({uuid: selectedOption})
+### `npm run eject`
 
-where
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-    uuid is a Layer info uuid
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-To open Layer Switcher use
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-    setTimout(()=>mapVM.openLayerSwitcher(),3000)
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-it better to use setTimout so layout get adjust before open layer switcher
+## Learn More
 
-To open Attribute table use
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-    openAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject, pivotTableSrc:string=null)
-
-where
-
-    columns are of format
-    {
-        disablePadding: boolean;
-        id: string;
-        label: string;
-        // isNumeric: boolean;
-        type: "string" | "number" | "date"
-    }
-
-    rows are of format
-    {
-        rowId: number
-        [key: string]: any
-    }
-
-    pkCols are an array of primary key column id
-    tableHeight ref to the height of the table
-    daGridRef is React RefObject to have control on AttributeGrid functions and
-    pivotTableSrc is the url of data for pivot Table if data is separate from the table data i.e. rows
-
-## Attribute Table
-
-### JqxGrid
-
-using openAttributeTable and passing daGridRef you can access JqxGrid
-
-    const gridRef = daGridRef?.current?.getJqxGridRef()
-
-you can use all the function mentioned in following Api
-Reference https://www.jqwidgets.com/jquery-widgets-demo/demos/jqxgrid/index.htm#demos/jqxgrid/defaultfunctionality.htm
-like
-
-    gridRef?.current?.pinColumns(['division'])
-
-### Grid Toolbar
-
-Toolbar can access using
-
-    const toolbarRef = daGridRef?.current?.getToolbarRef()
-
-we can add Button on toolbar using following function
-
-    addButton(newButton: IToolbarButton[])
-    where IToolbarButton is 
-    {
-        id: string
-        title: string
-        onClick: (e?: Event) => void
-        imgSrc: any
-    }
-
-example
-
-    const zoomBtn = require("../../static/img/search.png")
-    toolbarRef.addButton([{
-        id: "zoomButton",
-        title: "Zoom To Selection",
-        imgSrc: zoomBtn,
-        onClick: (e) => {
-            mapVM.selectionLayer.zoomToSelection()
-        }
-    }])
-
-we can add any other Element on toolbar using
-
-    const elem = <>
-                <select>
-                    <option>1</option>
-                    <option>2</option>
-                </select></>
-    toolbarRef?.current?.addToolbarElements(elem);
-
-## Map Admin
-
-for Managing Layer in DigitalArz Node use following component
-
-```angular2html
-import LayerInfo from "damap/lib/admin/containers/LayerInfo"
-<LayerInfo/>
-```
-
-for Managing Map in DigitalArzNode
-
-```angular2html
-import LayerInfo from "damap/lib/admin/containers/MapInfo"
-<MapInfo/>
-```
-
-author : Ather Ashraf
+To learn React, check out the [React documentation](https://reactjs.org/).

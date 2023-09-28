@@ -26,7 +26,7 @@ const Protected = (props: IProps) => {
 
         if (!r) {
             navigate("/")
-            snackbarRef.current.show("Failed to login. " +
+            snackbarRef?.current?.show("Failed to login. " +
                 "Please check your credentials")
         }else{
             setAuth(r)
@@ -62,7 +62,7 @@ const MapRoutes = () => {
 }
 
 const App = () => {
-    const [auth, setAuth] = React.useState<boolean>(null)
+    const [auth, setAuth] = React.useState<boolean>(false)
     // const [userName, setUserName] = React.useState<string>("")
     // const api = new MapApi(null)
 

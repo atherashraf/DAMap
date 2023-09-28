@@ -1,8 +1,6 @@
 import * as React from "react";
 import DASnackbar from "../../../ol-map/components/common/DASnackbar";
-import DAFullScreenDialog from "../../../ol-map/components/common/DAFullScreenDialog";
 import {
-    Autocomplete,
     Button,
     Grid,
     Paper,
@@ -22,9 +20,9 @@ interface IProps {
 
 const ShpFileUploader = (props: IProps) => {
     const [files, setFiles] = React.useState<any[]>([]);
-    const [rows, setRows] = React.useState([])
-    const [selectedValue, setSelectedValues] = React.useState(null)
-    const [disableUpload, setDisableUpload] = React.useState(null)
+    const [rows, setRows] = React.useState<any[]>([])
+    const [selectedValue, setSelectedValues] = React.useState<string>("")
+    const [disableUpload, setDisableUpload] = React.useState<any>()
 
     const handleSelectionChange = (e: any) => {
         setSelectedValues((e.currentTarget as HTMLInputElement).value);
@@ -69,6 +67,7 @@ const ShpFileUploader = (props: IProps) => {
     const uploadShpFile = () => {
         const api = new MapApi(props.snackbarRef);
         const formData = new FormData();
+        //@ts-ignore
         const row = rows[parseInt(selectedValue)];
         for (let i = 0; i < row.files.length; i++) {
             const file = row.files[i];

@@ -25,7 +25,7 @@ class UserUtils{
         localStorage.removeItem("da_info")
     }
     static getUser(): UserInfo{
-        const info = localStorage.getItem("da_info")
+        const info = localStorage.getItem("da_info") || ""
         return JSON.parse(info)
     }
     static async isLoggedIn(){

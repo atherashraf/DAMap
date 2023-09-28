@@ -14,8 +14,8 @@ class SingleStyleForm extends BaseStyleForm {
         autoBind(this);
     }
 
-    getFeatureStyle(): IFeatureStyle {
-        const style: IGeomStyle = this.vectorStyleRef.current.getStyleParams()
+    getFeatureStyle(): IFeatureStyle | undefined {
+        const style: IGeomStyle | undefined = this.vectorStyleRef?.current?.getStyleParams()
         if (style) {
             return  {
                 type: "single",
@@ -24,14 +24,13 @@ class SingleStyleForm extends BaseStyleForm {
                 }
             };
         }
-        return null;
     }
 
     render() {
         // const style: IGeomStyle = this.vectorStyleRef.current.getStyleParams()
         const layerId = this.props.mapVM.getLayerOfInterest();
         const currentStyle = this.props.mapVM.getDALayer(layerId)?.style;
-        const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
+        const geomType = this.props.mapVM?.getDALayer(this.props.layerId)?.getGeomType()
         return (
             <React.Fragment>
                 <VectorSymbolizer ref={this.vectorStyleRef} geomType={geomType} style={currentStyle?.style?.default}/>

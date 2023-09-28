@@ -1,42 +1,42 @@
 import MapVM from "../models/MapVM";
 import VectorLayer from "ol/layer/Vector";
-import {Fill, Stroke, Style, Text} from "ol/style";
+import {Style} from "ol/style";
 import autoBind from "auto-bind";
 import {MapAPIs} from "../utils/MapApi";
 import {Feature} from "ol";
-import {styles} from "./styling/styles";
 import VectorTileLayer from "ol/layer/VectorTile";
 import {IFeatureStyle, IGeomStyle, ILayerInfo, IRule} from "../TypeDeclaration";
-import {getPointShapes} from "../components/styling/vector/symbolizer/PointSymbolizer";
 import TileLayer from "ol/layer/Tile";
 import ImageLayer from "ol/layer/Image"
 import SLDStyleParser from "./styling/SLDStyleParser";
-import ol_legend_Legend from "ol-ext/legend/Legend";
-import Layer from "ol/layer/Layer";
-import {toSize} from "ol/size";
 import StylingUtils from "./styling/StylingUtils";
 
-// import Layer from "ol/layer/Layer"
 
 class AbstractDALayer {
     dataSource: any
+    //@ts-ignore
     layer: VectorLayer<any> | VectorTileLayer | TileLayer<any> | ImageLayer<any>;
     layerInfo: ILayerInfo;
     style: IFeatureStyle;
     mapVM: MapVM;
     uuid: string;
     extent?: number[]
-    features: any[];
+    //@ts-ignore
+    features: any[]
     urlParams: string = ""
 
     constructor(info: ILayerInfo, mapVM: MapVM) {
         autoBind(this);
         this.layerInfo = info;
         this.mapVM = mapVM;
+        //@ts-ignore
         this.uuid = info && "uuid" in info && info["uuid"];
+        //@ts-ignore
         this.style = info && "style" in info && info["style"];
         this.setLayer();
+        //@ts-ignore
         this.layer && this.mapVM.getMap().addLayer(this.layer)
+        //@ts-ignore
         this.layer && this.addLayerChangeEvent()
     }
 
@@ -64,6 +64,7 @@ class AbstractDALayer {
         } else {
             //@ts-ignore
             lyr.setStyle(this.vectorStyleFunction.bind(this))
+            //@ts-ignore
             StylingUtils.addLegendGraphic(lyr, this.style, this.layerInfo.geomType[0])
             this.mapVM.legendPanel.refresh()
         }
@@ -139,18 +140,22 @@ class AbstractDALayer {
         if (!this.extent) {
             this.extent = await this.mapVM.getApi().get(MapAPIs.DCH_LAYER_EXTENT, {uuid: this.getLayerId()});
         }
+        //@ts-ignore
         return this.extent
     }
 
     getGeomType(): string[] {
+        //@ts-ignore
         return this.layerInfo.geomType
     }
 
     getDataModel(): string {
+        //@ts-ignore
         return this.layerInfo.dataModel
     }
 
     getCategory(): string {
+        //@ts-ignore
         return this.layerInfo.category
     }
 

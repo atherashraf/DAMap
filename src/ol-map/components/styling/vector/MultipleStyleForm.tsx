@@ -179,7 +179,8 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     render() {
-        const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
+        //@ts-ignore
+        const geomType = this.props?.mapVM?.getDALayer(this.props?.layerId).getGeomType()
         return (
             <React.Fragment>
                 {geomType.findIndex((a) => a.includes("Point")) != -1 &&

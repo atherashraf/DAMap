@@ -162,7 +162,8 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     }
 
     render() {
-        const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType()
+        //@ts-ignore
+        const geomType = this.props?.mapVM?.getDALayer(this.props?.layerId).getGeomType()
         const classificationMethods = [["Natural Break", "NaturalBreak"],
             ["Quantile", "Quantile"], ["Equal Interval", "EqualInterval"]]
         return (

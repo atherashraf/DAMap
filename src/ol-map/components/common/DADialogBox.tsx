@@ -22,16 +22,6 @@ interface IState {
     actions?: JSX.Element
 }
 
-function PaperComponent(props: PaperProps) {
-    return (
-        <Draggable
-            handle="#draggable-dialog-title"
-            cancel={'[class*="MuiDialogContent-root"]'}
-        >
-            <Paper {...props} />
-        </Draggable>
-    );
-}
 
 class DADialogBox extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {

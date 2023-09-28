@@ -1,7 +1,6 @@
 import * as React from "react";
-import MapApi, {MapAPIs} from "../../utils/MapApi";
+import  {MapAPIs} from "../../utils/MapApi";
 import MapVM from "../../models/MapVM";
-import {FileUpload} from "@mui/icons-material";
 import Button from "@mui/material/Button";
 
 interface  IProps{
@@ -9,7 +8,6 @@ interface  IProps{
 }
 
 const SLDForm = (props: IProps) => {
-    const [fileToUpload, setFileToUpload] = React.useState(null)
 
     const handleFilesChange = (e: any) => {
         uploadFile(e.target.files[0])
@@ -25,7 +23,7 @@ const SLDForm = (props: IProps) => {
             if (payload) {
                 props.mapVM.showSnackbar("SLD uploaded successfully")
                 const daLayer = props.mapVM.getDALayer(layerId)
-                daLayer.updateStyle()
+                daLayer?.updateStyle()
             }
         })
 

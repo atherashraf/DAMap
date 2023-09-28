@@ -47,8 +47,9 @@ const LayerMenu = (props: IProps) => {
                 break
             case "table":
                 props.mapVM.setLayerOfInterest(uuid)
-                setTimeout(() => props.mapVM.openAttributeTable(), 1000);
+                setTimeout(() => props?.mapVM?.openAttributeTable(), 1000);
                 break
+            //@ts-ignore
             case "downloadStyle":
                 const url = MapApi.getURL(MapAPIs.DCH_DOWNLOAD_DA_STYLE, {uuid: uuid})
                 window.open(url);
@@ -62,9 +63,10 @@ const LayerMenu = (props: IProps) => {
             <Menu
                 // anchorEl={props.anchorEl}
                 anchorReference="anchorPosition"
+                //@ts-ignore
                 anchorPosition={
-                    props.contextMenu !== null
-                        ? {top: props.contextMenu.mouseY, left: props.contextMenu.mouseX}
+                    //@ts-ignore
+                    props.contextMenu !== null ? {top: props?.contextMenu?.mouseY, left: props?.contextMenu?.mouseX}
                         : undefined
                 }
                 id="layer-menu"

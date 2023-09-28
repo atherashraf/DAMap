@@ -25,6 +25,7 @@ export const baseLayerSources = {
 
 class BaseLayers {
     private mapVM: MapVM;
+    //@ts-ignore
     private readonly layersSources: ILayerSources;
     private attributions = '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
@@ -36,10 +37,12 @@ class BaseLayers {
 
     addBaseLayers(title = null) {
         const layers = []
+        //@ts-ignore
         title = !title ? "Google Physical" : title
         for (let key in baseLayerSources) {
             layers.push(this.getLayer(key))
-            if (baseLayerSources[key].title === title) {
+            //@ts-ignore
+            if (baseLayerSources[key]?.title === title) {
                 // console.log("base Layer", layers[])
                 layers[layers.length - 1]?.setVisible(true)
             }
@@ -58,6 +61,7 @@ class BaseLayers {
                  string
     ):
         any {
+        //@ts-ignore
         const info = baseLayerSources[key];
         let layer: any
         switch (info?.source) {
@@ -67,6 +71,7 @@ class BaseLayers {
             case "bing":
                 layer = this.getBingMapLayer(info)
                 break
+            //@ts-ignore
             case "google":
                 layer = this.getGoogleLayer(info)
             default:
@@ -121,7 +126,9 @@ class BaseLayers {
             // @ts-ignore
             baseLayer: true,
             source: new BingMaps({
+                //@ts-ignore
                 key: process.env.REACT_APP_BING_KEY,
+                //@ts-ignore
                 imagerySet: info.imagerySet,
                 // use maxZoom 19 to see stretched tiles instead of the BingMaps
                 // "no photos at this zoom level" tiles

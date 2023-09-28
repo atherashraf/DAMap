@@ -2,8 +2,8 @@ import MapVM from "../../models/MapVM";
 import * as React from "react";
 import {DAFieldSet, DASelect} from "../StyledMapComponent";
 import MinMaxStyling from "./raster/MinMaxStyling";
-import MapApi, {MapAPIs} from "../../utils/MapApi";
-import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import  {MapAPIs} from "../../utils/MapApi";
+import {FormControl, InputLabel, MenuItem, SelectChangeEvent} from "@mui/material";
 import PredefinedStyling from "./raster/PredefinedStyling";
 import SLDForm from "./SLDForm";
 
@@ -45,17 +45,19 @@ const RasterStyling = (props: IRasterStylingProps) => {
                     id="style-type-select"
                     value={styleType}
                     label="Style Type"
+                    //@ts-ignore
                     onChange={handleSelectType}
                 >
                     {styleTypes.map(({name, val}) =>
                         <MenuItem key={`${name}-key`} value={val}>{name}</MenuItem>)}
                 </DASelect>
             </FormControl>
-            {styleType == "min-max" ?
+            {styleType === "min-max" ?
+                //@ts-ignore
                 <MinMaxStyling mapVM={props.mapVM} bandInfo={rasterInfo?.bandsInfo[0]}/> :
-                styleType == "predefined" ?
+                styleType === "predefined" ?
                     <PredefinedStyling mapVM={props.mapVM}/> :
-                    styleType =="sld"?
+                    styleType ==="sld"?
                         <SLDForm mapVM={props.mapVM} /> :<React.Fragment/>
             }
         </DAFieldSet>

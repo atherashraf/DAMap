@@ -18,11 +18,11 @@ import LeftDrawer from "../components/drawers/LeftDrawer";
 import DADialogBox from "../components/common/DADialogBox";
 import DASnackbar from "../components/common/DASnackbar";
 import MapPanel from "../components/MapPanel";
+// @ts-ignore
 import Legend from "ol-ext/control/Legend";
+// @ts-ignore
 import ol_legend_Legend from "ol-ext/legend/Legend";
 import RasterTileLayer from "../layers/RasterTileLayer";
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from "ol/source/Vector";
 import AbstractDALayer from "../layers/AbstractDALayer";
 import Draw from 'ol/interaction/Draw';
 //@ts-ignore
@@ -36,6 +36,8 @@ import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
 import WeatherLayers, {weatherLayers} from "../layers/WeatherLayers";
 import DAMapLoading from "../components/common/DAMapLoading";
 import TimeSlider from "../components/controls/TimeSlider";
+import TimeSliderControl from "../components/controls/TimeSliderControl";
+
 
 
 export interface IDALayers {
@@ -47,6 +49,7 @@ interface IOverlays {
 }
 
 class MapVM {
+    // @ts-ignore
     private map: Map
     daLayers: IDALayers = {}
     overlayLayers: IOverlays = {}
@@ -69,8 +72,10 @@ class MapVM {
     private readonly isDesigner: boolean;
     private readonly fullScreen: FullScreen;
     legendPanel: any = null;
+    // @ts-ignore
     selectionLayer: SelectionLayer
-    mapInfo: IMapInfo | null = null;
+    // @ts-ignore
+    mapInfo: IMapInfo;
     additionalToolbarButtons: JSX.Element[] = []
 
     constructor(domRef: IDomRef, isDesigner: boolean) {
@@ -94,6 +99,7 @@ class MapVM {
     }
 
     initMap(mapInfo?: IMapInfo) {
+        // @ts-ignore
         this.mapInfo = mapInfo
         this.map = new Map({
             controls: defaultControls().extend([
@@ -101,7 +107,7 @@ class MapVM {
                 new MapToolbar({
                     mapVM: this,
                     isDesigner: this.isDesigner,
-                    isCreateMap: ((!this.isDesigner && !mapInfo) || mapInfo?.isEditor)
+                    isCreateMap: ((!this.isDesigner && !mapInfo) || mapInfo?.isEditor) || false
                 })
             ]),
             view: new View({
@@ -112,15 +118,18 @@ class MapVM {
         let baseLayer = null;
         const weatherLayerInfos: any[] = []
         if (mapInfo) {
-            if ("extent" in mapInfo) this.mapExtent = mapInfo.extent;
+            if ("extent" in mapInfo) {
+                // @ts-ignore
+                this.mapExtent = mapInfo?.extent;
+            }
 
             mapInfo?.layers?.forEach(async (layer, index) => {
-                if (layer.uuid != "-1")
+                if (layer.uuid !== "-1")
                     await this.addDALayer(layer, index)
                 else if (layer.isBase) {
                     baseLayer = layer.key
                 } else {
-                    const weatherLayerIndex = weatherLayers.findIndex((l) => l.layer_name == layer.key)
+                    const weatherLayerIndex = weatherLayers.findIndex((l) => l.layer_name === layer.key)
                     if (weatherLayerIndex !== -1) {
                         weatherLayerInfos.push(weatherLayers[weatherLayerIndex])
 
@@ -201,14 +210,17 @@ class MapVM {
     }
 
     getTimeSliderRef(): RefObject<TimeSlider> {
+        // @ts-ignore
         return this._domRef.timeSliderRef;
     }
 
     getRightDrawerRef(): RefObject<RightDrawer> {
+        // @ts-ignore
         return this._domRef.rightDrawerRef
     }
 
     getLeftDrawerRef(): RefObject<LeftDrawer> {
+        // @ts-ignore
         return this._domRef.leftDrawerRef
     }
 
@@ -217,6 +229,7 @@ class MapVM {
     }
 
     getAttributeTableRef(): RefObject<AttributeGrid> {
+        // @ts-ignore
         return this._domRef.attributeTableRef;
     }
 
@@ -229,6 +242,7 @@ class MapVM {
     }
 
     getLayerOfInterest(): string {
+        // @ts-ignore
         return this._layerOfInterest;
     }
 
@@ -242,6 +256,7 @@ class MapVM {
     }
 
     isMapEditor(): boolean {
+        // @ts-ignore
         return this.mapInfo?.isEditor
     }
 
@@ -250,6 +265,7 @@ class MapVM {
         setTimeout(() => {
             const sel: HTMLSelectElement = document.getElementById("loi-select") as HTMLSelectElement
             if (sel) {
+                //@ts-ignore
                 sel.selectedIndex = [...sel.options].findIndex(option => option.value == uuid)
             }
         }, 1000)
@@ -325,12 +341,16 @@ class MapVM {
     identifyFeature(target: HTMLElement) {
         let me = this;
         // me.mapControls.add_lbdc_discharge_head_tail(me); //fo layer test
+        //@ts-ignore
         me.map.removeInteraction(me.currentMapInteraction);
         me.currentMapInteraction = null;
-        me.mapControls.setCurserDisplay('help');
+        //@ts-ignore
+        me.mapControls?.setCurserDisplay('help');
         this.map.on('click', function (evt) {
             // me.map.removeInteraction(me.currentMapInteraction);
+            //@ts-ignore
             if (!(me.currentMapInteraction instanceof Draw)) {
+                //@ts-ignore
                 me.mapControls.displayFeatureInfo(evt, me, target);
             }
         });
@@ -343,19 +363,22 @@ class MapVM {
         if (this.currentMapInteraction !== null) {
             this.map.removeInteraction(this.currentMapInteraction);
         }
+        // @ts-ignore
         this.currentMapInteraction = new Draw({
             source: source,
             type: drawType,
         });
+        //@ts-ignore
         this.map.addInteraction(this.currentMapInteraction);
         // @ts-ignore
         this.currentMapInteraction.on('drawstart', () => {
             // console.log("draw start...")
-            source.clear();
+            source?.clear();
         });
         // @ts-ignore
         this.currentMapInteraction.on('drawend', function (e) {
             // console.log("draw start...")
+            //@ts-ignore
             me.mapControls.getRasterAreaFromPolygon(me, target, e.feature);
         });
     }
@@ -463,6 +486,7 @@ class MapVM {
                 if (zoomRange)
                     payload.zoomRange = zoomRange
                 let daLayer: AbstractDALayer;
+                //@ts-ignore
                 this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
                 if (payload?.dataModel === 'V') {
                     daLayer = new MVTLayer(payload, this);
@@ -483,13 +507,13 @@ class MapVM {
         }
     }
 
-    getDALayer(layerId: string | undefined): AbstractDALayer {
+    getDALayer(layerId: string | undefined): AbstractDALayer | undefined {
         if (layerId)
             return this.daLayers[layerId]
     }
 
     showSnackbar(msg: string, duration: number = 6000) {
-        this._domRef.snackBarRef.current.show(msg, null, duration,)
+        this._domRef?.snackBarRef?.current?.show(msg, undefined, duration,)
     }
 
     drawPolygonForRasterArea(target: HTMLElement) {
@@ -544,13 +568,14 @@ class MapVM {
     // }
     openBottomDrawer(tableHeight: number) {
         const mapBoxRef = this.getMapPanelRef()
-        if (!mapBoxRef.current.isBottomDrawerOpen()) {
-            const mapHeight = mapBoxRef.current.getMapHeight();
+        if (!mapBoxRef?.current?.isBottomDrawerOpen()) {
+            const mapHeight = mapBoxRef?.current?.getMapHeight();
             const maxMapHeight = mapBoxRef?.current?.getMaxMapHeight() || 300
             // console.log("map height", mapHeight, maxMapHeight);
+            // @ts-ignore
             tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
             // console.log("table height", tableHeight)
-            mapBoxRef.current.openBottomDrawer(tableHeight)
+            mapBoxRef?.current?.openBottomDrawer(tableHeight)
 
         }
         return tableHeight;
@@ -581,7 +606,7 @@ class MapVM {
         return this.selectionLayer
     }
 
-    createAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> = null, pivotTableSrc: string = null) {
+    createAttributeTable(columns: Column[], rows: Row[], pkCols: string[], tableHeight: number = 300, daGridRef: RefObject<AttributeGrid> | undefined = undefined, pivotTableSrc: string | undefined = undefined) {
         const mapBoxRef = this.getMapPanelRef()
         this.openBottomDrawer(tableHeight)
         const table = <AttributeGrid ref={daGridRef} columns={columns}
@@ -604,8 +629,10 @@ class MapVM {
         if (!uuid) {
             this.showSnackbar("Please select a layer to view its attributes");
         } else if (!open) {
-            const mapHeight = mapPanelRef.current.getMapHeight()
-            const maxMapHeight: number = mapPanelRef.current.getMaxMapHeight();
+            const mapHeight = mapPanelRef?.current?.getMapHeight()
+            //@ts-ignore
+            const maxMapHeight: number = mapPanelRef?.current?.getMaxMapHeight();
+            //@ts-ignore
             tableHeight = mapHeight <= maxMapHeight ? tableHeight : mapHeight / 2
             // console.log("map", mapHeight)
             // console.log("max map", maxMapHeight)
@@ -634,6 +661,38 @@ class MapVM {
             mapPanelRef.current?.closeBottomDrawer()
         }
     }
+
+    addTimeSliderControl(timeSliderRef: RefObject<TimeSlider>, onDateChange: Function) {
+        /***
+         *         const timeSliderRef: RefObject<TimeSlider> = React.createRef()
+         *         mapVM?.addTimeSliderControl(timeSliderRef, onDateChange);
+         *         const minDate = new Date();
+         *         minDate.setDate(minDate.getDate() - 10)
+         *         const s: IDateRange = {
+         *             minDate: minDate,
+         *             maxDate: new Date()
+         *         }
+         *         setTimeout(() => timeSliderRef?.current?.setDateRange(s), 2000)
+         */
+        this.setTimeSliderRef(timeSliderRef)
+        //@ts-ignore
+        const map = this.getMap();
+
+        if(map && timeSliderRef){
+            // setMapVM(mapViewRef.current?.getMapVM());
+            // const url = MapApi.getURL(AppAPIs.FF_DISCHARGE_DATE_RANGE)
+            const slider = new TimeSliderControl({
+                //@ts-ignore
+                mapVM: this,
+                timeSliderRef: timeSliderRef,
+                onDateChange: onDateChange
+            });
+            //@ts-ignore
+            map.addControl(slider);
+            return slider
+
+        }
+    };
 }
 
 export default MapVM;

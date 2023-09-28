@@ -33,36 +33,34 @@ const VectorStyling = (props: IVectorStylingProps) => {
         setStyleType(styleType)
     };
     const handleSetStyle = () => {
-        const style: IFeatureStyle = styleFormRef.current.getFeatureStyle()
-        // style.style.default.pointShape = pointShape
-        // style.style.rules = style.style.rules.map((rule) => {
-        //     rule.style.pointShape = pointShape
-        //     return rule
-        // })
-        // console.log("set style", style)
-        const daLayer = props.mapVM.getDALayer(layerId)
-        daLayer.setStyle(style)
+        //@ts-ignore
+        const style: IFeatureStyle = styleFormRef?.current?.getFeatureStyle()
+        //@ts-ignore
+        const daLayer = props?.mapVM?.getDALayer(layerId)
+        //@ts-ignore
+        daLayer?.setStyle(style)
     }
     const handleSaveStyle = () => {
-        const style: IFeatureStyle = styleFormRef.current?.getFeatureStyle()
+        //@ts-ignore
+        const style: IFeatureStyle = styleFormRef?.current?.getFeatureStyle()
         props.mapVM.showSnackbar("Saving new style")
         const mapUUID = props.mapVM.isMapEditor()? props.mapVM.getMapUUID(): -1
         props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId, map_uuid: mapUUID}).then(() => {
             props.mapVM.showSnackbar("Style save successfully")
             const daLayer = props.mapVM.getDALayer(layerId);
-            daLayer.updateStyle();
+            daLayer?.updateStyle();
             props.mapVM.refreshMap();
         });
     }
     const handleRemoveStyle = () => {
         const style = ""
         props.mapVM.showSnackbar("Removing style")
-        const mapUUID = props.mapVM.isMapEditor ? props.mapVM.getMapUUID() : -1
+        const mapUUID = props?.mapVM?.isMapEditor() ? props.mapVM.getMapUUID() : -1
         props.mapVM.getApi().post(MapAPIs.DCH_SAVE_STYLE, style, {uuid: layerId, map_uuid: mapUUID}).then(() => {
-            props.mapVM.showSnackbar("Style removed successfully")
+            props.mapVM?.showSnackbar("Style removed successfully")
             const daLayer = props.mapVM.getDALayer(layerId);
             // daLayer.setStyle(null)
-            daLayer.updateStyle();
+            daLayer?.updateStyle();
 
             // daLayer.refreshLayer()
             // props.mapVM.refreshMap()
@@ -78,6 +76,7 @@ const VectorStyling = (props: IVectorStylingProps) => {
                     id="style-type-select"
                     value={styleType}
                     label="Style Type"
+                    //@ts-ignore
                     onChange={handleSelectType}
                 >
                     {styleTypes.map(({name, val}) =>

@@ -4,14 +4,14 @@ import MapVM from "../models/MapVM";
 import {Fill, Stroke, Style} from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import {IGeoJSON} from "../TypeDeclaration";
-import {Feature} from "ol";
 import GeoJSON from "ol/format/GeoJSON";
 import autoBind from "auto-bind";
 import {WKT} from "ol/format";
 
 
 class SelectionLayer {
-    layer: VectorLayer<VectorSource> = null
+    //@ts-ignore
+    layer: VectorLayer<VectorSource>
     mapVM: MapVM
     constructor(mapVM: MapVM) {
         this.mapVM = mapVM
@@ -31,7 +31,7 @@ class SelectionLayer {
         this.mapVM.addOverlayLayer(this.layer, title, title)
     }
     clearSelection(){
-        this.getSource().clear()
+        this.getSource()?.clear()
     }
     getOlLayer(): VectorLayer<VectorSource> {
         if (!this.layer) {
@@ -39,8 +39,8 @@ class SelectionLayer {
         }
         return this.layer
     }
-    getSource(): VectorSource{
-        return this.getOlLayer().getSource()
+    getSource(): VectorSource | undefined{
+        return this?.getOlLayer()?.getSource() || undefined
     }
 
     addGeoJson2Selection(geojson: IGeoJSON, clearPreviousSelection:boolean=true){
@@ -49,7 +49,7 @@ class SelectionLayer {
         }
         const features = new GeoJSON({dataProjection: 'EPSG:4326',
                 featureProjection: 'EPSG:3857'}).readFeatures(geojson)
-        this.getSource().addFeatures(features)
+        this.getSource()?.addFeatures(features)
     }
 
     addWKT2Selection(wkt:string, clearPreviousSelection:boolean=true){
@@ -57,7 +57,7 @@ class SelectionLayer {
             this.clearSelection();
         }
         const features = new WKT().readFeatures(wkt)
-        this.getSource().addFeatures(features)
+        this.getSource()?.addFeatures(features)
     }
 
     getSelectStyle(feature: any) {
@@ -101,9 +101,10 @@ class SelectionLayer {
     }
 
     zoomToSelection() {
-        if(this.getSource().getFeatures().length>0) {
-            const extent = this.getSource().getExtent()
-            this.mapVM.zoomToExtent(extent)
+        //@ts-ignore
+        if(this.getSource()?.getFeatures()?.length>0) {
+            const extent = this.getSource()?.getExtent()
+            extent && this.mapVM.zoomToExtent(extent)
         }else{
             this.mapVM.showSnackbar("Please select feature before zoom to")
         }

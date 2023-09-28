@@ -1,4 +1,5 @@
 import AbstractDALayer from "./AbstractDALayer";
+//@ts-ignore
 import IDWSource from "ol-ext/source/IDW";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
@@ -11,17 +12,16 @@ import MapVM from "../models/MapVM";
 
 
 class IDWLayer {
-    clipLayer: VectorLayer<any> = null
+    //@ts-ignore
+    clipLayer: VectorLayer<any>
+    //@ts-ignore
     vectorSource: VectorSource
-    interpolatedLayer: ImageLayer<any> = null
+    //@ts-ignore
+    interpolatedLayer: ImageLayer<any>
     mapVM: MapVM
     layerInfo: ILayerInfo
-    // static createLayerInfo(data: IData): ILayerInfo{
-    //     const uuid = MapVM.generateUUID()
-    //     const zoomRange = [0,22]
-    //     return {uuid, zoomRange, data}
-    // }
-    constructor(mapVM: MapVM, info: ILayerInfo, data: IGeoJSON, propertyName: string, aoi: IGeoJSON = null) {
+
+    constructor(mapVM: MapVM, info: ILayerInfo, data: IGeoJSON, propertyName: string, aoi: IGeoJSON | undefined = undefined) {
         this.mapVM = mapVM;
         this.layerInfo = info;
         if (aoi !== null) {
@@ -72,7 +72,7 @@ class IDWLayer {
             className: 'IDWImageLayer',
             source: new IDWSource({
                 source: this.vectorSource,
-                weight: (feature) => parseFloat(feature.getProperties()[propertyName]) / maxvalue * 100
+                weight: (feature: any) => parseFloat(feature.getProperties()[propertyName]) / maxvalue * 100
             }),
             opacity: 0.4,
             extent: this.clipLayer?.getSource().getExtent()
@@ -80,7 +80,7 @@ class IDWLayer {
         this.maskLayer()
     }
 
-    createClipLayer(aoi: IGeoJSON) {
+    createClipLayer(aoi: IGeoJSON | undefined) {
         this.clipLayer = new VectorLayer({
             style: null,
             source: new VectorSource({

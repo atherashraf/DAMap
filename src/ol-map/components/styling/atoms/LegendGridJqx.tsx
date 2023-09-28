@@ -67,18 +67,19 @@ class LegendGridJqx extends React.PureComponent<{}, IGridProps> {
                                     // cellValue = '#' + event?.args?.color.hex;
                                     this.myGrid.current?.setcellvalue(row, 'color', "#" + event?.args?.color.hex)
                                     // var rowID = $('#jqxgrid').jqxGrid('getrowid', editrow);
-                                    const rowData = this.myGrid.current.getrowdata(row)
+                                    const rowData = this.myGrid?.current?.getrowdata(row)
                                     console.log("reow data", rowData)
                                     rowData.color = value
-                                    this.myGrid.current.updaterow(row, rowData)
+                                    this.myGrid?.current?.updaterow(row, rowData)
                                     // this.myGrid.current.
-                                    this.myGrid.current?.savestate()
+                                    this.myGrid?.current?.savestate()
                                 }}
                                                 width={220} height={220} colorMode={'hue'}/>
                             </div>
                         </JqxDropDownButton>
                     )
                 },
+                //@ts-ignore
                 cellsrenderer: (row: number, columnfield: string, value: any, defaulthtml: string, columnproperties: any) => {
                     // return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + '; color: #0000ff;">' + value + '</span>';
                     return `<div style="width:100%; height:100%;background-color: ${value};float: ${columnproperties.cellsalign}">${value}</div>`

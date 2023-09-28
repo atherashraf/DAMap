@@ -13,6 +13,7 @@ export const pointShapeTypes = [
     'star',
     'triangle',
     'square',
+    undefined
     // 'stacked',
 ] as const
 
@@ -24,7 +25,8 @@ export const getPointSVG = (style: IGeomStyle, w: number = maxPointSize * 2 + 1,
     }
 
     const size = maxPointSize; //style.pointSize
-    const ratio = (maxPointSize - minPointSize) / (style.pointSize - minPointSize)
+    //@ts-ignore
+    const ratio = (maxPointSize - minPointSize) / ((style?.pointSize  - minPointSize) )
     // const startPoint = [(w / 2 - size), (h - size)]
     let svgShape;
     switch (style.pointShape) {
@@ -49,7 +51,7 @@ export const getPointSVG = (style: IGeomStyle, w: number = maxPointSize * 2 + 1,
             break;
         default:
             svgShape = <circle cx={w} cy={h} r={size/2}
-                               style={svgStyle}>    
+                               style={svgStyle}>
             </circle>
             // svgShape=<circle cx={250} cy={250} r={200} style={svgStyle}/>
             break;
@@ -76,12 +78,12 @@ export const getPointShapes = (style: IGeomStyle): Style => {
 interface IProps {
     updateStyle?: Function
     pointShape: typeof pointShapeTypes[number]
-    pointSize: number
+    pointSize: number | undefined
 }
 
 export interface IPointSymbolizerState {
     pointShape: typeof pointShapeTypes[number]
-    pointSize: number
+    pointSize: number | undefined
 }
 
 class PointSymbolizer extends React.PureComponent<IProps, IPointSymbolizerState> {
@@ -94,10 +96,10 @@ class PointSymbolizer extends React.PureComponent<IProps, IPointSymbolizerState>
     }
 
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IPointSymbolizerState>, snapshot?: any) {
-        if (this.props.pointShape != prevProps.pointShape) {
+        if (this.props.pointShape !== prevProps.pointShape) {
             this.setState({pointShape: this.props.pointShape})
         }
-        if (this.props.pointSize != prevProps.pointSize) {
+        if (this.props.pointSize !== prevProps.pointSize) {
             this.setState({pointSize: this.props.pointSize})
         }
         if (!_.isEqual(prevState, this.state) && this.props.updateStyle) {

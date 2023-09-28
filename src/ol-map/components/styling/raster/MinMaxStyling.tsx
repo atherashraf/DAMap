@@ -5,7 +5,7 @@ import {RefObject} from "react";
 import MapVM from "../../../models/MapVM";
 import AddStyleButton from "../atoms/AddStyleButton";
 import LegendGrid from "../atoms/LegendGrid";
-import {IGeomStyle, IRule} from "../../../TypeDeclaration";
+import { IRule} from "../../../TypeDeclaration";
 import Button from "@mui/material/Button";
 import {MapAPIs} from "../../../utils/MapApi";
 
@@ -37,7 +37,7 @@ class MinMaxStyling extends React.PureComponent<IProps, IState> {
         const {bandInfo} = this.props;
         const percentile = Math.round(classIndex / (this.state.noOfClasses) * 100)
 
-        let value = 0
+        let value
         if (percentile >= 0 && percentile <= 25) {
             // gap = percentile/25 * 100
             value = bandInfo.min + (bandInfo.q25 - bandInfo.min) * percentile / 25
@@ -106,7 +106,7 @@ class MinMaxStyling extends React.PureComponent<IProps, IState> {
             {uuid: this.props.mapVM.getLayerOfInterest()}).then((payload) => {
             this.props.mapVM.showSnackbar("Style save successfully")
             const daLayer = this.props.mapVM.getDALayer(this.props.mapVM.getLayerOfInterest())
-            setTimeout(()=>daLayer.refreshLayer(), 2000)
+            setTimeout(()=>daLayer?.refreshLayer(), 2000)
         })
     }
 

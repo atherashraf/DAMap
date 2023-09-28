@@ -2,7 +2,7 @@ import * as React from "react";
 import {useState} from "react"
 import MapVM from "../models/MapVM";
 import {Button, FormControl} from '@mui/material';
-import WeatherLayers, {IWeatherLayer, weatherLayers} from "../layers/WeatherLayers";
+import {IWeatherLayer, weatherLayers} from "../layers/WeatherLayers";
 import TypeAhead from "../../widgets/TypeAhead";
 
 interface AddLayerPanelProps {
@@ -12,8 +12,7 @@ interface AddLayerPanelProps {
 
 
 const AddLayerPanel = (props: AddLayerPanelProps) => {
-    const mapVM = props.mapVM
-    const options = props.layers.sort((a, b) => {
+    const options = props.layers.sort((a: any, b: any) => {
         let fa = a.title.toLowerCase(),
             fb = b.title.toLowerCase();
 

@@ -1,6 +1,6 @@
 import * as React from "react";
-import {AppBar, Box, IconButton, Paper, Slide, Toolbar, Typography} from "@mui/material";
-import {DrawerPaper, SideDrawerDiv} from "../StyledMapComponent";
+import {AppBar, Box, IconButton,  Slide, Toolbar, Typography} from "@mui/material";
+import {DrawerPaper} from "../StyledMapComponent";
 import CloseIcon from '@mui/icons-material/Close';
 import autoBind from "auto-bind";
 
@@ -57,7 +57,7 @@ class RightDrawer extends React.PureComponent<RightDrawerProps, RightDrawerState
         this.setState(() => ({heading: value}))
     }
 
-    handleMousedown(e: any) {
+    handleMousedown(e:any) {
         this.setState({isResizing: true, lastDownX: e.clientX});
     }
 

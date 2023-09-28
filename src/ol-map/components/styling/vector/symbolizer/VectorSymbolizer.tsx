@@ -7,16 +7,16 @@ import PointSymbolizer from "./PointSymbolizer";
 import _ from "../../../../utils/lodash";
 
 interface IProp {
-    geomType: string[]
+    geomType: string[] | undefined
     style?: IGeomStyle
 }
 
 interface IState {
-    strokeWidth: number
-    errorStrokeWidth: string
-    errorNoOfClasses: string
-    strokeColor: string
-    fillColor: string
+    strokeWidth: number | undefined
+    errorStrokeWidth: string | undefined
+    errorNoOfClasses: string | undefined
+    strokeColor: string | undefined
+    fillColor: string | undefined
 }
 
 class VectorSymbolizer extends React.PureComponent<IProp, IState> {
@@ -44,14 +44,17 @@ class VectorSymbolizer extends React.PureComponent<IProp, IState> {
         if (!_.isEqual(prevProps.style, this.props.style)) {
             const style = this.props.style
             this.setState({
-                strokeWidth: style.strokeWidth,
-                strokeColor: style.strokeColor,
-                fillColor: style.fillColor
+                //@ts-ignore
+                strokeWidth: style?.strokeWidth,
+                //@ts-ignore
+                strokeColor: style?.strokeColor,
+                //@ts-ignore
+                fillColor: style?.fillColor
             })
         }
     }
 
-    getStyleParams(): IGeomStyle {
+    getStyleParams(): IGeomStyle | undefined {
         const isError = this.validateForm();
         if (!isError) {
             const params: IGeomStyle = {};
@@ -68,7 +71,6 @@ class VectorSymbolizer extends React.PureComponent<IProp, IState> {
                 params["fillColor"] = this.fillColorRef.current.getColor();
             return params;
         }
-        return null;
     }
 
     validateForm() {
@@ -77,15 +79,16 @@ class VectorSymbolizer extends React.PureComponent<IProp, IState> {
     }
 
     validateStrokeWidth(val: number = 0) {
+        //@ts-ignore
         val = val ? val : this.state?.strokeWidth;
         let isError = false;
         if (val < this.minStrokeWidth || val > this.maxStrokeWidth) {
             this.setState({errorNoOfClasses: "classes must be between 1 to 10"});
             isError = true;
-        } else
-            this.setState({errorNoOfClasses: null});
-
-
+        } else {
+            //@ts-ignore
+            this.setState({errorNoOfClasses: undefined});
+        }
         return isError;
     }
 
@@ -95,8 +98,9 @@ class VectorSymbolizer extends React.PureComponent<IProp, IState> {
             <React.Fragment>
                 <Box sx={{flex: 1}}>
                     <PointSymbolizer ref={this.pointSymbolRef}
-                                     pointSize={this.props.style?.pointSize}
-                                     pointShape={this.props.style?.pointShape}/>
+                                     pointSize={this.props?.style?.pointSize}
+                        //@ts-ignore
+                                     pointShape={this.props?.style?.pointShape}/>
                 </Box>
                 {/*Stroke Width*/}
                 <Box sx={{flex: 1}}>
@@ -132,6 +136,7 @@ class VectorSymbolizer extends React.PureComponent<IProp, IState> {
 
                 {/*Fill Color*/}
                 <Box sx={{flex: 1}}>
+
                     <DAColorPicker ref={this.fillColorRef} label={"Fill Color"} color={this.state.fillColor}
                                    isAlpha={true}/>
                 </Box>

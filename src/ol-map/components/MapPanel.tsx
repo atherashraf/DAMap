@@ -54,7 +54,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
         // this.props.mapVM.refreshMap();
     }
 
-    openBottomDrawer(height: number, contents: JSX.Element = null) {
+    openBottomDrawer(height: number, contents: JSX.Element = <React.Fragment></React.Fragment>) {
         this.resizeDrawer(height)
         if (!contents) {
             contents = <div style={{
@@ -77,7 +77,7 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     resizeDrawer(height: number) {
         // console.log("table Height", height)
         const {totalMapHeight} = this.state
-        const mapDivHeight = height == 0 || totalMapHeight < height ? totalMapHeight + "px" : (totalMapHeight - height) + "px"
+        const mapDivHeight = height === 0 || totalMapHeight < height ? totalMapHeight + "px" : (totalMapHeight - height) + "px"
         // console.log("map div height", totalMapHeight, mapDivHeight)
         this.setState({
             drawerHeight: height -10,
@@ -90,8 +90,8 @@ class MapPanel extends React.PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        const mapHeight = document.getElementById(this.mapDivId).clientHeight
-        this.setState({totalMapHeight: mapHeight})
+        const mapHeight = document?.getElementById(this.mapDivId)?.clientHeight
+        mapHeight && this.setState({totalMapHeight: mapHeight})
     }
 
     setContent(contents: JSX.Element = <React.Fragment/>) {

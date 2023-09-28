@@ -21,8 +21,10 @@ interface IState extends ISliderProps {
 
 class TimeSlider extends React.PureComponent<IProps, IState> {
     private dateSlider = React.createRef<JqxSlider>();
-    private minDate: Date = null;
-    private maxDate: Date = null;
+    //@ts-ignore
+    private minDate: Date;
+    //@ts-ignore
+    private maxDate: Date;
     private shouldIgnoreCall: boolean = false
 
     constructor(props: IProps) {
@@ -40,7 +42,8 @@ class TimeSlider extends React.PureComponent<IProps, IState> {
             tooltip: true,
             tooltipFormatFunction: this.tooltipFormatFunction,
             value: this.getNoOfDays(),
-            selectedDate: null,
+            //@ts-ignore
+            selectedDate: undefined,
             cmpWidth: 200
         }
         // this.getDateRange();
@@ -65,10 +68,11 @@ class TimeSlider extends React.PureComponent<IProps, IState> {
         return (this.maxDate?.getTime() - this.minDate?.getTime()) / (24 * 60 * 60 * 1000)
     }
     private tooltipFormatFunction = (value: any) => {
-        return this.getCurrentDate(value).toDateString()
+
+        return this?.getCurrentDate(value)?.toDateString()
     }
 
-    private getCurrentDate = (value: any): Date => {
+    private getCurrentDate = (value: any) => {
         if (this.minDate) {
             const daysInMilliSec = this.minDate.getTime() + (value * 24 * 60 * 60 * 1000);
             const d = new Date()
@@ -130,7 +134,8 @@ class TimeSlider extends React.PureComponent<IProps, IState> {
     }
 
     private onResize = () => {
-        const width = document.getElementById("map").clientWidth / 5  | 200
+        //@ts-ignore
+        const width = document?.getElementById("map")?.clientWidth / 5  | 200
         this.setState({cmpWidth: width})
     }
 

@@ -16,9 +16,9 @@ import {Icon, Style} from "ol/style";
 import VectorSource from "ol/source/Vector";
 import MapVM from "../models/MapVM";
 import autoBind from "auto-bind";
-import ol_legend_Legend from "ol-ext/legend/Legend";
+//@ts-ignore
 import ol_legend_Item from "ol-ext/legend/Item";
-import MapApi from "../utils/MapApi";
+
 
 export interface IWeatherLayer {
     uuid: string
@@ -32,7 +32,7 @@ export const weatherLayers: IWeatherLayer[] = [
     {"uuid": "2", "title": "Precipitation", "layer_name": "precipitation_new", op: "PAR0"},
     {"uuid": "3", "title": "Wind Speed", "layer_name": "wind_new", op: "WND"},
     {"uuid": "4", "title": "Temperature", "layer_name": "temp_new", op: "TA2"},
-    {"uuid": "5", "title": "Weather Data", "layer_name": "weather_data", op: null}
+    {"uuid": "5", "title": "Weather Data", "layer_name": "weather_data", op: ""}
 ]
 
 class WeatherLayers {
@@ -58,6 +58,7 @@ class WeatherLayers {
     getOpenWeather2TileURL(layer_type: any): string {
         let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API key}"
         url = url.replace(`{op}`, layer_type)
+        //@ts-ignore
         url = url.replace(`{API key}`, this.open_weather_map_key)
         return url
     }
@@ -65,11 +66,13 @@ class WeatherLayers {
     getOpenWeatherTileURL(layer_type: any): string {
         let url = "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}"
         url = url.replace(`{layer}`, layer_type)
+        //@ts-ignore
         url = url.replace(`{API key}`, this.open_weather_map_key)
         return url
     }
 
     addTileWeatherMap = function (selectedOption: IWeatherLayer) {
+        //@ts-ignore
         let me = this;
         // let layer_title = selectedOption.title
         if (me.weatherLayers === null) {
@@ -77,7 +80,7 @@ class WeatherLayers {
             me.mapVM.getMap().addLayer(me.weatherLayersGroup);
         }
 
-        // const url = this.getOpenWeatherTileURL(selectedOption.layer_name);
+        //@ts-ignore
         const url = this.getOpenWeather2TileURL(selectedOption.op)
         // console.log(url)
         let layer = new Tile({
@@ -103,9 +106,12 @@ class WeatherLayers {
             layers.insertAt(layers.getLength(), layer);
             // me.map.addLayer(me.weatherLayers[layer_name]);
         }
+        //@ts-ignore
         this.addLegendGraphic(layer, selectedOption.layer_name, selectedOption.title)
     };
+
     addLegendGraphic = function (layer : any, layer_type: any, layer_name: any) {
+        //@ts-ignore
         let me = this;
         if (me.mapVM.legendPanel) {
             let isLegendAdded = me.mapVM.isLegendItemExist(me.mapVM.legendPanel, layer_name)
@@ -133,18 +139,8 @@ class WeatherLayers {
             }
         }
     }
-    // getLayerName = function (layer_type) {
-    //     let data =
-    //         {
-    //             "clouds_new": "Clouds",
-    //             "precipitation_new": "Precipitation",
-    //             "wind_new": "Wind Speed",
-    //             "temp_new": "Temperature",
-    //             "weather_data": "Weather Data"
-    //         };
-    //     return data[layer_type]
-    // }
     getWeatherData = function (layer_name: any) {
+        //@ts-ignore
         let me = this;
         if (me.weatherLayers === null) {
             me.weatherLayers = [];
@@ -157,7 +153,7 @@ class WeatherLayers {
             let northLat = extent[3];
             let eastLng = extent[2];
             let southLat = extent[1];
-            let geojson = new GeoJSON();
+            // let geojson = new GeoJSON();
             let requestURLString = "http://api.openweathermap.org/data/2.5/box/city?bbox="
                 + westLng + "," + northLat + "," //left top
                 + eastLng + "," + southLat + ",10" //right bottom
@@ -183,6 +179,7 @@ class WeatherLayers {
         }
     };
     createWeatherClusterLayer = function (geo_json: any, layer_name: any) {
+        //@ts-ignore
         let me = this;
         let vectorSource = new VectorSource({
             features: (new GeoJSON()).readFeatures(geo_json, {

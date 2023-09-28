@@ -3,7 +3,6 @@ import {IconButton, Tooltip} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import MapVM from "../../models/MapVM";
 import MapApi, {MapAPIs} from "../../utils/MapApi";
-import {baseLayerSources} from "../../layers/BaseLayers";
 import {weatherLayers} from "../../layers/WeatherLayers";
 
 interface IProps {
@@ -42,12 +41,10 @@ const SaveMap = (props: IProps) => {
                         mapData["baseLayer"] = title
                     }
                 } else if (isWeatherLayer !== -1) {
-                    // others.push(uuid)
+                    //@ts-ignore
                     mapData["otherLayers"].push({"name": uuid, type: "weather", params: {}})
                 } else {
-                    // uuids.push(uuid);
-                    // visibility.push(layer.getVisible())
-
+                    //@ts-ignore
                     mapData["daLayers"].push({"uuid": uuid, visible: layer.getVisible(), opacity: layer.getOpacity()})
                 }
 

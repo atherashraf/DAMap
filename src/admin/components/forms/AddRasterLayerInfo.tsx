@@ -1,20 +1,20 @@
 import * as React from "react";
 import {ChangeEvent, useState} from "react";
-import {Box, Button, FormGroup, Stack, TextField} from "@mui/material";
+import {Box, Button, TextField} from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MapApi, {MapAPIs} from "../../../ol-map/utils/MapApi";
 import DASnackbar from "../../../ol-map/components/common/DASnackbar";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {useNavigate} from "react-router-dom";
-import EditIcon from '@mui/icons-material/Edit';
 import AddLayerCategoryForm from "./AddLayerCategoryForm";
 import DAFullScreenDialog from "../../../ol-map/components/common/DAFullScreenDialog";
 import LayerCategoryControl from "./LayerCategoryControl";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+
 
 interface IProps {
     snackbarRef: React.RefObject<DASnackbar>
@@ -79,12 +79,16 @@ const AddRasterLayerInfo = (props: IProps) => {
         if (rasterType == "existing") {
             formData.append("rasterFilePath", rasterFilePath)
         } else {
+            // @ts-ignore
             formData.append("rasterFile", rasterFile)
+            // @ts-ignore
             formData.append("worldFile", worldFile)
         }
 
+        // @ts-ignore
         formData.append("categoryId", selectLayerCat.pk)
         formData.append("temporal", temporalRes.format("YYYY-MM-DD"))
+        // @ts-ignore
         formData.append("sldFile", sldFile)
         api.postFormData(MapAPIs.DCH_ADD_RASTER_INFO, formData).then((payload) => {
             console.log(payload)
@@ -209,7 +213,7 @@ const AddRasterLayerInfo = (props: IProps) => {
                             &nbsp; &nbsp;
                             <Button type="submit" sx={{backgroundColor: "black", color: "white"}}
                                     variant="contained" onClick={() => {
-                                props.dialogRef.current.handleClose()
+                                props.dialogRef?.current?.handleClose()
                                 window.location.reload()
                             }}>
                                 Close</Button>

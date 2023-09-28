@@ -14,7 +14,7 @@ import DAMapLoading from "../components/common/DAMapLoading";
 
 interface MapVMProps {
     height?: number
-    uuid: string
+    uuid: string | undefined
     isMap: boolean
     isDesigner?: boolean
     isEditor?: boolean
@@ -43,11 +43,11 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
         mapPanelRef: mapBoxRef,
         loadingRef: loadingRef
     }
-    private readonly mapVM: MapVM = null
+    private readonly mapVM: MapVM | undefined
 
     constructor(props: MapVMProps) {
         super(props);
-        this.mapVM = new MapVM(this.domRefs, props.isDesigner)
+        this.mapVM = new MapVM(this.domRefs, props.isDesigner || false)
     }
 
     getMapVM() {
@@ -61,36 +61,40 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
     componentDidMount() {
         const {props} = this
         if (this.props.isMap && this.props.uuid !== "-1") {
-            this.mapVM.getApi().get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
+            this.mapVM?.getApi()?.get(MapAPIs.DCH_MAP_INFO, {"uuid": props.uuid})
                 .then((payload: IMapInfo) => {
                     // console.log("mapInfo", payload)
                     const mapInfo = Object.assign(payload, {isEditor: props.isEditor})
-                    if (!this.mapVM.isInit) {
-                        this.mapVM.initMap(mapInfo);
+                    if (!this.mapVM?.isInit) {
+                        this.mapVM?.initMap(mapInfo);
                     }
-                    this.mapVM.setTarget(this.mapDivId);
+                    this.mapVM?.setTarget(this.mapDivId);
                 })
         } else if (this.props.isMap) {
-            if (!this.mapVM.isInit) {
-                this.mapVM.initMap();
+            if (!this.mapVM?.isInit) {
+                this.mapVM?.initMap();
             }
-            this.mapVM.setTarget(this.mapDivId);
+            this.mapVM?.setTarget(this.mapDivId);
         } else {
-            if (!this.mapVM.isInit) {
+            if (!this.mapVM?.isInit) {
                 const info: IMapInfo = {
                     uuid: "-1",
                     layers: [],
                 }
-                this.mapVM.initMap(info);
+                this.mapVM?.initMap(info);
                 (async () => {
-                    await this.mapVM.addDALayer({uuid: this.props.uuid})
-                    const extent = await this.mapVM.getDALayer(this.props.uuid).getExtent()
-                    this.mapVM.setMapFullExtent(extent)
-                    this.mapVM.zoomToFullExtent()
+                    //@ts-ignore
+                    await this.mapVM?.addDALayer({uuid: this.props.uuid})
+                    //@ts-ignore
+                    const extent = await this.mapVM?.getDALayer(this.props?.uuid).getExtent()
+                    //@ts-ignore
+                    this.mapVM?.setMapFullExtent(extent)
+                    this.mapVM?.zoomToFullExtent()
                 })();
-                this.mapVM.setLayerOfInterest(this.props.uuid)
-                this.mapVM.setTarget(this.mapDivId);
-                this.mapVM.setDomRef(this.domRefs)
+                //@ts-ignore
+                this.mapVM?.setLayerOfInterest(this.props.uuid)
+                this.mapVM?.setTarget(this.mapDivId);
+                this.mapVM?.setDomRef(this.domRefs)
             }
 
         }
@@ -107,8 +111,9 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
                     boxSizing: "border-box",
                     height: "100%"
                 }}>
-
-                    <MapPanel ref={mapBoxRef} mapVM={this.mapVM}/>
+                    <MapPanel ref={mapBoxRef}
+                        //@ts-ignore
+                              mapVM={this.mapVM}/>
                     <RightDrawer ref={rightDrawerRef}/>
                     <DADialogBox ref={dialogBoxRef}/>
                     <DASnackbar ref={snackbarRef}/>

@@ -4,11 +4,13 @@ interface IState {
     isResizing: boolean
     lastDownY: any
 }
-interface IProps{
+
+interface IProps {
     newMousePos: Function
 
 }
-class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
+
+class BottomDrawerResizer extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
@@ -16,10 +18,12 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
             lastDownY: null,
         }
     }
+
     componentDidMount() {
         document.addEventListener('mousemove', e => this.handleMousemove(e));
-        document.addEventListener('mouseup', e => this.handleMouseup());
+        document.addEventListener('mouseup', e => this.handleMouseup(e));
     }
+
     handleMousedown(e: any) {
         this.setState({isResizing: true, lastDownY: e.clienYX});
     }
@@ -42,9 +46,10 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
         // }
     }
 
-    handleMouseup = () => {
+    handleMouseup = (e: any) => {
         this.setState({isResizing: false});
     }
+
     render() {
         return (
             <React.Fragment>
@@ -55,7 +60,7 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
                     }}
                     style={{
                         height: "2px",
-                        width:"100%",
+                        width: "100%",
                         cursor: 'ns-resize',
                         padding: '4px 0 0',
                         borderTop: '1px solid #ddd',
@@ -72,4 +77,5 @@ class BottomDrawerResizer extends React.PureComponent<IProps, IState>{
         );
     }
 }
+
 export default BottomDrawerResizer

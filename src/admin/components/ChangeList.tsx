@@ -41,6 +41,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
     private columns: any[] = [];
     private dataFields: any[] = [];
+    // @ts-ignore
     private selectedAction: Action;
 
     // private gridToolbar = new ChangeListToolbar(this.clGrid);
@@ -64,13 +65,12 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
         this.props?.columns?.forEach((col: Column) => {
             let dataKey = col.id
-            // problematic columns updating key of data
-            const errorFields = ["group"]
+
             this.columns.push({
                 text: col.label,
-                cellsalign: col.type == "string" ? "left" : "right",
+                cellsalign: col.type === "string" ? "left" : "right",
                 datafield: dataKey,
-                width: col.type == "string" ? 200 : 80
+                width: col.type === "string" ? 200 : 80
             })
             //data field
             this.dataFields.push({
@@ -111,7 +111,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                 }
                 this.props.api.post(MapAPIs.DCH_EDIT_MODEL_ROW, editedData, {modelName: this.props.modelName}).then(payload => {
                     if (payload) {
-                        this.props.api.snackbarRef.current.show("data updated successfully...")
+                        this.props.api.snackbarRef?.current?.show("data updated successfully...")
                         commit(true);
                         this.setState(() => ({editable: false}))
                     } else {
@@ -156,7 +156,8 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
                 <div style={{overflow: "hidden", position: "relative", margin: "5px", padding: "5px"}}>
                     <span>actions: &nbsp; &nbsp;</span>
                     <select onChange={(e) => {
-                        this.selectedAction = this.state.actions.find((item) => item.name == e.target.value)
+                        // @ts-ignore
+                        this.selectedAction = this.state.actions.find((item) => item.name === e.target.value)
                     }}>
                         <option value={"-1"}>Select an action</option>
                         {this.state.actions.map((item: Action) =>
@@ -195,13 +196,13 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
     getSelectedRowData(): Row {
         const rowIndex = this.daGrid?.current?.getselectedrowindex()
-        return this.daGrid.current?.getrowdata(rowIndex)
+        return this.daGrid.current?.getrowdata(rowIndex || -1)
     }
 
 
     startEditing() {
         this.setState(() => ({editable: true}))
-        this.props.api.snackbarRef.current.show("Please double click on cell for editing...")
+        this.props.api?.snackbarRef?.current?.show("Please double click on cell for editing...")
     }
 
     render() {

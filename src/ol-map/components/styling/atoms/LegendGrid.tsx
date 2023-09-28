@@ -16,14 +16,7 @@ interface IState {
 }
 
 export default class LegendGrid extends React.PureComponent<IProps, IState> {
-    constructor(props: IProps) {
-        super(props);
 
-    }
-
-    // getStyleItems() {
-    //     return this.state.styleList
-    // }
     handleTitleButtonClick(index: number, item: any) {
         const dialogBoxRef = this.props.mapVM.getDialogBoxRef();
         const jsx = (<Box sx={{p: 1}}><Stack spacing={2}>
@@ -52,13 +45,14 @@ export default class LegendGrid extends React.PureComponent<IProps, IState> {
                 />
             </Stack>
         </Stack></Box>);
-        dialogBoxRef.current.openDialog({
+        dialogBoxRef?.current?.openDialog({
             title: "Legend Item", content: <div>{jsx}</div>
         })
     }
 
     render() {
-        const geomType = this.props.mapVM.getDALayer(this.props.layerId).getGeomType() || ["Polygon"]
+        //@ts-ignore
+        const geomType = this.props.mapVM?.getDALayer(this.props?.layerId).getGeomType() || ["Polygon"]
         return (
             <fieldset>
                 <legend>{this.props.title || "Legend Grid"}</legend>

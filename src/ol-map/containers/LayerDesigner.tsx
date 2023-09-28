@@ -14,8 +14,9 @@ interface LayerDesignerProps {
 const timeSliderRef: RefObject<TimeSlider> = React.createRef()
 const LayerDesigner = () => {
     const { layerId } = useParams();
-    const mapViewRef: React.RefObject<MapView> = useRef(null);
-    let slider: TimeSliderControl = null;
+    //@ts-ignore
+    const mapViewRef: React.RefObject<MapView> = useRef();
+    // let slider: TimeSliderControl
     // const layerId = "2378481c-cfe1-11ed-924d-367dda4cf16d"
     // const layerId = "6e0f2ab0-d53d-11ed-82a6-acde48001122"
     // const layerId = "04fc474e-da80-11ed-85fe-601895253350"
@@ -32,35 +33,21 @@ const LayerDesigner = () => {
         }
 
     }
-    const addTimeSlider = () => {
-        const interval = setInterval(() => {
-            const map = mapViewRef.current?.getMapVM().getMap();
-            if (map && !slider) {
-                // setMapVM(mapViewRef.current?.getMapVM());
-                // const url = MapApi.getURL(AppAPIs.FF_DISCHARGE_DATE_RANGE)
-                slider = new TimeSliderControl({
-                    mapVM: mapViewRef.current?.getMapVM(),
-                    timeSliderRef: timeSliderRef,
-                    onDateChange: onDateChange
-                });
-                //@ts-ignore
-                map.addControl(slider);
-                clearInterval(interval);
-            }
-        }, 200);
-    };
+    let slider: any = null;
     React.useEffect(() => {
-        addTimeSlider();
-        const minDate = new Date();
-        minDate.setDate(minDate.getDate() - 10)
-        const s: IDateRange = {
-            minDate: minDate,
-            maxDate: new Date()
-        }
-        console.log("s", s)
-        addTimeSlider();
-        // setDischargeDate(s.maxDate)
-        setTimeout(() => timeSliderRef?.current?.setDateRange(s), 2000)
+        const interval = setInterval(() => {
+            if(mapViewRef && !slider) {
+                slider = mapViewRef?.current?.getMapVM()?.addTimeSliderControl(timeSliderRef, onDateChange);
+                const minDate = new Date();
+                minDate.setDate(minDate.getDate() - 10)
+                const s: IDateRange = {
+                    minDate: minDate,
+                    maxDate: new Date()
+                }
+                setTimeout(() => timeSliderRef?.current?.setDateRange(s), 2000)
+            }
+            clearInterval(interval)
+        })
     },[])
     return (
         <React.Fragment>

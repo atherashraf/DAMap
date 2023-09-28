@@ -25,7 +25,8 @@ class LegendGridJqxToolbar {
             textPosition: 'center'
         }
         this.buttons.forEach((item)=>{
-            const renderer = createRoot(document.getElementById(item.id))
+            //@ts-ignore
+            const renderer = createRoot(document?.getElementById(item.id))
             renderer.render(
                 <JqxButton
                     onClick={(event?: any) => {
@@ -39,11 +40,11 @@ class LegendGridJqxToolbar {
 
     }
 
-    addButtonOnClick(e){
+    addButtonOnClick(e: any){
         const datarow = {"label": "add name", "min_val": 0, "max_val": 0, "color": "#000"}
         this.myGrid.current?.addrow(null, datarow);
     }
-    deleteButtonOnClick(e){
+    deleteButtonOnClick(e: any){
         // alert("delete working...")
         const selectedrowindex = this.myGrid.current!.getselectedrowindex();
         const id = this.myGrid.current!.getrowid(selectedrowindex);

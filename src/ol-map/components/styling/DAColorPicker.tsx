@@ -1,18 +1,20 @@
 import * as React from "react";
+//@ts-ignore
 import {ColorResult, SliderPicker} from "react-color";
+//@ts-ignore
 import Alpha from "react-color/lib/components/alpha/Alpha";
 import autoBind from "auto-bind";
 
 
 interface CustomColorPickerProps {
-    label?: string,
-    color: string,
-    isAlpha: boolean,
+    label?: string
+    color: string | undefined
+    isAlpha: boolean
     onChange?: Function
 }
 
 interface CustomColorPickerState {
-    color: string,
+    color: string | undefined
 }
 
 class DAColorPicker extends React.PureComponent<CustomColorPickerProps, CustomColorPickerState> {
@@ -28,8 +30,10 @@ class DAColorPicker extends React.PureComponent<CustomColorPickerProps, CustomCo
 
     handleColorChange(color: ColorResult) {
         let hexColor = color.hex
-        if (this.props?.isAlpha && color.rgb && color?.rgb?.a > 0.08) {
-            hexColor = color.hex + (parseInt(String(color.rgb.a * 255))).toString(16);
+        //@ts-ignore
+        if (this.props?.isAlpha && color?.rgb && color?.rgb?.a > 0.08) {
+            //@ts-ignore
+            hexColor = color.hex + (parseInt(String(color?.rgb?.a * 255))).toString(16);
         }
         this.setState({color: hexColor});
         if(typeof this.props.onChange !== "undefined")

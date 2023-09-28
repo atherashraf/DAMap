@@ -69,7 +69,7 @@ const MapInfo = () => {
                             if (payload) {
                                 window.location.reload()
                                 setTimeout(() => {
-                                    snackbarRef.current.show("Map Info deleted successfully")
+                                    snackbarRef?.current?.show("Map Info deleted successfully")
                                 }, 3000)
                             }
                         })
@@ -95,6 +95,7 @@ const MapInfo = () => {
         <React.Fragment>
             {/*<Typography variant="h5">Map Info</Typography>*/}
             {columns.length > 0 ?
+                //@ts-ignore
                 <ChangeList ref={changeListRef} columns={columns} data={data} tableHeight={'100%'} tableWidth={"100%"}
                             actions={actions} api={api} modelName={"MapInfo"} pkColName={"uuid"}/> :
                 <React.Fragment/>

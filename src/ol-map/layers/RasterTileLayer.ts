@@ -3,6 +3,7 @@ import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ'
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import ol_legend_Item from "ol-ext/legend/Item";
+//@ts-ignore
 import olLegendImage from "ol-ext/legend/Image";
 
 class RasterTileLayer extends AbstractDALayer {

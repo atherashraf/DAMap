@@ -22,8 +22,10 @@ class DAMapLoading extends React.PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        const width = document.getElementById("map")?.clientWidth | 200;
-        const height = document.getElementById("map")?.clientHeight | 200;
+        //@ts-ignore
+        const width = document?.getElementById("map")?.clientWidth | 200;
+        //@ts-ignore
+        const height = document?.getElementById("map")?.clientHeight | 200;
         this.setState({
             width: width,
             height: height

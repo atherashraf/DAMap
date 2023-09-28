@@ -54,7 +54,7 @@ class TimeSliderControl extends Control {
 
     handleRotateNorth() {
         console.log(this);
-        this.getMap().getView().setRotation(30);
+        this.getMap()?.getView()?.setRotation(30);
     }
 }
 

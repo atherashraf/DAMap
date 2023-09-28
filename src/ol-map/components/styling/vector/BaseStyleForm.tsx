@@ -8,8 +8,8 @@ export interface BaseStyleFormProps {
 }
 
 class BaseStyleForm<P = {}, S = {}, SS = any> extends React.PureComponent<BaseStyleFormProps, any> {
-    getFeatureStyle(): IFeatureStyle {
-        return null
+    getFeatureStyle() {
+
     }
 
     render() {
