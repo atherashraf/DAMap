@@ -8,10 +8,9 @@ const RefreshMap = (props: IControlProps) => {
     const handleClick = () => {
         const map = props.mapVM.getMap();
         map?.render()
-        map?.updateSize()
         map?.setSize(map.getSize())
         map?.updateSize()
-        props.mapVM?.refreshMap(true)
+        props.mapVM?.refreshMap(false)
     }
     return (
         <React.Fragment>

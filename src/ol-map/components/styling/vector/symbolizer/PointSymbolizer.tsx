@@ -62,6 +62,7 @@ export const getPointSVG = (style: IGeomStyle, w: number = maxPointSize * 2 + 1,
                      viewBox={`${red} ${red} ${(w - red) * ratio} ${(h - red) * ratio}`}
                      xmlns="http://www.w3.org/2000/svg">
         {svgShape} </svg>
+    // return svgShape
 }
 export const getPointShapes = (style: IGeomStyle): Style => {
     const svgElem = getPointSVG(style)

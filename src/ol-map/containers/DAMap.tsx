@@ -18,13 +18,11 @@ const DAMap = (props: IProps) => {
     const timeSliderRef: RefObject<TimeSlider> = React.createRef()
     const layerUUID4Slider: string = "3d070b54566111eeaaaeacde48001122";
     const onDateChange = (date: Date) => {
+        const uuid: string = "3d070b54566111eeaaaeacde48001122";
         // @ts-ignore
-        const daLayer: MVTLayer = mapViewRef?.current?.getMapVM().getDALayer(layerUUID4Slider)
-        const params = "date=" + formatYmdDate(date)
-        //             daLayer.setAdditionalUrlParams(params)
+        const daLayer: MVTLayer = mapViewRef?.current?.getMapVM().getDALayer(uuid)
         if (daLayer) {
-            daLayer.setAdditionalUrlParams(params)
-            daLayer.refreshLayer()
+            daLayer.updateTemporalData(date)
         }
 
     }
@@ -32,11 +30,8 @@ const DAMap = (props: IProps) => {
     React.useEffect(() => {
         const interval = setInterval(() => {
             if (mapViewRef && !slider) {
-                console.log("in interval")
                 slider = mapViewRef?.current?.getMapVM()?.addTimeSliderControl(timeSliderRef, onDateChange);
-                console.log(slider)
                 const minDate = new Date();
-
                 minDate.setDate(minDate.getDate() - 10)
                 const s: IDateRange = {
                     minDate: minDate,

@@ -79,6 +79,7 @@ class MapControls {
             // alert(row || '&nbsp');
             me.showJsonDataInHTMLTable(feature.getProperties(), 'v', targetElem);
             if(feature.hasOwnProperty('layer_name')){
+
                 me.getFeatureDetailFromDB(feature, mapVm, targetElem);
             }
         } else {
@@ -87,20 +88,28 @@ class MapControls {
     };
 
     getFeatureDetailFromDB(feature, mapVm, targetElem) {
-        let me = this;
-        let row = feature.getProperties()
-        mapVm.getApi().get(MapAPIs.DCH_FEATURE_DETAIL, {
-            uuid: feature['layer_name'],
-            col_name: 'id',
-            col_val: row['id']
-        }).then((payload) => {
-            if (payload) {
-                payload['layer'] = feature['layer_title'];
-                me.showJsonDataInHTMLTable(payload, 'v', targetElem);
-            } else {
-                me.showJsonDataInHTMLTable(row, 'v', targetElem);
+        try {
+            let me = this;
+            let row = feature.getProperties()
+            const uuid = feature['layer_name'];
+            const daLayer = mapVm.getDALayer(uuid)
+            if(daLayer.layerInfo.format !== "WFS") {
+                mapVm.getApi().get(MapAPIs.DCH_FEATURE_DETAIL, {
+                    uuid: feature['layer_name'],
+                    col_name: 'id',
+                    col_val: row['id']
+                }).then((payload) => {
+                    if (payload) {
+                        payload['layer'] = feature['layer_title'];
+                        me.showJsonDataInHTMLTable(payload, 'v', targetElem);
+                    } else {
+                        me.showJsonDataInHTMLTable(row, 'v', targetElem);
+                    }
+                });
             }
-        });
+        }catch(e){
+            console.error(e)
+        }
 
     }
 

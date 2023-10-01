@@ -82,7 +82,6 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
     getAdapter(data?: Row[]): any {
         data = data ? data : [...this.props.data]
-        console.log("data", this.props.data);
         data?.forEach((row) => {
             // console.log(row)
             for (let key in row) {

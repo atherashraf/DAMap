@@ -10,6 +10,7 @@ import TileLayer from "ol/layer/Tile";
 import ImageLayer from "ol/layer/Image"
 import SLDStyleParser from "./styling/SLDStyleParser";
 import StylingUtils from "./styling/StylingUtils";
+import {formatYmdDate} from "../components/controls/TimeSliderControl";
 
 
 class AbstractDALayer {
@@ -24,6 +25,7 @@ class AbstractDALayer {
     //@ts-ignore
     features: any[]
     urlParams: string = ""
+    resolutions: number[] = [];
 
     constructor(info: ILayerInfo, mapVM: MapVM) {
         autoBind(this);
@@ -46,10 +48,10 @@ class AbstractDALayer {
 
     addLayerChangeEvent() {
         this.layer.on("propertychange", (e) => {
-            if (e.key == "map" && e.target.values_[e.key] == null) {
+            if (e.key === "map" && e.target.values_[e.key] == null) {
                 this.mapVM.removeDALayer(this.layerInfo.uuid)
             }
-            if (e.key == "map" && e.oldValue == null) {
+            if (e.key === "map" && e.oldValue == null) {
                 this.mapVM.daLayers[this.layerInfo.uuid] = this
             }
         })
@@ -186,11 +188,13 @@ class AbstractDALayer {
     }
 
     refreshLayer(clearFeature: boolean = false) {
-        // const source = this.layer?.getSource();
-        // if(source) {
-        //     source.clear()
-        //     source.refresh()
-        // }
+        const source = this.layer?.getSource();
+        if (source) {
+            source.clear()
+            source.changed()
+            source.refresh()
+        }
+        // this.layer.getSource().changed();
     }
 
     getDataSource() {
@@ -266,6 +270,8 @@ class AbstractDALayer {
     //     });
     //     return [minVal, maxVal];
     // }
+    updateTemporalData(date: Date) {
+    }
 }
 
 export default AbstractDALayer;

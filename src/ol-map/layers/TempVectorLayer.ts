@@ -9,7 +9,7 @@ import StylingUtils from "./styling/StylingUtils";
 import GeoJSON from "ol/format/GeoJSON";
 import {WKT} from "ol/format";
 
-class DAVectorLayer {
+class TempLayer {
     //@ts-ignore
     layer: VectorLayer<VectorSource>
     mapVM: MapVM
@@ -79,4 +79,4 @@ class DAVectorLayer {
     }
 }
 
-export default DAVectorLayer
+export default TempLayer

@@ -10,7 +10,8 @@ export const MapAPIs = Object.freeze({
     DCH_LAYER_INFO: "api/dch/layer_info/{uuid}/",
     DCH_ALL_LAYER_INFO: "api/dch/all_layer_info/",
     DCH_LAYER_EXTENT: "api/dch/layer_extent/{uuid}/",
-    DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}",
+    DCH_LAYER_MVT: "api/dch/layer_mvt/{uuid}/",
+    DCH_LAYER_WFS: "api/dch/wfs/{uuid}/{format}/",
     DCH_LAYER_RASTER: "api/dch/raster_tile/{uuid}",
     DCH_SAVE_STYLE: "api/dch/save_style/{uuid}/{map_uuid}",
     DCH_SAVE_SLD: "api/dch/upload_sld_style/{uuid}",
@@ -44,7 +45,7 @@ export const MapAPIs = Object.freeze({
     DCH_DB_TABLE_LIST: "api/dch/db_table_list/{db_id}/",
     DCH_SAVE_DB_LAYER_INFO: "api/dch/save_db_layer_info/{db_id}/{table_name}/{layer_category_id}/",
     DCH_ADD_URL_LAYER_INFO: "api/dch/add_layer_url_info/{layer_title}/{layer_category_id}/{layer_url}/{url_type}/",
-    DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val}/{col_name}/",
+    DCH_COLUMN_VALUE: "api/dch/column_value/{uuid}/{pk_val} /{col_name}/",
     DCH_NAVIGATION_LIST: "api/dch/navigation_list/{map_uuid}/",
     DCH_NAVIGATION_GEOMETRY: "api/dch/navigation_geometry/{map_uuid}/{selected_key}/{node_id}/",
 
@@ -66,16 +67,16 @@ export default class MapApi {
         this.snackbarRef = snackbarRef
     }
 
-    static getURLKeys(apiURL: string) {
-        let keys = [],          // an array to collect the strings that are found
-            rxp = /{([^}]+)}/g,
-            curMatch;
-
-        while (curMatch = rxp.exec(apiURL)) {
-            keys.push(curMatch[1]);
-        }
-        return keys;
-    }
+    // static getURLKeys(apiURL: string) {
+    //     let keys = [],          // an array to collect the strings that are found
+    //         rxp = /{([^}]+)}/g,
+    //         curMatch;
+    //
+    //     while (curMatch == rxp.exec(apiURL)) {
+    //         keys.push(curMatch[1]);
+    //     }
+    //     return keys;
+    // }
     static getOpenWeatherTileURL(layer_type: any): string{
         const apiKey = process.env.REACT_APP_OPENWEATHER_KEY;
         // let url = "http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={API Key}"
@@ -160,7 +161,7 @@ export default class MapApi {
 
     async get(apiKey: string, params: any = {}, isJSON: boolean = true) {
 
-        const url = MapApi.getURL(apiKey, params);
+        const url =  MapApi.getURL(apiKey, params);
         return await this.getFetch(url, isJSON);
 
     }

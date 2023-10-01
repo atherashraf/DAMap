@@ -35,11 +35,11 @@ class _ {
     static hex2rgba = (hex: string) => {
         if (/^#([A-Fa-f0-9]*){1,2}$/.test(hex)) {
             let c = hex.substring(1).split('');
-            if (c.length == 3) {
+            if (c.length === 3) {
                 c = [c[0], c[0], c[1], c[1], c[2], c[2], 'f', 'f'];
-            } else if (c.length == 4) {
+            } else if (c.length === 4) {
                 c = [c[0], c[0], c[1], c[1], c[2], c[2], c[3], c[3]];
-            } else if (c.length == 6) {
+            } else if (c.length === 6) {
                 c = [...c, 'f', 'f']
             }
             return {

@@ -37,7 +37,8 @@ import WeatherLayers, {weatherLayers} from "../layers/WeatherLayers";
 import DAMapLoading from "../components/common/DAMapLoading";
 import TimeSlider from "../components/controls/TimeSlider";
 import TimeSliderControl from "../components/controls/TimeSliderControl";
-
+import pako from 'pako';
+import DAVectorLayer from "../layers/DAVectorLayer";
 
 
 export interface IDALayers {
@@ -266,7 +267,7 @@ class MapVM {
             const sel: HTMLSelectElement = document.getElementById("loi-select") as HTMLSelectElement
             if (sel) {
                 //@ts-ignore
-                sel.selectedIndex = [...sel.options].findIndex(option => option.value == uuid)
+                sel.selectedIndex = [...sel.options].findIndex(option => option.value === uuid)
             }
         }, 1000)
 
@@ -280,7 +281,7 @@ class MapVM {
     isLayerExist(uuid: string) {
         // const k: string[] = Object.keys(this.daLayers)
         for (let key in this.daLayers) {
-            if (key == uuid)
+            if (key === uuid)
                 return true
         }
         return false
@@ -485,23 +486,32 @@ class MapVM {
                     payload.style = style
                 if (zoomRange)
                     payload.zoomRange = zoomRange
-                let daLayer: AbstractDALayer;
+                let daLayer: AbstractDALayer | null = null;
                 //@ts-ignore
                 this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`)
                 if (payload?.dataModel === 'V') {
-                    daLayer = new MVTLayer(payload, this);
-                    this.daLayers[payload.uuid] = daLayer
+                    if (payload.format == "WFS") {
+                        daLayer = new DAVectorLayer(payload, this)
+                        this.daLayers[payload.uuid] = daLayer
+                    } else {
+                        daLayer = new MVTLayer(payload, this);
+                        this.daLayers[payload.uuid] = daLayer
+                    }
+
+
                 } else {
                     daLayer = new RasterTileLayer(payload, this)
                     this.daLayers[payload.uuid] = daLayer
                 }
-                const visible = info.visible != undefined ? info.visible : true
-                const opacity = info?.opacity != undefined ? info.opacity : 1
-                const olLayer = daLayer.getOlLayer()
-                olLayer.setVisible(visible)
-                olLayer.setOpacity(opacity)
-                window.dispatchEvent(this._daLayerAddedEvent)
-                setTimeout(() => olLayer.setZIndex(index), 3000)
+                const visible = info?.visible !== undefined ? info.visible : true
+                const opacity = info?.opacity !== undefined ? info.opacity : 1
+                if (daLayer) {
+                    const olLayer = daLayer?.getOlLayer()
+                    olLayer?.setVisible(visible)
+                    olLayer?.setOpacity(opacity)
+                    window.dispatchEvent(this._daLayerAddedEvent)
+                    setTimeout(() => olLayer.setZIndex(index), 3000)
+                }
             }
             this.getMapLoadingRef()?.current?.closeIsLoading()
         }
@@ -678,7 +688,7 @@ class MapVM {
         //@ts-ignore
         const map = this.getMap();
 
-        if(map && timeSliderRef){
+        if (map && timeSliderRef) {
             // setMapVM(mapViewRef.current?.getMapVM());
             // const url = MapApi.getURL(AppAPIs.FF_DISCHARGE_DATE_RANGE)
             const slider = new TimeSliderControl({

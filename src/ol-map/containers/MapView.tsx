@@ -86,7 +86,7 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
                     //@ts-ignore
                     await this.mapVM?.addDALayer({uuid: this.props.uuid})
                     //@ts-ignore
-                    const extent = await this.mapVM?.getDALayer(this.props?.uuid).getExtent()
+                    const extent = await this.mapVM?.getDALayer(this.props?.uuid)?.getExtent()
                     //@ts-ignore
                     this.mapVM?.setMapFullExtent(extent)
                     this.mapVM?.zoomToFullExtent()

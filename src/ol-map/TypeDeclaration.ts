@@ -63,6 +63,7 @@ export interface ILayerInfo {
     dataURL?: string
     extent3857?: []
     layerSetting?: any
+    format: string
     zIndex: number
 }
 
