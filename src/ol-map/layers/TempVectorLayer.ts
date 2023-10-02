@@ -9,7 +9,7 @@ import StylingUtils from "./styling/StylingUtils";
 import GeoJSON from "ol/format/GeoJSON";
 import { WKT } from "ol/format";
 
-class TempLayer {
+class TempVectorLayer {
   //@ts-ignore
   layer: VectorLayer<VectorSource>;
   mapVM: MapVM;
@@ -79,4 +79,4 @@ class TempLayer {
   }
 }
 
-export default TempLayer;
+export default TempVectorLayer;

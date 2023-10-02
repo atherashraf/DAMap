@@ -55,15 +55,15 @@ export interface ILayerInfo {
   title?: string;
   uuid: string;
   style?: IFeatureStyle;
-  zoomRange?: number[];
-  geomType?: string[];
-  dataModel?: string;
-  category?: string;
-  dataURL?: string;
-  extent3857?: [];
-  layerSetting?: any;
-  format?: string;
-  zIndex?: number;
+  zoomRange?: number[]
+  geomType?: string[]
+  dataModel?: string // "V" or "R"
+  category?: string
+  dataURL?: string
+  extent3857?: []
+  layerSetting?: any
+  format?: string
+  zIndex?: number
   declutter: boolean
 }
 
