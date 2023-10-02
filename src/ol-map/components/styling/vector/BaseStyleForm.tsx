@@ -1,25 +1,21 @@
 import * as React from "react";
-import {IFeatureStyle} from "../../../TypeDeclaration";
 import MapVM from "../../../models/MapVM";
 
 export interface BaseStyleFormProps {
-    layerId: string
-    mapVM: MapVM
+  layerId: string;
+  mapVM: MapVM;
 }
 
-class BaseStyleForm<P = {}, S = {}, SS = any> extends React.PureComponent<BaseStyleFormProps, any> {
-    getFeatureStyle() {
+// @ts-ignore
+class BaseStyleForm<P = {}, S = {}, SS = any> extends React.PureComponent<
+  BaseStyleFormProps,
+  any
+> {
+  getFeatureStyle() {}
 
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-            </React.Fragment>
-        )
-    }
+  render() {
+    return <React.Fragment></React.Fragment>;
+  }
 }
 
-export default BaseStyleForm
-
-
+export default BaseStyleForm;

@@ -1,97 +1,87 @@
 import JqxButton from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons";
 import * as React from "react";
-import {RefObject} from "react";
+import { RefObject } from "react";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";
 import ChangeList from "./ChangeList";
-import {Tooltip} from "@mui/material";
-
+import { Tooltip } from "@mui/material";
 
 export interface IToolbarButton {
-    id: string
-    title: string
-    onClick: (e?: Event) => void
-    imgSrc: any
+  id: string;
+  title: string;
+  onClick: (e?: Event) => void;
+  imgSrc: any;
 }
 
 interface IProps {
-    // mapVM: MapVM
-    daGrid: RefObject<JqxGrid>
-    parent: ChangeList
-    buttons: IToolbarButton[]
+  // mapVM: MapVM
+  daGrid: RefObject<JqxGrid>;
+  parent: ChangeList;
+  buttons: IToolbarButton[];
 }
 
 interface IState {
-    buttons: IToolbarButton[]
-
+  buttons: IToolbarButton[];
 }
-
 
 class ChangeListToolbar extends React.PureComponent<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      buttons: [...this.getBasicButtons(), ...this.props.buttons],
+    };
+  }
 
-    constructor(props: IProps) {
-        super(props);
-        this.state = {
-            buttons: [...this.getBasicButtons(), ...this.props.buttons]
-        }
+  getBasicButtons(): IToolbarButton[] {
+    const editButtonIcon = require("../../static/img/pencil-icon.png");
+    const buttons: IToolbarButton[] = [
+      {
+        id: "edit-button",
+        title: "Edit",
+        imgSrc: editButtonIcon,
+        onClick: () => {
+          // alert("working...")
+          this.props.parent.startEditing();
+        },
+      },
+    ];
+    return buttons;
+  }
 
-    }
+  addButton(newButton: IToolbarButton[]) {
+    this.setState(() => ({ buttons: [...this.state.buttons, ...newButton] }));
+  }
 
-    getBasicButtons(): IToolbarButton[] {
-        const editButtonIcon = require("../../static/img/pencil-icon.png");
-        const buttons: IToolbarButton[] = [
-            {
-                id: "edit-button",
-                title: "Edit",
-                imgSrc: editButtonIcon,
-                onClick: () => {
-                    // alert("working...")
-                    this.props.parent.startEditing();
-                }
-
-            }]
-        return buttons;
-    }
-
-
-    addButton(newButton: IToolbarButton[]) {
-        this.setState(() => ({buttons: [...this.state.buttons, ...newButton]}))
-    }
-
-
-    render() {
-        const style: React.CSSProperties = {float: 'left', marginLeft: '5px'};
-        const btnStyle = {
-            width: 60,
-            height: 25,
-
-        }
-        return (
-            <div style={{overflow: 'hidden', position: 'relative', margin: '5px'}}>
-                {this.state.buttons.map((btn) => (
-                    <Tooltip title={btn.title} key={"tooltip" + btn.id}>
-                        <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
-                            <JqxButton
-                                onClick={btn.onClick}
-                                key={"btn-" + btn.id}
-                                width={btnStyle.width} height={btnStyle.height}
-                                // value={btn.value}
-                                imgSrc={btn.imgSrc}
-                                imgPosition={'center'}
-                                textPosition={'center'}
-                                textImageRelation={'imageBeforeText'}
-                            />
-                        </div>
-                    </Tooltip>
-
-                ))}
+  render() {
+    const style: React.CSSProperties = { float: "left", marginLeft: "5px" };
+    const btnStyle = {
+      width: 60,
+      height: 25,
+    };
+    return (
+      <div style={{ overflow: "hidden", position: "relative", margin: "5px" }}>
+        {this.state.buttons.map((btn) => (
+          <Tooltip title={btn.title} key={"tooltip" + btn.id}>
+            <div id={"div-" + btn.id} key={"div-" + btn.id} style={style}>
+              <JqxButton
+                onClick={btn.onClick}
+                key={"btn-" + btn.id}
+                width={btnStyle.width}
+                height={btnStyle.height}
+                // value={btn.value}
+                imgSrc={btn.imgSrc}
+                imgPosition={"center"}
+                textPosition={"center"}
+                textImageRelation={"imageBeforeText"}
+              />
             </div>
-        )
-    }
-
+          </Tooltip>
+        ))}
+      </div>
+    );
+  }
 }
 
-export default ChangeListToolbar
-
+export default ChangeListToolbar;
 
 // import * as ReactDOM from "react-dom";
 // import JqxButton from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbuttons";

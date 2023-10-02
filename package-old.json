@@ -1,61 +1,12 @@
 {
   "name": "damap",
-  "version": "0.1.7",
+  "version": "0.1.4",
   "private": false,
   "author": "Ather Ashraf",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "description": "",
-  "scripts": {
-    "start": "react-scripts start",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-
-    "build": "npm run clean && npm run build:esm && npm run copy-files",
-    "clean": "rm -rf ./dist",
-    "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.jpg src/**/*.png dist/esm",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
-    "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
-    "prepare": "npm run build",
-    "prepublishOnly-old": "npm test && npm run prettier && npm run lint --no-fix"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/atherashraf/DAMap.git "
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "license": "MIT",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "keywords": [
-    "react",
-    "typescript",
-    "digitalarz-map",
-    "damap"
-  ],
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -82,10 +33,57 @@
     "react-plotlyjs": "^0.4.4",
     "web-vitals": "^2.1.4"
   },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
+    "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run prettier && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atherashraf/DAMap.git "
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "peerDependencies": {
     "react": ">=16",
     "react-dom": ">=16"
   },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "typescript",
+    "digitalarz-map",
+    "damap"
+  ],
   "devDependencies": {
     "@siedlerchr/types-ol-ext": "^3.2.3",
     "@testing-library/jest-dom": "^5.17.0",
@@ -102,7 +100,6 @@
     "@types/react-pivottable": "^0.11.3",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
-    "copyfiles": "^2.4.1",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -114,10 +111,9 @@
     "prettier": "^2.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "ts-jest": "^28.0.4",
     "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
-    "rimraf": "^5.0.5",
-    "ts-jest": "^28.0.4",
     "typescript": "^4.9.5"
   }
 }

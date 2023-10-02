@@ -1,12 +1,11 @@
 import AbstractDALayer from "./AbstractDALayer";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import VectorTileSource from "ol/source/VectorTile";
 import GeoJSON from "ol/format/GeoJSON";
 import {IGeoJSON} from "../TypeDeclaration";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import pako from "pako";
-import VectorTileLayer from "ol/layer/VectorTile";
+
 import {WKT} from "ol/format";
 import {formatYmdDate} from "../components/controls/TimeSliderControl";
 import {Feature} from "ol";
@@ -14,8 +13,10 @@ import {Feature} from "ol";
 class DAVectorLayer extends AbstractDALayer {
     setLayer() {
         const {title, uuid} = this.layerInfo || {};
-        const declutter = "declutter" in this.layerInfo.layerSetting ?
-            this.layerInfo.layerSetting["declutter"] === "true" : true
+        const declutter =
+            this.layerInfo?.layerSetting?.declutter
+                ? this.layerInfo.layerSetting["declutter"] === "true"
+                : true;
         this.layer = new VectorLayer({
             //@ts-ignore
             name: uuid,
@@ -25,36 +26,40 @@ class DAVectorLayer extends AbstractDALayer {
             source: this.getDataSource(),
             //@ts-ignore
             style: this?.vectorStyleFunction?.bind(this),
-            declutter: declutter
+            declutter: declutter,
         });
-        this.setSlDStyleAndLegendToLayer()
-        this.fetchFeatures()
-
+        this.setSlDStyleAndLegendToLayer();
+        this.fetchFeatures();
     }
 
     fetchFeatures() {
-        this.mapVM.getApi().get(MapAPIs.DCH_LAYER_WFS,
-            {"uuid": this.layerInfo.uuid, "format": "geojson"}).then((payload: any) => {
-            if (payload) {
-                const binaryData = atob(payload);
-                const uint8ArrayData = new Uint8Array(binaryData.length);
-                for (let i = 0; i < binaryData.length; i++) {
-                    uint8ArrayData[i] = binaryData.charCodeAt(i);
+        this.mapVM
+            .getApi()
+            .get(MapAPIs.DCH_LAYER_WFS, {
+                uuid: this.layerInfo.uuid,
+                format: "geojson",
+            })
+            .then((payload: any) => {
+                if (payload) {
+                    const binaryData = atob(payload);
+                    const uint8ArrayData = new Uint8Array(binaryData.length);
+                    for (let i = 0; i < binaryData.length; i++) {
+                        uint8ArrayData[i] = binaryData.charCodeAt(i);
+                    }
+                    // Unzip the data using pako
+                    const unzippedData = pako.inflate(uint8ArrayData, {to: "string"});
+                    const data = JSON.parse(unzippedData);
+                    this.addGeojsonFeature(data);
                 }
-                // Unzip the data using pako
-                const unzippedData = pako.inflate(uint8ArrayData, {to: 'string'});
-                const data = JSON.parse(unzippedData)
-                this.addGeojsonFeature(data)
-            }
-        })
+            });
     }
 
     getSource() {
-        return this.dataSource
+        return this.dataSource;
     }
 
     clearSelection() {
-        this.getSource().clear()
+        this.getSource().clear();
     }
 
     addGeojsonFeature(geojson: IGeoJSON, clearPreviousSelection: boolean = true) {
@@ -62,17 +67,18 @@ class DAVectorLayer extends AbstractDALayer {
             this.clearSelection();
         }
         const features = new GeoJSON({
-            dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'
-        }).readFeatures(geojson)
-        this.getSource().addFeatures(features)
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:3857",
+        }).readFeatures(geojson);
+        this.getSource().addFeatures(features);
     }
 
     addWKTFeature(wkt: string, clearPreviousSelection: boolean = true) {
         if (clearPreviousSelection) {
             this.clearSelection();
         }
-        const features = new WKT().readFeatures(wkt)
-        this.getSource().addFeatures(features)
+        const features = new WKT().readFeatures(wkt);
+        this.getSource().addFeatures(features);
     }
 
     setDataSource() {
@@ -100,27 +106,40 @@ class DAVectorLayer extends AbstractDALayer {
     //     return this.getSource().get
     // }
     findFeature(col_name: string, col_value: any): Feature | null {
-        const feature = this.getSource()?.getFeatures()?.find((feat: Feature) => feat.get(col_name) === col_value)
-        return feature
+        const feature = this.getSource()
+            ?.getFeatures()
+            ?.find((feat: Feature) => feat.get(col_name) === col_value);
+        return feature;
+    }
 
+    zoomToFeatures() {
+        if (this.getSource().getFeatures().length > 0) {
+            const extent = this.getSource().getExtent();
+            this.mapVM.zoomToExtent(extent);
+        } else {
+            this.mapVM.showSnackbar("Please select feature before zoom to");
+        }
     }
 
     updateTemporalData(date: Date) {
         if (date.toString() !== "Invalid Date") {
-            const params = "date=" + formatYmdDate(date)
-            const apiURL = this.layerInfo.dataURL
-            const url = apiURL && MapApi.getURL(apiURL) + "?" + params
+            const params = "date=" + formatYmdDate(date);
+            const apiURL = this.layerInfo.dataURL;
+            const url = apiURL && MapApi.getURL(apiURL) + "?" + params;
             if (url) {
-                this.mapVM.getApi().getFetch(url).then((payload: any) => {
-                    payload.forEach((item: any, index: number) => {
-                        const feature = this.findFeature("id", item["id"])
-                        feature?.setProperties(item, true)
-                    })
-                    this.layer.changed()
-                })
+                this.mapVM
+                    .getApi()
+                    .getFetch(url)
+                    .then((payload: any) => {
+                        payload.forEach((item: any) => {
+                            const feature = this.findFeature("id", item["id"]);
+                            feature?.setProperties(item, true);
+                        });
+                        this.layer.changed();
+                    });
             }
         }
     }
 }
 
-export default DAVectorLayer
+export default DAVectorLayer;

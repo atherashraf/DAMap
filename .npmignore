@@ -1,26 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 ### Node template
 # Logs
 logs
@@ -29,7 +6,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-.pnpm-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -78,9 +54,6 @@ web_modules/
 # Optional eslint cache
 .eslintcache
 
-# Optional stylelint cache
-.stylelintcache
-
 # Microbundle cache
 .rpt2_cache/
 .rts2_cache_cjs/
@@ -96,12 +69,9 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
+# dotenv environment variables file
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -113,7 +83,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+
 
 # Gatsby files
 .cache/
@@ -123,13 +93,6 @@ dist
 
 # vuepress build output
 .vuepress/dist
-
-# vuepress v2.x temp and cache directory
-.temp
-.cache
-
-# Docusaurus cache and generated files
-.docusaurus
 
 # Serverless directories
 .serverless/
@@ -153,6 +116,10 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-.idea
-.env
-lib
+
+/package-lock.json
+/package-old.json
+/.gitignore
+/.env
+/public/
+/.idea
