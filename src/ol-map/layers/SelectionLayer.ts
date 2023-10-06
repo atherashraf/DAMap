@@ -10,7 +10,7 @@ import { WKT } from "ol/format";
 
 class SelectionLayer {
   //@ts-ignore
-  layer: VectorLayer<VectorSource>;
+  olLayer: VectorLayer<VectorSource>;
   mapVM: MapVM;
   constructor(mapVM: MapVM) {
     this.mapVM = mapVM;
@@ -18,7 +18,7 @@ class SelectionLayer {
   }
   createSelectionLayer() {
     const title = "sel_layer";
-    this.layer = new VectorLayer({
+    this.olLayer = new VectorLayer({
       // @ts-ignore
       title: title,
       displayInLayerSwitcher: false,
@@ -27,16 +27,16 @@ class SelectionLayer {
       zIndex: 1000,
     });
 
-    this.mapVM.addOverlayLayer(this.layer, title, title);
+    this.mapVM.addOverlayLayer(this);
   }
   clearSelection() {
     this.getSource()?.clear();
   }
   getOlLayer(): VectorLayer<VectorSource> {
-    if (!this.layer) {
+    if (!this.olLayer) {
       this.createSelectionLayer();
     }
-    return this.layer;
+    return this.olLayer;
   }
   getSource(): VectorSource | undefined {
     return this?.getOlLayer()?.getSource() || undefined;

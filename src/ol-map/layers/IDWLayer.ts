@@ -15,7 +15,7 @@ class IDWLayer {
   //@ts-ignore
   vectorSource: VectorSource;
   //@ts-ignore
-  interpolatedLayer: ImageLayer<any>;
+  olLayer: ImageLayer<any>;
   mapVM: MapVM;
   layerInfo: ILayerInfo;
 
@@ -37,16 +37,12 @@ class IDWLayer {
   }
 
   getInterpolatedLayer() {
-    return this.interpolatedLayer;
+    return this.olLayer;
   }
 
   addIDWLayer() {
     if (!this.mapVM.isOverlayLayerExist(this.layerInfo.uuid)) {
-      this.mapVM.addOverlayLayer(
-        this.getInterpolatedLayer(),
-        this.layerInfo.title,
-        this.layerInfo.uuid
-      );
+      this.mapVM.addOverlayLayer(this);
     } else {
       this.mapVM
         .getSnackbarRef()
@@ -80,7 +76,7 @@ class IDWLayer {
         ...features.map((f) => parseFloat(f.getProperties()[propertyName]))
       );
 
-    this.interpolatedLayer = new ImageLayer({
+    this.olLayer = new ImageLayer({
       // @ts-ignore
       name: this.layerInfo.uuid,
       title: this.layerInfo.title,
@@ -111,7 +107,7 @@ class IDWLayer {
   maskLayer() {
     const clipLayer = this.clipLayer;
     if (clipLayer) {
-      this.interpolatedLayer.on("postrender", function (evt) {
+      this.olLayer.on("postrender", function (evt) {
         const ctx: any = evt.context;
         const vectorContext = getVectorContext(evt);
         ctx.globalCompositeOperation = "destination-in";
