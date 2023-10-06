@@ -9,7 +9,7 @@ import StylingUtils from "./styling/StylingUtils";
 import GeoJSON from "ol/format/GeoJSON";
 import {WKT} from "ol/format";
 
-interface IOverLayVectorInfo {
+export interface IOverLayVectorInfo {
     uuid: string  // use mapVM.generateUUID()
     title: string
     style: IFeatureStyle

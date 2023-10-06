@@ -521,6 +521,11 @@ class MapVM {
         if (layerId) return this.daLayers[layerId];
         return undefined;
     }
+    getDALayerByTitle(title: string): any{
+        const uuid = Object.keys(this.daLayers).find((uuid: string)=>
+            (this.daLayers[uuid].getLayerTitle().toLowerCase() === title.toLowerCase()))
+        return this.getDALayer(uuid)
+    }
 
     showSnackbar(msg: string, duration: number = 6000) {
         this._domRef?.snackBarRef?.current?.show(msg, undefined, duration);
