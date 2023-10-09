@@ -11,6 +11,7 @@ import AttributeGridToolbar, { IToolbarButton } from "./AttributeGridToolbar";
 import DAFullScreenDialog from "../../ol-map/components/common/DAFullScreenDialog";
 import { RefObject } from "react";
 import PivotTable from "./PivotTable";
+import {WKT} from "ol/format";
 
 const zoomBtn = require("../../static/img/search.png");
 const clearBtn = require("../../static/img/selection_delete.png");
@@ -141,11 +142,11 @@ class AttributeGrid extends React.PureComponent<
 
   getSelectedRowIndex() {
     // console.log(this.clGrid.current.getselectedrowindex())
-    return this.jqxGridRef?.current?.getselectedrowindex();
+    return this.jqxGridRef?.current?.getselectedrowindex() || 0;
   }
 
   getSelectedRowData() {
-    const rowIndex = this.getSelectedRowIndex() || -1;
+    const rowIndex = this.getSelectedRowIndex();
     return this.jqxGridRef.current?.getrowdata(rowIndex);
   }
 
@@ -183,7 +184,8 @@ class AttributeGrid extends React.PureComponent<
 
   handleRowSelect() {
     const row = this.getSelectedRowData();
-    if (!row["geom"]) {
+    const uuid = this.props.mapVM.getLayerOfInterest()
+    if (!row["geom"] && this.props.mapVM.isDALayerExists(uuid)) {
       const pkVal = this.getSelectedRowPKValue();
       this.props.mapVM
         .getApi()
@@ -196,7 +198,11 @@ class AttributeGrid extends React.PureComponent<
           row["geom"] = payload;
           this.updateRow(row);
         });
-    } else {
+    }else if(this.props.mapVM.isOverlayLayerExist(uuid)) {
+
+      const wkt = new WKT().writeGeometry(row["geometry"])
+      this.props.mapVM.selectionLayer.addWKT2Selection(wkt);
+    }else {
       this.props.mapVM.selectionLayer.addWKT2Selection(row["geom"]);
     }
   }

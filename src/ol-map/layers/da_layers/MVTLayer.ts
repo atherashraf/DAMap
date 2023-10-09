@@ -2,10 +2,10 @@ import MVT from "ol/format/MVT";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import AbstractDALayer from "./AbstractDALayer";
-import MapApi, { MapAPIs } from "../utils/MapApi";
+import MapApi, { MapAPIs } from "../../utils/MapApi";
 import TileGrid from "ol/tilegrid/TileGrid";
 import { get as getProjection } from "ol/proj.js";
-import { formatYmdDate } from "../components/controls/TimeSliderControl";
+import { formatYmdDate } from "../../components/controls/TimeSliderControl";
 
 /*****
  *  url format for MVT

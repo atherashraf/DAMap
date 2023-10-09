@@ -5,7 +5,7 @@ import "./LayerSwitcher.css";
 import { Group } from "ol/layer";
 import LayerSwitcher from "ol-ext/control/LayerSwitcher";
 import { useEffect } from "react";
-import LayerMenu, { IContextMenu } from "./LayerMenu";
+import ContextMenu, { IContextMenu } from "./ContextMenu";
 
 interface LayerSwitcherProps {
   mapVM: MapVM;
@@ -128,7 +128,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
           style={{ width: "auto", height: "auto" }}
         />
       </Paper>
-      <LayerMenu layer={menuLayer} contextMenu={contextMenu} mapVM={mapVM} />
+      <ContextMenu layer={menuLayer} contextMenu={contextMenu} mapVM={mapVM} />
     </React.Fragment>
   );
 };

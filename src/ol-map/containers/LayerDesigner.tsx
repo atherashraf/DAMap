@@ -3,7 +3,7 @@ import MapView from "./MapView";
 import { useParams } from "react-router-dom";
 import { RefObject, useRef } from "react";
 import TimeSlider, { IDateRange } from "../components/controls/TimeSlider";
-import MVTLayer from "../layers/MVTLayer";
+import MVTLayer from "../layers/da_layers/MVTLayer";
 
 const timeSliderRef: RefObject<TimeSlider> = React.createRef();
 const LayerDesigner = () => {

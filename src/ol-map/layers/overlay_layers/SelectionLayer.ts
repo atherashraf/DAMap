@@ -1,18 +1,20 @@
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import MapVM from "../models/MapVM";
+import MapVM from "../../models/MapVM";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
-import { IGeoJSON } from "../TypeDeclaration";
+import { IGeoJSON } from "../../TypeDeclaration";
 import GeoJSON from "ol/format/GeoJSON";
 import autoBind from "auto-bind";
 import { WKT } from "ol/format";
+import AbstractOverlayLayer from "./AbstractOverlayLayer";
 
-class SelectionLayer {
+class SelectionLayer extends AbstractOverlayLayer{
   //@ts-ignore
   olLayer: VectorLayer<VectorSource>;
   mapVM: MapVM;
   constructor(mapVM: MapVM) {
+    super()
     this.mapVM = mapVM;
     autoBind(this);
   }
@@ -103,6 +105,10 @@ class SelectionLayer {
       });
     }
     return selStyle;
+  }
+  getFeatures() {
+    super.getFeatures();
+    return this.getSource()?.getFeatures();
   }
 
   zoomToSelection() {

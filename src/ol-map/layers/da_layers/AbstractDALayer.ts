@@ -1,15 +1,15 @@
-import MapVM from "../models/MapVM";
+import MapVM from "../../models/MapVM";
 import VectorLayer from "ol/layer/Vector";
 import {Style} from "ol/style";
 import autoBind from "auto-bind";
-import {MapAPIs} from "../utils/MapApi";
+import {MapAPIs} from "../../utils/MapApi";
 import {Feature} from "ol";
 import VectorTileLayer from "ol/layer/VectorTile";
-import {IFeatureStyle, ILayerInfo} from "../TypeDeclaration";
+import {IFeatureStyle, ILayerInfo} from "../../TypeDeclaration";
 import TileLayer from "ol/layer/Tile";
 import ImageLayer from "ol/layer/Image";
-import SLDStyleParser from "./styling/SLDStyleParser";
-import StylingUtils from "./styling/StylingUtils";
+import SLDStyleParser from "../styling/SLDStyleParser";
+import StylingUtils from "../styling/StylingUtils";
 
 class AbstractDALayer {
     dataSource: any;

@@ -11,7 +11,6 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-
     "build": "npm run clean && npm run build:esm && npm run copy-files",
     "clean": "rm -rf ./dist",
     "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.jpg src/**/*.png dist/esm",

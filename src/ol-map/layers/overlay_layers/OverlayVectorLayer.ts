@@ -1,39 +1,44 @@
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import MapVM from "../models/MapVM";
+import MapVM from "../../models/MapVM";
 import autoBind from "auto-bind";
 import {Style} from "ol/style";
-import {IFeatureStyle, IGeoJSON} from "../TypeDeclaration";
+import {IFeatureStyle, IGeoJSON} from "../../TypeDeclaration";
 import {Feature} from "ol";
-import StylingUtils from "./styling/StylingUtils";
+import StylingUtils from "../styling/StylingUtils";
 import GeoJSON from "ol/format/GeoJSON";
 import {WKT} from "ol/format";
+import AbstractOverlayLayer from "./AbstractOverlayLayer";
 
 export interface IOverLayVectorInfo {
     uuid: string  // use mapVM.generateUUID()
     title: string
     style: IFeatureStyle
+    geomType?: "Polygon" | "LineString" | "Point"
 }
 
-class OverlayVectorLayer {
+class OverlayVectorLayer extends AbstractOverlayLayer {
     olLayer: VectorLayer<VectorSource>;
     mapVM: MapVM;
     layerInfo: IOverLayVectorInfo
 
     //@ts-ignore
     constructor(info: IOverLayVectorInfo, mapVM: MapVM) {
+        super()
         this.mapVM = mapVM;
         this.layerInfo = info
         autoBind(this);
         this.olLayer = this.createLayer();
         this.mapVM.addOverlayLayer(this);
+        StylingUtils.addLegendGraphic(this.olLayer, this.layerInfo.style, this.getGeometryType())
     }
 
     createLayer() {
         // const title = title;
         return new VectorLayer({
             // @ts-ignore
-            title: this.title,
+            name: this.layerInfo.uuid,
+            title: this.layerInfo.title,
             displayInLayerSwitcher: true,
             source: new VectorSource(),
             //@ts-ignore
@@ -41,6 +46,11 @@ class OverlayVectorLayer {
             zIndex: 1000,
         });
 
+    }
+
+    getFeatures() {
+        super.getFeatures();
+        return this.getSource()?.getFeatures() || []
     }
 
     addGeojsonFeature(geojson: IGeoJSON, clearPreviousSelection: boolean = true) {
@@ -52,6 +62,16 @@ class OverlayVectorLayer {
             featureProjection: "EPSG:3857",
         }).readFeatures(geojson);
         this.getSource().addFeatures(features);
+    }
+
+    getGeometryType(): string {
+        if (this.layerInfo.geomType) {
+            return this.layerInfo.geomType
+        } else {
+            const features = this.getFeatures()
+            // @ts-ignore
+            return features.length > 0 ? features[0]?.getGeometry()?.getType().toString() : "Polygon";
+        }
     }
 
     addWKTFeature(wkt: string, clearPreviousSelection: boolean = true) {
@@ -86,6 +106,19 @@ class OverlayVectorLayer {
 
     getOlLayer(): VectorLayer<VectorSource> {
         return this.olLayer;
+    }
+
+    getFeaturesById() {
+        super.getFeaturesById();
+    }
+
+    toGeoJson() {
+        const geojsonFormat = new GeoJSON();
+        const features = this.getFeatures()
+        const geojsonObject = geojsonFormat.writeFeaturesObject(features, {
+            featureProjection: 'EPSG:3857', // Change the projection to match your needs
+        });
+        return geojsonObject
     }
 }
 

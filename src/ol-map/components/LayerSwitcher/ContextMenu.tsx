@@ -16,7 +16,7 @@ interface IProps {
     contextMenu?: IContextMenu;
 }
 
-const LayerMenu = (props: IProps) => {
+const ContextMenu = (props: IProps) => {
     const [open, setOpen] = React.useState(false);
     React.useEffect(() => {
         setOpen(Boolean(props.contextMenu));
@@ -92,4 +92,4 @@ const LayerMenu = (props: IProps) => {
     );
 };
 
-export default LayerMenu;
+export default ContextMenu;

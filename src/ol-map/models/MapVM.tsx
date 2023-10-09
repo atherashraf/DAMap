@@ -7,7 +7,7 @@ import View from "ol/View";
 import {defaults as defaultControls, FullScreen} from "ol/control";
 import BaseLayers from "../layers/BaseLayers";
 import MapToolbar from "../components/MapToolbar";
-import MVTLayer from "../layers/MVTLayer";
+import MVTLayer from "../layers/da_layers/MVTLayer";
 import MapApi, {MapAPIs} from "../utils/MapApi";
 import {RefObject} from "react";
 import {
@@ -25,24 +25,26 @@ import MapPanel from "../components/MapPanel";
 import Legend from "ol-ext/control/Legend";
 // @ts-ignore
 import ol_legend_Legend from "ol-ext/legend/Legend";
-import RasterTileLayer from "../layers/RasterTileLayer";
-import AbstractDALayer from "../layers/AbstractDALayer";
+import RasterTileLayer from "../layers/da_layers/RasterTileLayer";
+import AbstractDALayer from "../layers/da_layers/AbstractDALayer";
 import Draw from "ol/interaction/Draw";
 //@ts-ignore
 import MapControls from "../layers/MapControls";
 import AttributeGrid from "../../widgets/grid/AttributeGrid";
-import SelectionLayer from "../layers/SelectionLayer";
+import SelectionLayer from "../layers/overlay_layers/SelectionLayer";
 
 import LayerSwitcherPaper from "../components/LayerSwitcher/LayerSwitcherPaper";
 import autoBind from "auto-bind";
 import {Column, Row} from "../../widgets/grid/GridTypeDeclaration";
-import WeatherLayers, {weatherLayers} from "../layers/WeatherLayers";
+import WeatherLayers, {weatherLayers} from "../layers/overlay_layers/WeatherLayers";
 import DAMapLoading from "../components/common/DAMapLoading";
 import TimeSlider from "../components/controls/TimeSlider";
 import TimeSliderControl from "../components/controls/TimeSliderControl";
-import DAVectorLayer from "../layers/DAVectorLayer";
-import IDWLayer from "../layers/IDWLayer";
-import OverlayVectorLayer from "../layers/OverlayVectorLayer";
+import DAVectorLayer from "../layers/da_layers/DAVectorLayer";
+import IDWLayer from "../layers/overlay_layers/IDWLayer";
+import OverlayVectorLayer from "../layers/overlay_layers/OverlayVectorLayer";
+import {Feature} from "ol";
+import _ from "../utils/lodash";
 
 export interface IDALayers {
     [key: string]: AbstractDALayer;
@@ -447,6 +449,10 @@ class MapVM {
         return uuid in this.overlayLayers;
     }
 
+    isDALayerExists(uuid: string) {
+        return uuid in this.daLayers
+    }
+
     removeOverlayLayer(uuid: string) {
         if (uuid in this.overlayLayers) {
             const daLayer = this.overlayLayers[uuid];
@@ -521,8 +527,9 @@ class MapVM {
         if (layerId) return this.daLayers[layerId];
         return undefined;
     }
-    getDALayerByTitle(title: string): any{
-        const uuid = Object.keys(this.daLayers).find((uuid: string)=>
+
+    getDALayerByTitle(title: string): any {
+        const uuid = Object.keys(this.daLayers).find((uuid: string) =>
             (this.daLayers[uuid].getLayerTitle().toLowerCase() === title.toLowerCase()))
         return this.getDALayer(uuid)
     }
@@ -655,6 +662,7 @@ class MapVM {
     }
 
     openAttributeTable(tableHeight = 300) {
+
         const mapPanelRef = this.getMapPanelRef();
         const daGridRef = this.getAttributeTableRef();
         let open = mapPanelRef.current?.isBottomDrawerOpen();
@@ -672,27 +680,57 @@ class MapVM {
             // console.log("table height", tableHeight)
             mapPanelRef.current?.openBottomDrawer(tableHeight);
             if (uuid) {
-                this.getApi()
-                    .get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
-                    .then((payload) => {
-                        if (payload) {
-                            // const ptSrc: string = "http://127.0.0.1:8000/api/lbdc/crop_stats_pivotTable/070df2ba-ea05-11ed-8338-acde48001122/";
-                            this.createAttributeTable(
-                                payload.columns,
-                                payload.rows,
-                                payload.pkCols,
-                                tableHeight,
-                                daGridRef
-                            );
-                        } else {
+                if (this.isDALayerExists(uuid)) {
+                    this.getApi()
+                        .get(MapAPIs.DCH_LAYER_ATTRIBUTES, {uuid: uuid})
+                        .then((payload) => {
+                            if (payload) {
+                                this.createAttributeTable(
+                                    payload.columns,
+                                    payload.rows,
+                                    payload.pkCols,
+                                    tableHeight,
+                                    daGridRef
+                                );
+                            } else {
+                                mapPanelRef.current?.closeBottomDrawer();
+                                this.getSnackbarRef()?.current?.show("No attribute found");
+                            }
+                        })
+                        .catch(() => {
                             mapPanelRef.current?.closeBottomDrawer();
                             this.getSnackbarRef()?.current?.show("No attribute found");
+                        });
+                } else if (this.isOverlayLayerExist(uuid)) {
+                    const overlayLayer = this.getOverlayLayer(uuid);
+                    const features = overlayLayer.getFeatures()
+                    const columns: Column[] = []
+                    const rows: Row[] = []
+                    features?.forEach((feature: Feature, index) => {
+                        const id = feature.getId()
+                        const properties = feature.getProperties()
+                        if (index == 0) {
+                            Object.keys(properties).forEach((key) => {
+                                columns.push({
+                                    disablePadding: false,
+                                    id: key,
+                                    label: key,
+                                    type: _.checkPremitivesType(properties[key])
+                                })
+                            })
                         }
+                        // rows.push(_.cloneObjectWithoutKeys(properties, ["geometry"]))
+                        //@ts-ignore
+                        rows.push({...properties, rowId: parseFloat(id)})
                     })
-                    .catch(() => {
-                        mapPanelRef.current?.closeBottomDrawer();
-                        this.getSnackbarRef()?.current?.show("No attribute found");
-                    });
+                    this.createAttributeTable(
+                        columns,
+                        rows,
+                        ['id'],
+                        tableHeight,
+                        daGridRef
+                    );
+                }
             }
         } else {
             mapPanelRef.current?.closeBottomDrawer();

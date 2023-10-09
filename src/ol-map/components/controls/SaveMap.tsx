@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import MapVM from "../../models/MapVM";
 import MapApi, { MapAPIs } from "../../utils/MapApi";
-import { weatherLayers } from "../../layers/WeatherLayers";
+import { weatherLayers } from "../../layers/overlay_layers/WeatherLayers";
 
 interface IProps {
   mapVM: MapVM;

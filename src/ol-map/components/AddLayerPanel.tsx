@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import MapVM from "../models/MapVM";
 import { Button, FormControl } from "@mui/material";
-import { IWeatherLayer, weatherLayers } from "../layers/WeatherLayers";
+import { IWeatherLayer, weatherLayers } from "../layers/overlay_layers/WeatherLayers";
 import TypeAhead from "../../widgets/TypeAhead";
 
 interface AddLayerPanelProps {

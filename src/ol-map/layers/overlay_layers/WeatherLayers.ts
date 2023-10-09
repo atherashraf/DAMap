@@ -1,15 +1,15 @@
 import { Group, Tile, Vector } from "ol/layer";
 import XYZ from "ol/source/XYZ";
 import olLegendImage from "ol-ext/legend/Image";
-import clouds_new from "../static/img/legends/clouds_new.jpg";
-import precipition_new from "../static/img/legends/precipitation_new.jpg";
-import temp_new from "../static/img/legends/temp_new.jpg";
-import wind_new from "../static/img/legends/wind_new.jpg";
+import clouds_new from "../../static/img/legends/clouds_new.jpg";
+import precipition_new from "../../static/img/legends/precipitation_new.jpg";
+import temp_new from "../../static/img/legends/temp_new.jpg";
+import wind_new from "../../static/img/legends/wind_new.jpg";
 import GeoJSON from "ol/format/GeoJSON";
 import { Cluster } from "ol/source";
 import { Icon, Style } from "ol/style";
 import VectorSource from "ol/source/Vector";
-import MapVM from "../models/MapVM";
+import MapVM from "../../models/MapVM";
 import autoBind from "auto-bind";
 import ol_legend_Item from "ol-ext/legend/Item";
 

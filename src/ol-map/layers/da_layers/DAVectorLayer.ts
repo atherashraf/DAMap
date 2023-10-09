@@ -2,12 +2,12 @@ import AbstractDALayer from "./AbstractDALayer";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
-import {IGeoJSON} from "../TypeDeclaration";
-import MapApi, {MapAPIs} from "../utils/MapApi";
+import {IGeoJSON} from "../../TypeDeclaration";
+import MapApi, {MapAPIs} from "../../utils/MapApi";
 import pako from "pako";
 
 import {WKT} from "ol/format";
-import {formatYmdDate} from "../components/controls/TimeSliderControl";
+import {formatYmdDate} from "../../components/controls/TimeSliderControl";
 import {Feature} from "ol";
 
 class DAVectorLayer extends AbstractDALayer {
