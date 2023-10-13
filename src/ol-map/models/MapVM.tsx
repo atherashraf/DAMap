@@ -148,6 +148,24 @@ class MapVM {
         this.addLegendControlToMap();
         weatherLayerInfos.forEach((info) => this.addWeatherLayer(info));
     }
+    getBaseLayer(): any{
+        const layers = this.map.getLayers().getArray();
+        let currentBaseLayer = null;
+        layers.forEach(function (layer) {
+            if (layer.get('title') === "Base Layers" && layer.getVisible()) {
+                // If it's the layer group and it's visible, get the base layer within the group
+                //@ts-ignore
+                const subLayers = layer.getLayers().getArray();
+                subLayers.forEach(function (subLayer) {
+                    if (subLayer.getVisible()) {
+                        currentBaseLayer = subLayer;
+                    }
+                });
+            }
+
+        });
+        return currentBaseLayer
+    }
 
     addWeatherLayer(selectedWeatherOption: any) {
         const wLayers = new WeatherLayers(this);

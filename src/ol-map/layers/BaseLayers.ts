@@ -29,6 +29,7 @@ class BaseLayers {
   private mapVM: MapVM;
   //@ts-ignore
   private readonly layersSources: ILayerSources;
+  // private selectedBaseLayer: any
 
   constructor(mapVM: MapVM) {
     this.mapVM = mapVM;
@@ -45,8 +46,10 @@ class BaseLayers {
       if (baseLayerSources[key]?.title === title) {
         // console.log("base Layer", layers[])
         //@ts-ignore
-        layers[layers.length - 1]?.setVisible(true);
+        layers[layers.length - 1]?.setVisible(true)
+        // this.mapVM.getMap().setBaseLayer(layers[layers.length - 1]);
       }
+
     }
     const gLayer = new Group({
       //@ts-ignore

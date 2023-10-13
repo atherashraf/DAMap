@@ -9,6 +9,7 @@ import autoBind from "auto-bind";
 import {WKT} from "ol/format";
 import AbstractOverlayLayer from "./AbstractOverlayLayer";
 import {buffer} from "ol/extent";
+import StylingUtils from "../styling/StylingUtils";
 // import {getPointShapes} from "../../components/styling/vector/symbolizer/PointSymbolizer";
 
 class SelectionLayer extends AbstractOverlayLayer {
@@ -103,6 +104,7 @@ class SelectionLayer extends AbstractOverlayLayer {
                 //     src: "data:image/gif;base64," + btoa(flash_icon)
                 // })
             });
+            StylingUtils.flash(feature, this.mapVM)
         } else if (g_type.indexOf("LineString") !== -1) {
             selStyle = new Style({
                 stroke: new Stroke({
