@@ -126,7 +126,7 @@ class StylingUtils {
         );
         const img = ol_legend_Legend.getLegendImage({
           feature: undefined,
-          margin: 0,
+          margin: geomType === "Point" ? 5 : 0,
           // properties: undefined,
           size: toSize(iconSize),
           //@ts-ignore

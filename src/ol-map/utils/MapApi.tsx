@@ -208,7 +208,9 @@ export default class MapApi {
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     });
-    return await this.apiResponse(response, isJSON);
+    const res = await this.apiResponse(response, isJSON);
+    if (isJSON) return res && res.payload;
+    else return res;
   }
 
   async getHeaders(isJson: boolean = true) {

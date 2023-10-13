@@ -128,7 +128,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
           style={{ width: "auto", height: "auto" }}
         />
       </Paper>
-      <ContextMenu layer={menuLayer} contextMenu={contextMenu} mapVM={mapVM} />
+      <ContextMenu olLayer={menuLayer} contextMenu={contextMenu} mapVM={mapVM} />
     </React.Fragment>
   );
 };

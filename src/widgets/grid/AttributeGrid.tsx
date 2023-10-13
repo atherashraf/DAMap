@@ -13,8 +13,8 @@ import { RefObject } from "react";
 import PivotTable from "./PivotTable";
 import {WKT} from "ol/format";
 
-const zoomBtn = require("../../static/img/search.png");
-const clearBtn = require("../../static/img/selection_delete.png");
+const zoomBtn = require("../../static/img/zoom_icon.png");
+const clearBtn = require("../../static/img/clear_icon.png");
 const pivotBtn = require("../../static/img/pivot-table.png");
 
 interface IDataGridProps {

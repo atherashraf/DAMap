@@ -11,7 +11,7 @@ export interface IContextMenu {
 }
 
 interface IProps {
-    layer: any;
+    olLayer: any;
     mapVM: MapVM;
     contextMenu?: IContextMenu;
 }
@@ -25,14 +25,17 @@ const ContextMenu = (props: IProps) => {
         setOpen(false);
     };
     const menuItems = {
-        common: [{name: "Open Attribute Table", id: "table"}],
+        common: [
+            {name: "Open Attribute Table", id: "table"},
+            {name: "Zoom To Layer", id: "zoom"}
+        ],
         inEditor: [
             {name: "Open Layer Designer", id: "designer"},
             {name: "Download style", id: "downloadStyle"},
         ],
     };
     const handleClick = (option: string) => {
-        const uuid = props.layer.get("name");
+        const uuid = props.olLayer.get("name");
         switch (option) {
             case "designer":
                 props.mapVM.setLayerOfInterest(uuid);
@@ -43,6 +46,12 @@ const ContextMenu = (props: IProps) => {
                 );
                 drawerRef?.current?.openDrawer();
                 break;
+            case "zoom":
+                const extent = props.olLayer.getSource().getExtent()
+
+                extent ?  props.mapVM.zoomToExtent(extent):
+                    props.mapVM.showSnackbar("Layer extent is not available")
+                break
             case "table":
                 props.mapVM.setLayerOfInterest(uuid);
                 setTimeout(() => props?.mapVM?.openAttributeTable(), 1000);

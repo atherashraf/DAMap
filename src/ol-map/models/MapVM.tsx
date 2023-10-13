@@ -709,7 +709,7 @@ class MapVM {
                     features?.forEach((feature: Feature, index) => {
                         const id = feature.getId()
                         const properties = feature.getProperties()
-                        if (index == 0) {
+                        if (index === 0) {
                             Object.keys(properties).forEach((key) => {
                                 columns.push({
                                     disablePadding: false,

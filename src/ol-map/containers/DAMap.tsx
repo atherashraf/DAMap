@@ -24,6 +24,7 @@ const DAMap = (props: IProps) => {
             daLayer.updateTemporalData(date);
         }
     };
+    // @ts-ignore
     const addFloodLayer = () => {
         const mapVM = mapViewRef.current?.getMapVM()
         if (mapVM) {
@@ -44,9 +45,37 @@ const DAMap = (props: IProps) => {
                 }
             }
             const floodLayer = new OverlayVectorLayer(info, mapVM)
-            console.log(floodLayerData)
             floodLayer.addGeojsonFeature(floodLayerData.payload)
-            console.log(floodLayer.toGeoJson())
+        }
+    }
+    const addSettlementLayer=()=>{
+        const mapVM = mapViewRef.current?.getMapVM()
+        if (mapVM) {
+            const geojson = require("../layers/overlay_layers/test_data/flood_layer.json")
+            const url= "http://127.0.0.1:8888/api/ff/get_affected_population/";
+            mapVM.getApi().postFetch(url, geojson.payload, true).then((payload: any) => {
+                const info: IOverLayVectorInfo = {
+                    uuid: MapVM.generateUUID(),
+                    title: "settlement layer",
+                    geomType: "Point",
+                    style: {
+                        type: "single",
+                        style: {
+                            default: {
+                                "pointSize": 15,
+                                "pointShape": "circle",
+                                "strokeColor": "#000000",
+                                "strokeWidth": 3,
+                                "fillColor": "#d78544"
+                            }
+                        }
+                    }
+                }
+                const settlementLayer = new OverlayVectorLayer(info, mapVM)
+                // console.log(floodLayerData)
+                settlementLayer.addGeojsonFeature(payload)
+                // console.log(settlementLayer.toGeoJson())
+            });
         }
     }
     let slider: any;
@@ -66,7 +95,7 @@ const DAMap = (props: IProps) => {
                 slider && clearInterval(interval);
             }
         });
-        setTimeout(() => addFloodLayer(), 10000)
+        setTimeout(() => addSettlementLayer(), 10000)
     }, []);
     return (
         <div style={{width: "100%", height: "calc(100% - 30px)"}}>
