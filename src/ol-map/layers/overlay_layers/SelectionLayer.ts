@@ -136,12 +136,13 @@ class SelectionLayer extends AbstractOverlayLayer {
         if (this.getSource()?.getFeatures()?.length > 0) {
             let extent = this.getSource()?.getExtent();
             if (extent) {
-                const width = extent[2] - extent[0]
-                const height: number = extent[3] - extent[1]
-                if(width==0 || height==0){
-                    extent = buffer(extent, 2000)
-                }
-                console.log("extent", extent)
+                // const width = extent[2] - extent[0]
+                // const height: number = extent[3] - extent[1]
+                // if(width==0 || height==0){
+                //     extent = buffer(extent, 2000)
+                // }
+                extent = buffer(extent, 2000)
+                // console.log("extent", extent)
                 extent && this.mapVM.zoomToExtent(extent);
             }
         } else {

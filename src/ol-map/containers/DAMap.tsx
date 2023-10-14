@@ -4,8 +4,7 @@ import MapView from "./MapView";
 import {RefObject, useRef} from "react";
 import TimeSlider, {IDateRange} from "../components/controls/TimeSlider";
 import MVTLayer from "../layers/da_layers/MVTLayer";
-import OverlayVectorLayer, {IOverLayVectorInfo} from "ol-map/layers/overlay_layers/OverlayVectorLayer";
-import MapVM from "../models/MapVM";
+// import TestLayers from "../layers/TestLayers";
 
 interface IProps {
     isEditor?: boolean;
@@ -24,60 +23,8 @@ const DAMap = (props: IProps) => {
             daLayer.updateTemporalData(date);
         }
     };
-    // @ts-ignore
-    const addFloodLayer = () => {
-        const mapVM = mapViewRef.current?.getMapVM()
-        if (mapVM) {
-            const floodLayerData = require("../layers/overlay_layers/test_data/flood_layer.json")
 
-            const info: IOverLayVectorInfo = {
-                uuid: MapVM.generateUUID(),
-                title: "flood layer",
-                style: {
-                    type: "single",
-                    style: {
-                        default: {
-                            strokeColor: "#111160",
-                            strokeWidth: 2,
-                            fillColor: "#2e2e9422"
-                        }
-                    }
-                }
-            }
-            const floodLayer = new OverlayVectorLayer(info, mapVM)
-            floodLayer.addGeojsonFeature(floodLayerData.payload)
-        }
-    }
-    const addSettlementLayer=()=>{
-        const mapVM = mapViewRef.current?.getMapVM()
-        if (mapVM) {
-            const geojson = require("../layers/overlay_layers/test_data/flood_layer.json")
-            const url= "http://127.0.0.1:8888/api/ff/get_affected_population/";
-            mapVM.getApi().postFetch(url, geojson.payload, true).then((payload: any) => {
-                const info: IOverLayVectorInfo = {
-                    uuid: MapVM.generateUUID(),
-                    title: "settlement layer",
-                    geomType: "Point",
-                    style: {
-                        type: "single",
-                        style: {
-                            default: {
-                                "pointSize": 15,
-                                "pointShape": "circle",
-                                "strokeColor": "#000000",
-                                "strokeWidth": 3,
-                                "fillColor": "#d78544"
-                            }
-                        }
-                    }
-                }
-                const settlementLayer = new OverlayVectorLayer(info, mapVM)
-                // console.log(floodLayerData)
-                settlementLayer.addGeojsonFeature(payload)
-                // console.log(settlementLayer.toGeoJson())
-            });
-        }
-    }
+
     let slider: any;
     React.useEffect(() => {
         const interval = setInterval(() => {
@@ -95,7 +42,9 @@ const DAMap = (props: IProps) => {
                 slider && clearInterval(interval);
             }
         });
-        setTimeout(() => addSettlementLayer(), 10000)
+
+        // @ts-ignore
+        // setTimeout(() => TestLayers.addSettlementLayer(mapViewRef.current?.getMapVM()), 10000)
     }, []);
     return (
         <div style={{width: "100%", height: "calc(100% - 30px)"}}>
