@@ -10,6 +10,8 @@ import GeoJSON from "ol/format/GeoJSON";
 import {WKT} from "ol/format";
 import AbstractOverlayLayer from "./AbstractOverlayLayer";
 
+// import _ from "../../utils/lodash";
+
 export interface IOverLayVectorInfo {
     uuid: string  // use mapVM.generateUUID()
     title: string
@@ -117,11 +119,34 @@ class OverlayVectorLayer extends AbstractOverlayLayer {
     toGeoJson() {
         const geojsonFormat = new GeoJSON();
         const features = this.getFeatures()
-        const geojsonObject = geojsonFormat.writeFeaturesObject(features, {
+        return geojsonFormat.writeFeaturesObject(features, {
             featureProjection: 'EPSG:3857', // Change the projection to match your needs
         });
-        return geojsonObject
     }
+
+    // openAttributeTable(){
+    //     const features = this.getFeatures()
+    //     const columns: Column[] = []
+    //     const rows: Row[] = []
+    //     features?.forEach((feature: Feature, index) => {
+    //         const id = feature.getId()
+    //         const properties = feature.getProperties()
+    //         if (index === 0) {
+    //             Object.keys(properties).forEach((key) => {
+    //                 columns.push({
+    //                     disablePadding: false,
+    //                     id: key,
+    //                     label: key,
+    //                     type: _.checkPremitivesType(properties[key])
+    //                 })
+    //             })
+    //         }
+    //         // rows.push(_.cloneObjectWithoutKeys(properties, ["geometry"]))
+    //         //@ts-ignore
+    //         rows.push({...properties, rowId: parseFloat(id)})
+    //     })
+    //     this.createAttributeTable(columns, rows, ['id'], tableHeight, daGridRef);
+    // }
 }
 
 export default OverlayVectorLayer;

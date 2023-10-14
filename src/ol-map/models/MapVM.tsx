@@ -148,7 +148,8 @@ class MapVM {
         this.addLegendControlToMap();
         weatherLayerInfos.forEach((info) => this.addWeatherLayer(info));
     }
-    getBaseLayer(): any{
+
+    getBaseLayer(): any {
         const layers = this.map.getLayers().getArray();
         let currentBaseLayer = null;
         layers.forEach(function (layer) {
@@ -512,7 +513,7 @@ class MapVM {
                 payload.zIndex = index;
                 if (style) payload.style = style;
                 if (zoomRange) payload.zoomRange = zoomRange;
-                let daLayer: AbstractDALayer | null = null;
+                let daLayer: AbstractDALayer | null;
                 //@ts-ignore
                 this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`);
                 if (payload?.dataModel === "V") {
@@ -741,13 +742,7 @@ class MapVM {
                         //@ts-ignore
                         rows.push({...properties, rowId: parseFloat(id)})
                     })
-                    this.createAttributeTable(
-                        columns,
-                        rows,
-                        ['id'],
-                        tableHeight,
-                        daGridRef
-                    );
+                    this.createAttributeTable(columns, rows, ['id'], tableHeight, daGridRef);
                 }
             }
         } else {

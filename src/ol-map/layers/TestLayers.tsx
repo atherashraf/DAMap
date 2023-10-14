@@ -53,6 +53,9 @@ class TestLayers{
                 const settlementLayer = new OverlayVectorLayer(info, mapVM)
                 // console.log(floodLayerData)
                 settlementLayer.addGeojsonFeature(payload)
+                mapVM.setLayerOfInterest(info.uuid);
+                setTimeout(() => mapVM?.openAttributeTable(), 1000);
+
                 // console.log(settlementLayer.toGeoJson())
             });
         }

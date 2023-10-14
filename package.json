@@ -1,12 +1,12 @@
 {
   "name": "damap",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "private": false,
   "author": "Ather Ashraf",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
-  "description": "",
+  "description": "Digital Arz Maps",
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",
