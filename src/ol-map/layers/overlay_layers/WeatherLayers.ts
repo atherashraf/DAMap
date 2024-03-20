@@ -206,7 +206,9 @@ class WeatherLayers {
         featureProjection: me.mapVM.getMap().getView().getProjection(),
       }),
     });
+
     let clusterSource = new Cluster({
+      // @ts-ignore
       source: vectorSource,
       distance: 60,
     });

@@ -65,6 +65,7 @@ class OverlayVectorLayer extends AbstractOverlayLayer {
             dataProjection: "EPSG:4326",
             featureProjection: "EPSG:3857",
         }).readFeatures(geojson);
+        // @ts-ignore
         this.getSource().addFeatures(features);
     }
 

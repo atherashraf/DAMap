@@ -62,6 +62,7 @@ class IDWLayer extends AbstractOverlayLayer {
     }
 
     createVectorSource(data: IGeoJSON) {
+        //@ts-ignore
         this.vectorSource = new VectorSource({
             features: new GeoJSON({
                 featureProjection: "EPSG:3857",
@@ -102,6 +103,7 @@ class IDWLayer extends AbstractOverlayLayer {
     createClipLayer(aoi: IGeoJSON | undefined) {
         this.clipLayer = new VectorLayer({
             style: null,
+            //@ts-ignore
             source: new VectorSource({
                 features: new GeoJSON({
                     featureProjection: "EPSG:3857",
