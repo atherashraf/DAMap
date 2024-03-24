@@ -45,6 +45,7 @@ import IDWLayer from "../layers/overlay_layers/IDWLayer";
 import OverlayVectorLayer from "../layers/overlay_layers/OverlayVectorLayer";
 import {Feature} from "ol";
 import _ from "../utils/lodash";
+import XYZLayer, {IXYZLayerInfo} from "../layers/overlay_layers/XYZLayer";
 
 export interface IDALayers {
     [key: string]: AbstractDALayer;
@@ -53,12 +54,16 @@ export interface IDALayers {
 interface IOverlays {
     [key: string]: OverlayVectorLayer | IDWLayer | SelectionLayer;
 }
+interface IXYZLayers {
+    [key: string]: XYZLayer
+}
 
 class MapVM {
     // @ts-ignore
     private map: Map;
     daLayers: IDALayers = {};
     overlayLayers: IOverlays = {};
+    xyzLayers:IXYZLayers ={}
     private _domRef: IDomRef;
     private _layerOfInterest: string | null = null;
     private _daLayerAddedEvent = new Event("DALayerAdded");
@@ -145,7 +150,7 @@ class MapVM {
         this.addSidebarController();
         this.isInit = true;
         this.selectionLayer = new SelectionLayer(this);
-        this.addLegendControlToMap();
+        // this.addLegendControlToMap();
         weatherLayerInfos.forEach((info) => this.addWeatherLayer(info));
     }
 
@@ -274,6 +279,7 @@ class MapVM {
     }
 
     isMapEditor(): boolean {
+        console.log("is Editor", this.mapInfo?.isEditor)
         // @ts-ignore
         return this.mapInfo?.isEditor;
     }
@@ -437,6 +443,14 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
+    addXYZLayer(layerInfo: IXYZLayerInfo){
+        const xyzLayer = new XYZLayer(layerInfo, this)
+        const key =  xyzLayer.olLayer.get("name")
+        if (!(key in this.xyzLayers)) {
+            this.xyzLayers[key] = xyzLayer;
+            this.map.addLayer(xyzLayer.olLayer);
+        }
+    }
     addOverlayLayer(overlayLayer: IDWLayer | OverlayVectorLayer | SelectionLayer) {
         // if (title) {
         //   layer.set("title", title);

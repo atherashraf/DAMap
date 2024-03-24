@@ -17,6 +17,8 @@ export const MapAPIs = Object.freeze({
   DCH_SAVE_SLD: "api/dch/upload_sld_style/{uuid}",
   DCH_GET_STYLE: "api/dch/get_style/{uuid}/{map_uuid}/",
   DCH_LAYER_FIELDS: "api/dch/layer_fields/{uuid}",
+  DCH_GEE_LAYER: "api/dch/gee_layer/{layer_type}",
+  DCH_GEE_LAYER_LEGEND: "api/dch/gee_layer_legend/{layer_type}",
   DCH_LAYER_ATTRIBUTES: "api/dch/layer_attributes/{uuid}",
   DCH_LAYER_FIELD_DISTINCT_VALUE:
     "api/dch/layer_field_distinct_values/{uuid}/{field_name}/{field_type}/",

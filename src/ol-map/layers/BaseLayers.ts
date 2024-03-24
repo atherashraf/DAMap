@@ -17,11 +17,11 @@ export const baseLayerSources = {
     visible: false,
     imagerySet: "AerialWithLabelsOnDemand",
   },
-  bingDark: {
-    title: "Bing Dark Canvas",
-    source: "bing",
-    imagerySet: "CanvasDark",
-  },
+  // bingDark: {
+  //   title: "Bing Dark Canvas",
+  //   source: "bing",
+  //   imagerySet: "CanvasDark",
+  // },
   // bingSurvey: {title: "Bing Ordnance Survey", source: "bing", visible: false, imagerySet: 'OrdnanceSurvey'},
 };
 

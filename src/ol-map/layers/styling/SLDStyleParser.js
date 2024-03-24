@@ -33,7 +33,7 @@ class SLDStyleParser {
       layer.setStyle(olStyle.output);
       layer.getSource().refresh();
       let legendPanel = this.objMvtLayer.mapVM.legendPanel;
-      this.getLegendAsImage(this.legendRenderer, legendPanel, layer);
+      legendPanel && this.getLegendAsImage(this.legendRenderer, legendPanel, layer);
     })();
   }
 

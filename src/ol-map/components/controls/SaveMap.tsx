@@ -22,7 +22,7 @@ interface IMapData {
 const SaveMap = (props: IProps) => {
   const handleClick = () => {
     // console.log("mapeInfo", props.mapVM.mapInfo)
-    const mapName = props.mapVM.mapInfo
+    const mapName = props.mapVM.mapInfo.uuid!="-1"
       ? props.mapVM.mapInfo.title
       : prompt("Please enter map name");
     const mapUUID = props.mapVM.mapInfo ? props.mapVM.mapInfo.uuid : "-1";

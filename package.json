@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.1.13",
+  "version": "0.1.17",
   "private": false,
   "author": "Ather Ashraf",
   "main": "./dist/cjs/index.js",
@@ -70,7 +70,6 @@
     "geostyler-sld-parser": "^5.1.0",
     "highcharts": "^11.1.0",
     "highcharts-react-official": "^3.2.1",
-    "jquery": "^3.7.1",
     "jqwidgets-scripts": "^17.0.1",
     "ol": "^8.1.0",
     "ol-ext": "^4.0.11",

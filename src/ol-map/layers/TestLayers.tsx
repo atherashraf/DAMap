@@ -1,13 +1,19 @@
 import OverlayVectorLayer, {IOverLayVectorInfo} from "./overlay_layers/OverlayVectorLayer";
 import MapVM from "../models/MapVM";
-import MapApi from "../utils/MapApi";
+import MapApi, {MapAPIs} from "../utils/MapApi";
+import {IXYZLayerInfo} from "./overlay_layers/XYZLayer";
 
 
-class TestLayers{
-    static addFloodLayer  (mapVM: MapVM)  {
+class TestLayers {
+    static addFloodLayer(mapVM: MapVM) {
         if (mapVM) {
-            const floodLayerData = require("../layers/overlay_layers/test_data/flood_layer.json")
-
+            // const floodLayerData = require("../layers/overlay_layers/test_data/flood_layer.json")
+            const floodLayerData: any = {
+                "payload": {
+                    "type": "FeatureCollection",
+                    "features": []
+                }
+            }
             const info: IOverLayVectorInfo = {
                 uuid: MapVM.generateUUID(),
                 title: "flood layer",
@@ -26,10 +32,29 @@ class TestLayers{
             floodLayer.addGeojsonFeature(floodLayerData.payload)
         }
     }
-    static addSettlementLayer(mapVM: MapVM){
+
+    static addGEETemperatureLayer(mapVM: MapVM) {
+        mapVM.getApi().get(MapAPIs.DCH_GEE_LAYER, {layer_type: "temperature"}).then((payload) => {
+            console.log("payload", payload)
+            const layerInfo: IXYZLayerInfo = {
+                title: "GEE Temperature",
+                url: payload,
+                legendURL: MapApi.getURL(MapAPIs.DCH_GEE_LAYER_LEGEND, {layer_type: "temperature"})
+            }
+            mapVM.addXYZLayer(layerInfo)
+        })
+    }
+
+    static addSettlementLayer(mapVM: MapVM) {
         // const mapVM = mapViewRef.current?.getMapVM()
         if (mapVM) {
-            const geojson = require("../layers/overlay_layers/test_data/flood_layer.json")
+            // const geojson = require("../layers/overlay_layers/test_data/flood_layer.json")
+            const geojson: any = {
+                "payload": {
+                    "type": "FeatureCollection",
+                    "features": []
+                }
+            }
             const url = MapApi.getURL("/api/ff/get_affected_population/")
             // const url= "http://127.0.0.1:8887/api/ff/get_affected_population/";
             mapVM.getApi().postFetch(url, geojson.payload, true).then((payload: any) => {

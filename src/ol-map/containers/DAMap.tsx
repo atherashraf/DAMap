@@ -4,7 +4,6 @@ import MapView from "./MapView";
 import {RefObject, useRef} from "react";
 import TimeSlider, {IDateRange} from "../components/controls/TimeSlider";
 import MVTLayer from "../layers/da_layers/MVTLayer";
-import TestLayers from "../layers/TestLayers";
 
 interface IProps {
     isEditor?: boolean;
@@ -43,8 +42,6 @@ const DAMap = (props: IProps) => {
             }
         });
 
-        // @ts-ignore
-        setTimeout(() => TestLayers.addSettlementLayer(mapViewRef.current?.getMapVM()), 10000)
     }, []);
     return (
         <div style={{width: "100%", height: "calc(100% - 30px)"}}>
