@@ -5,7 +5,7 @@ import MapVM from "../../models/MapVM";
 export interface IXYZLayerInfo {
     title: string
     url: string
-    uuid? : string
+    uuid : string
     visible? : boolean
     opacity? : number
     legendURL?: string

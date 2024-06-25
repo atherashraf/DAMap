@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.1.17",
+  "version": "0.1.27",
   "private": false,
   "author": "Ather Ashraf",
   "main": "./dist/cjs/index.js",

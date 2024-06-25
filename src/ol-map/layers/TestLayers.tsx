@@ -37,11 +37,12 @@ class TestLayers {
         mapVM.getApi().get(MapAPIs.DCH_GEE_LAYER, {layer_type: "temperature"}).then((payload) => {
             console.log("payload", payload)
             const layerInfo: IXYZLayerInfo = {
+                uuid: mapVM.getMapUUID(),
                 title: "GEE Temperature",
                 url: payload,
                 legendURL: MapApi.getURL(MapAPIs.DCH_GEE_LAYER_LEGEND, {layer_type: "temperature"})
             }
-            mapVM.addXYZLayer(layerInfo)
+            mapVM.addGEELayer(layerInfo)
         })
     }
 

@@ -47,6 +47,7 @@ import {Feature} from "ol";
 import _ from "../utils/lodash";
 import XYZLayer, {IXYZLayerInfo} from "../layers/overlay_layers/XYZLayer";
 
+
 export interface IDALayers {
     [key: string]: AbstractDALayer;
 }
@@ -54,6 +55,7 @@ export interface IDALayers {
 interface IOverlays {
     [key: string]: OverlayVectorLayer | IDWLayer | SelectionLayer;
 }
+
 interface IXYZLayers {
     [key: string]: XYZLayer
 }
@@ -63,7 +65,7 @@ class MapVM {
     private map: Map;
     daLayers: IDALayers = {};
     overlayLayers: IOverlays = {};
-    xyzLayers:IXYZLayers ={}
+    geeLayers: IXYZLayers = {}
     private _domRef: IDomRef;
     private _layerOfInterest: string | null = null;
     private _daLayerAddedEvent = new Event("DALayerAdded");
@@ -279,7 +281,7 @@ class MapVM {
     }
 
     isMapEditor(): boolean {
-        console.log("is Editor", this.mapInfo?.isEditor)
+        // console.log("is Editor", this.mapInfo?.isEditor)
         // @ts-ignore
         return this.mapInfo?.isEditor;
     }
@@ -443,23 +445,42 @@ class MapVM {
     //     this.addOverlayLayer(vectorLayer, title)
     // }
     //
-    addXYZLayer(layerInfo: IXYZLayerInfo){
-        const xyzLayer = new XYZLayer(layerInfo, this)
-        const key =  xyzLayer.olLayer.get("name")
-        if (!(key in this.xyzLayers)) {
-            this.xyzLayers[key] = xyzLayer;
+    isLayerAdded(targetLayer) {
+        let layerFound = false;
+        targetLayer && this.getMap().getLayers().forEach(layer => {
+            if (layer === targetLayer) {
+                layerFound = true;
+            }
+        });
+        // if(!layerFound) targetLayer.dispose ? targetLayer.dispose() : null;
+        return layerFound;
+    };
+
+    isGEELayerExist(uuid): boolean {
+        let isExist = false;
+        isExist = uuid in this.geeLayers
+        isExist = isExist && this.isLayerAdded(this.geeLayers[uuid]?.olLayer)
+        // console.log("is layer in map", this.isLayerAdded(this.geeLayers[uuid]?.olLayer))
+        // if (isExist && !layerInMap) {
+        //     console.log("gee layer disposed", this.geeLayers[uuid]?.olLayer.dispose)
+        //     isExist = layerInMap
+        // }
+
+        return isExist;
+    }
+
+    addGEELayer(layerInfo: IXYZLayerInfo) {
+        if (!this.isGEELayerExist(layerInfo.uuid)) {
+            const xyzLayer = new XYZLayer(layerInfo, this);
+            this.geeLayers[layerInfo.uuid] = xyzLayer;
             this.map.addLayer(xyzLayer.olLayer);
+        } else {
+            this.getSnackbarRef()?.current?.show("Layer already exists");
         }
     }
+
     addOverlayLayer(overlayLayer: IDWLayer | OverlayVectorLayer | SelectionLayer) {
-        // if (title) {
-        //   layer.set("title", title);
-        // }
-        // if (!key) key = MapVM.generateUUID();
-        // layer.set("name", key);
-        // if (typeof layer?.setAttributions === "function") {
-        //   layer.setAttributions(`Digital Arz Layer ${layer.get("title")}`);
-        // }
+
         const layer = overlayLayer.olLayer
         const key = layer.get("name")
 
