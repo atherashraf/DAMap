@@ -1,6 +1,6 @@
 {
   "name": "damap",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "private": false,
   "author": "Ather Ashraf",
   "main": "./dist/cjs/index.js",
@@ -61,7 +61,6 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.11",
     "@mui/material": "^5.14.11",
-    "@mui/x-date-pickers": "^6.15.0",
     "@mui/x-tree-view": "^6.0.0-alpha.4",
     "auto-bind": "^5.0.1",
     "dayjs": "^1.11.10",
@@ -83,7 +82,6 @@
   "peerDependencies": {
     "react": ">=16",
     "react-dom": ">=16"
-
   },
   "devDependencies": {
     "@siedlerchr/types-ol-ext": "^3.2.3",

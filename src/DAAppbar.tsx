@@ -38,7 +38,7 @@ export default function DAAppBar(props: any) {
   };
   const handleLogin = () => {
     UserUtils.isLoggedIn().then((res) => {
-      // console.log("is logedin ")
+      console.log("is logedin ", res)
       if (!res) {
         setAuth(false);
         // snackbarRef?.current?.show("Login in process...")
