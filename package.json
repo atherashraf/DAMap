@@ -64,6 +64,7 @@
     "@mui/x-date-pickers": "^6.15.0",
     "@mui/x-tree-view": "^6.0.0-alpha.4",
     "auto-bind": "^5.0.1",
+    "core-js-pure": "^3.37.1",
     "dayjs": "^1.11.10",
     "geostyler-legend": "^4.0.0",
     "geostyler-openlayers-parser": "^4.2.1",
@@ -83,7 +84,6 @@
   "peerDependencies": {
     "react": ">=16",
     "react-dom": ">=16"
-
   },
   "devDependencies": {
     "@siedlerchr/types-ol-ext": "^3.2.3",
