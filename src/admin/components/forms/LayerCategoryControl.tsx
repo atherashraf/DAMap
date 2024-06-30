@@ -28,14 +28,14 @@ const LayerCategoryControl = (props: IProps) => {
     props.setLayerCategory(value);
     setSelectLayerCat(value);
   };
-  const updateLayerCategories = () => {
+  const updateLayerCategories = React.useCallback(() => {
     props.api.get(MapAPIs.DCH_LAYER_CATEGORIES).then((payload) => {
       setLayerCategories(payload);
     });
-  };
+  }, [props.api]);
   React.useEffect(() => {
     updateLayerCategories();
-  }, []);
+  }, [updateLayerCategories]);
   return (
     <FormControl variant="standard" fullWidth={true}>
       <Stack direction={"row"}>

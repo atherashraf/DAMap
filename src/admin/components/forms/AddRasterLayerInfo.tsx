@@ -57,7 +57,7 @@ const AddRasterLayerInfo = (props: IProps) => {
 
   const handleUpdatedToChange = (event: SelectChangeEvent) => {
     setRasterType(event.target.value);
-    if (event.target.value == "existing") {
+    if (event.target.value === "existing") {
       setRasterFilePath("");
     }
   };
@@ -73,8 +73,8 @@ const AddRasterLayerInfo = (props: IProps) => {
 
     const formData = new FormData();
     formData.append("title", layerTitle);
-    formData.append("isExisting", (rasterType == "existing").toString());
-    if (rasterType == "existing") {
+    formData.append("isExisting", (rasterType === "existing").toString());
+    if (rasterType === "existing") {
       formData.append("rasterFilePath", rasterFilePath);
     } else {
       // @ts-ignore

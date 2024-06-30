@@ -10,7 +10,7 @@ const IdentifyResult = (props: IdentifyResultProps) => {
   React.useEffect(() => {
     const elem = document.getElementById("div-identify-result") as HTMLElement;
     mapVM.identifyFeature(elem);
-  }, []);
+  }, [mapVM]);
   return (
     <React.Fragment>
       <div

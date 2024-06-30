@@ -12,38 +12,38 @@ import AddURLLayerInfo from "../components/forms/AddURLLayerInfo";
 
 const changeListRef = React.createRef<ChangeList>();
 const snackbarRef: RefObject<DASnackbar> = React.createRef<DASnackbar>();
-const dialogRef: RefObject<DAFullScreenDialog> =
-  React.createRef<DAFullScreenDialog>();
+const dialogRef: RefObject<DAFullScreenDialog> = React.createRef<DAFullScreenDialog>();
+
 const LayerInfo = () => {
   const [columns, setColumns] = React.useState<Column[]>([]);
   const [data, setData] = React.useState<Row[]>();
   const [actions, setActions] = React.useState<Action[]>([]);
-  const api = new MapApi(snackbarRef);
   const navigate = useNavigate();
 
-  const getTableData = () => {
+  const api = React.useMemo(() => new MapApi(snackbarRef), []);
+
+  const getTableData = React.useCallback(() => {
     api.get(MapAPIs.DCH_ALL_LAYER_INFO).then((payload) => {
       if (payload) {
         setData(payload.rows);
         setColumns(payload.columns);
       }
     });
-  };
-  React.useEffect(() => {
-    initActions();
-    getTableData();
-  }, []);
-  const getSelectedRowData = () => {
+  }, [api]);
+
+  const getSelectedRowData = React.useCallback(() => {
     const rowData = changeListRef.current?.getSelectedRowData();
     return rowData;
-  };
-  const getSelectedUUID = () => {
+  }, []);
+
+  const getSelectedUUID = React.useCallback(() => {
     const rowData = getSelectedRowData();
     if (rowData) {
       return rowData.uuid;
     }
-  };
-  const initActions = () => {
+  }, [getSelectedRowData]);
+
+  const initActions = React.useCallback(() => {
     const actions: Action[] = [
       {
         name: "View Layer Designer",
@@ -57,13 +57,12 @@ const LayerInfo = () => {
         action: () => {
           dialogRef.current?.handleClickOpen();
           dialogRef.current?.setContent(
-            "Add Raster Layer",
-            <AddRasterLayerInfo
-              dialogRef={dialogRef}
-              snackbarRef={snackbarRef}
-            />
+              "Add Raster Layer",
+              <AddRasterLayerInfo
+                  dialogRef={dialogRef}
+                  snackbarRef={snackbarRef}
+              />
           );
-          // alert("Adding LayerInfo....")
         },
       },
       {
@@ -71,11 +70,11 @@ const LayerInfo = () => {
         action: () => {
           dialogRef.current?.handleClickOpen();
           dialogRef.current?.setContent(
-            "Add Vector Layer",
-            <AddVectorLayerInfo
-              dialogRef={dialogRef}
-              snackbarRef={snackbarRef}
-            />
+              "Add Vector Layer",
+              <AddVectorLayerInfo
+                  dialogRef={dialogRef}
+                  snackbarRef={snackbarRef}
+              />
           );
         },
       },
@@ -84,8 +83,8 @@ const LayerInfo = () => {
         action: () => {
           dialogRef.current?.handleClickOpen();
           dialogRef.current?.setContent(
-            "Add Layer URL",
-            <AddURLLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef} />
+              "Add Layer URL",
+              <AddURLLayerInfo dialogRef={dialogRef} snackbarRef={snackbarRef} />
           );
         },
       },
@@ -105,19 +104,16 @@ const LayerInfo = () => {
       {
         name: "Delete layer Info",
         action: () => {
-          // console.log(changeListRef)
           const uuid = getSelectedUUID();
-          // console.log("uuid", uuid)
           if (uuid) {
             api
-              .get(MapAPIs.DCH_DELETE_LAYER_INFO, { uuid: uuid })
-              .then((payload) => {
-                if (payload) {
-                  window.location.reload();
-                  // getTableData();
-                  snackbarRef?.current?.show("Layer info deleted successfully");
-                }
-              });
+                .get(MapAPIs.DCH_DELETE_LAYER_INFO, { uuid: uuid })
+                .then((payload) => {
+                  if (payload) {
+                    window.location.reload();
+                    snackbarRef?.current?.show("Layer info deleted successfully");
+                  }
+                });
           } else {
             snackbarRef?.current?.show("Please select row to delete");
           }
@@ -130,42 +126,39 @@ const LayerInfo = () => {
           if (uuid) {
             const url = MapApi.getURL(MapAPIs.DCH_DOWNLOAD_SLD, { uuid: uuid });
             window.open(url);
-            // api.get(MapAPIs.DCH_DOWNLOAD_SLD, {uuid:uuid}).then((payload)=>{
-            //     if(payload){
-            //         window.location.reload();
-            //         // getTableData();
-            //         snackbarRef.current.show("Layer info deleted successfully")
-            //
-            //     }
-            // })
           }
         },
       },
     ];
     setActions(actions);
-  };
+  }, [getSelectedUUID, navigate, api, getSelectedRowData]);
+
+  React.useEffect(() => {
+    initActions();
+    getTableData();
+  }, [getTableData, initActions]);
 
   return (
-    <React.Fragment>
-      {columns.length > 0 ? (
-        //@ts-ignore
-        <ChangeList
-          ref={changeListRef}
-          columns={columns}
-          data={data || []}
-          tableHeight={"100%"}
-          tableWidth={"100%"}
-          modelName={"LayerInfo"}
-          actions={actions}
-          api={api}
-          pkColName={"uuid"}
-        />
-      ) : (
-        <React.Fragment />
-      )}
-      <DASnackbar ref={snackbarRef} />
-      <DAFullScreenDialog ref={dialogRef} />
-    </React.Fragment>
+      <React.Fragment>
+        {columns.length > 0 ? (
+            //@ts-ignore
+            <ChangeList
+                ref={changeListRef}
+                columns={columns}
+                data={data || []}
+                tableHeight={"100%"}
+                tableWidth={"100%"}
+                modelName={"LayerInfo"}
+                actions={actions}
+                api={api}
+                pkColName={"uuid"}
+            />
+        ) : (
+            <React.Fragment />
+        )}
+        <DASnackbar ref={snackbarRef} />
+        <DAFullScreenDialog ref={dialogRef} />
+      </React.Fragment>
   );
 };
 

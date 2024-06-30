@@ -18,15 +18,15 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
   const { mapVM } = props;
   const [isLSAdded, setLSAdded] = React.useState(false);
   // const legendSize = [60, 40];
-  let mouseCoordinates = { x: 0, y: 0 };
-  const mouseMoveHandler = (event: any) => {
-    mouseCoordinates = {
+  const mouseCoordinatesRef = React.useRef({ x: 0, y: 0 });
+  const mouseMoveHandler = React.useCallback((event: any) => {
+    mouseCoordinatesRef.current = {
       x: event.clientX,
       y: event.clientY,
     };
-  };
+  },[]);
 
-  const addLayerSwitcher = (target: HTMLElement) => {
+  const addLayerSwitcher = React.useCallback((target: HTMLElement) => {
     let switcher = new LayerSwitcher({
       target: target,
       //tipLabel: 'Legend', // Optional label for button
@@ -37,8 +37,8 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
       oninfo: function (l: any) {
         setMenuLayer(l);
         setContextMenu({
-          mouseX: mouseCoordinates.x,
-          mouseY: mouseCoordinates.y,
+          mouseX: mouseCoordinatesRef?.current?.x,
+          mouseY: mouseCoordinatesRef?.current?.y,
         });
       },
     });
@@ -76,7 +76,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
         const divElem = document.createElement("div");
         divElem.style.padding = "10px";
         divElem.addEventListener("click", (e: any) => {
-          const dialogRef = props.mapVM.getDialogBoxRef();
+          const dialogRef = mapVM.getDialogBoxRef();
           dialogRef?.current?.openDialog({
             title: "Legend",
             content: (
@@ -120,7 +120,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
       // document.getElementsByClassName('ol-layerswitcher-buttons')[0].append(e.li)
     });
     mapVM.getMap()?.addControl(switcher);
-  };
+  }, [mapVM,mouseCoordinatesRef]);
   useEffect(() => {
     window.addEventListener("mousedown", mouseMoveHandler);
     if (!isLSAdded) {
@@ -130,7 +130,7 @@ const LayerSwitcherPaper = (props: LayerSwitcherProps) => {
       addLayerSwitcher(elem);
       setLSAdded(true);
     }
-  }, []);
+  }, [addLayerSwitcher, isLSAdded, mouseMoveHandler]);
 
   return (
     <React.Fragment>

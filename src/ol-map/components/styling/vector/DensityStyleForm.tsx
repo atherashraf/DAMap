@@ -22,7 +22,7 @@ import {
 import LegendGrid from "../atoms/LegendGrid";
 import AddStyleButton from "../atoms/AddStyleButton";
 import ColorRamp from "../atoms/ColorRamp";
-import _ from "../../../utils/lodash";
+
 
 interface FieldInfo {
   name: string;
@@ -57,7 +57,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
   componentDidMount() {
     const currentStyle = this.props.mapVM.getDALayer(this.props.layerId)?.style;
     console.log(currentStyle);
-    if (currentStyle && currentStyle?.type == "density") {
+    if (currentStyle && currentStyle?.type === "density") {
       // const styleList = [{title: "default", style: currentStyle.default}]
       const styleList: IRule[] = [];
       currentStyle.style.rules?.forEach((rule) => {
@@ -99,7 +99,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
             const styleList: IRule[] = [];
             // const valueCount = payload.length
             payload.forEach((item: number, index: number) => {
-              if (index != 0) {
+              if (index !== 0) {
                 const title: string = `${Math.round(
                   payload[index - 1]
                 )} - ${Math.round(item)}`;
@@ -127,7 +127,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     // const style: DAGeomStyle = this.vectorStyleRef.current.getStyleParams()
     // const defaultRule: IRule[] = this.state.styleList.filter((item: IRule) => item.title == "default") || []
     const rules: IRule[] = this.state.styleList.filter(
-      (item: IRule) => item.title != "default"
+      (item: IRule) => item.title !== "default"
     );
     return {
       type: "density",
@@ -187,7 +187,7 @@ class DensityStyleForm extends BaseStyleForm<IProps, IState> {
     ];
     return (
       <React.Fragment>
-        {geomType.findIndex((a) => a.includes("Point")) != -1 && (
+        {geomType.findIndex((a) => a.includes("Point")) !== -1 && (
           <PointSymbolizer
             ref={this.pointSymbolizerRef}
             pointSize={

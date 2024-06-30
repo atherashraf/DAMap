@@ -7,11 +7,11 @@ export interface BaseStyleFormProps {
 }
 
 // @ts-ignore
-class BaseStyleForm<P = {}, S = {}, SS = any> extends React.PureComponent<
+abstract  class BaseStyleForm<P = {}, S = {}> extends React.PureComponent<
   BaseStyleFormProps,
   any
 > {
-  getFeatureStyle() {}
+  abstract getFeatureStyle(): void
 
   render() {
     return <React.Fragment></React.Fragment>;

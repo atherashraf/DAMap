@@ -47,7 +47,7 @@ export default function DAAppBar(props: any) {
         formData.append("password", "abcd@1234");
         MapApi.authenticate(formData).then((payload) => {
           if (payload) {
-            console.log("payload", payload);
+            // console.log("payload", payload);
             // setIsAuthenticated(true)
             UserUtils.saveUser(payload);
             setAuth(true);
