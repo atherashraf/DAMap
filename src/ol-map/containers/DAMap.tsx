@@ -1,8 +1,8 @@
 import * as React from "react";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MapView from "./MapView";
-import {RefObject, useRef} from "react";
-import TimeSlider, {IDateRange} from "../components/controls/TimeSlider";
+import { RefObject, useRef, useEffect } from "react";
+import TimeSlider, { IDateRange } from "../components/controls/TimeSlider";
 import MVTLayer from "../layers/da_layers/MVTLayer";
 
 interface IProps {
@@ -10,10 +10,12 @@ interface IProps {
 }
 
 const DAMap = (props: IProps) => {
-    const {mapId} = useParams();
+    const { mapId } = useParams();
     //@ts-ignore
     const mapViewRef: React.RefObject<MapView> = useRef();
-    const timeSliderRef: RefObject<TimeSlider> = React.createRef();
+    const timeSliderRef: RefObject<TimeSlider> = useRef(null);
+    const sliderRef = useRef<any>(null);
+
     const onDateChange = (date: Date) => {
         const uuid: string = "3d070b54566111eeaaaeacde48001122";
         // @ts-ignore
@@ -23,28 +25,29 @@ const DAMap = (props: IProps) => {
         }
     };
 
-
-    let slider: any;
-    React.useEffect(() => {
+    useEffect(() => {
         const interval = setInterval(() => {
-            if (mapViewRef && !slider) {
-                slider = mapViewRef?.current
-                    ?.getMapVM()
-                    ?.addTimeSliderControl(timeSliderRef, onDateChange);
-                const minDate = new Date();
-                minDate.setDate(minDate.getDate() - 10);
-                const s: IDateRange = {
-                    minDate: minDate,
-                    maxDate: new Date(),
-                };
-                setTimeout(() => timeSliderRef?.current?.setDateRange(s), 2000);
-                slider && clearInterval(interval);
+            if (mapViewRef.current && !sliderRef.current) {
+                const mapVM = mapViewRef.current.getMapVM();
+                if (mapVM) {
+                    sliderRef.current = mapVM.addTimeSliderControl(timeSliderRef, onDateChange);
+                    const minDate = new Date();
+                    minDate.setDate(minDate.getDate() - 10);
+                    const s: IDateRange = {
+                        minDate: minDate,
+                        maxDate: new Date(),
+                    };
+                    setTimeout(() => timeSliderRef?.current?.setDateRange(s), 2000);
+                    clearInterval(interval);
+                }
             }
-        });
+        }, 100);
 
-    }, []);
+        return () => clearInterval(interval); // Cleanup the interval on unmount
+    }, [timeSliderRef]);
+
     return (
-        <div style={{width: "100%", height: "calc(100% - 30px)"}}>
+        <div style={{ width: "100%", height: "calc(100% - 30px)" }}>
             {props.isEditor ? (
                 <MapView
                     ref={mapViewRef}
@@ -53,7 +56,7 @@ const DAMap = (props: IProps) => {
                     isEditor={props.isEditor}
                 />
             ) : (
-                <MapView ref={mapViewRef} uuid={mapId} isMap={true}/>
+                <MapView ref={mapViewRef} uuid={mapId} isMap={true} />
             )}
         </div>
     );

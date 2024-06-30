@@ -19,7 +19,7 @@ const AttributeTable = (props: IControlProps) => {
   ro.observe(document?.getElementById("bottom-drawer-div"));
   React.useEffect(() => {
     setTimeout(() => props.mapVM.setAttributeTableRef(daGridRef), 500);
-  }, []);
+  }, [props.mapVM]);
   const openAttributeTable = () => {
     props.mapVM.openAttributeTable();
   };

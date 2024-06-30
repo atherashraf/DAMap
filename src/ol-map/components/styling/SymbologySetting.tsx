@@ -19,7 +19,7 @@ const SymbologySetting = (props: SymbologySettingProps) => {
   };
   return (
     <Box sx={{ width: "100%", boxSizing: "border-box", p: 1 }}>
-      {daLayer?.layerInfo?.dataModel == "V" ? (
+      {daLayer?.layerInfo?.dataModel === "V" ? (
         <VectorStyling mapVM={props.mapVM} />
       ) : (
         <RasterStyling mapVM={props.mapVM} />

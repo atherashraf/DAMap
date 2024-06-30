@@ -1,8 +1,8 @@
 import MapApi from "../ol-map/utils/MapApi";
 
 export interface UserInfo {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
   updatedTime: number;
   userInfo: {
     email: string;
@@ -42,7 +42,7 @@ class UserUtils {
       if (userInfo) {
         const d: Date = new Date();
         const diff = Math.abs(d.getTime() - userInfo?.updatedTime);
-        return diff <= AccessExpireTime; // true if differnce is more than a min
+        return diff >= AccessExpireTime; // true if differnce is more than a min
       } else {
         return true;
       }
@@ -54,7 +54,8 @@ class UserUtils {
     const userInfo = this.getUser();
     if (userInfo) {
       if (this.isUpdateAccessRequired()) {
-        const r = await MapApi.getAccessToken(userInfo.refresh_token);
+        const r = await MapApi.getAccessToken(userInfo.refreshToken);
+
         if (r) {
           const u = Object.assign(userInfo, {
             access: r,
@@ -64,7 +65,8 @@ class UserUtils {
         }
         return r;
       } else {
-        return userInfo.access_token;
+
+        return userInfo.accessToken;
       }
     } else {
       return null;

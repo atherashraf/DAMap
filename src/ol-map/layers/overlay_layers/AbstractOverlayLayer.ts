@@ -1,8 +1,7 @@
 
 
 class AbstractOverlayLayer {
-    constructor() {
-    }
+
     getFeatures(){
 
     }

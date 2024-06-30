@@ -27,7 +27,7 @@ const PredefinedStyling = (props: IProps) => {
           setPredefinedList(p);
         }
       });
-  }, []);
+  }, [options, props.mapVM]);
 
   const handleClick = (
     //@ts-ignore

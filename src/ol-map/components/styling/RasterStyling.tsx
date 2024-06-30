@@ -25,7 +25,7 @@ const RasterStyling = (props: IRasterStylingProps) => {
     { name: "Min Max Stretch", val: "min-max" },
     { name: "Predefined Style", val: "predefined" },
   ];
-  const getRasterInfo = () => {
+  const getRasterInfo = React.useCallback(() => {
     props.mapVM
       .getApi()
       .get(MapAPIs.DCH_RASTER_DETAIL, { uuid: uuid })
@@ -34,12 +34,12 @@ const RasterStyling = (props: IRasterStylingProps) => {
           setRasterInfo(payload);
         }
       });
-  };
+  },[props.mapVM, uuid]);
   React.useEffect(() => {
     if (!rasterInfo) {
       getRasterInfo();
     }
-  }, []);
+  }, [getRasterInfo, rasterInfo]);
   const handleSelectType = (event: SelectChangeEvent) => {
     const styleType = event.target.value as string;
     setStyleType(styleType);

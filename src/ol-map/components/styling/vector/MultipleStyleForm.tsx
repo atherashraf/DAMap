@@ -132,15 +132,15 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
 
   updateStyleItem(index: number, style: IGeomStyle) {
     const data = this.state.styleList.map((item: IRule, i: number) =>
-      i == index ? Object.assign(item, { style: style }) : item
+      i === index ? Object.assign(item, { style: style }) : item
     );
     this.setState(() => ({ styleList: data }));
   }
 
   AddStyleItem() {
-    if (!this.state.selectedField || this.state.selectedField == "") {
+    if (!this.state.selectedField || this.state.selectedField === "") {
       this.props.mapVM.showSnackbar("Please select field");
-    } else if (!this.state.selectedValue || this.state.selectedValue == "") {
+    } else if (!this.state.selectedValue || this.state.selectedValue === "") {
       this.props.mapVM.showSnackbar("Please select value");
     } else {
       const index = this.state.styleList.findIndex(
@@ -171,7 +171,7 @@ class MultipleStyleForm extends BaseStyleForm<IProps, IState> {
   }
 
   AddAllStyleItem() {
-    if (!this.state.selectedField || this.state.selectedField == "") {
+    if (!this.state.selectedField || this.state.selectedField === "") {
       this.props.mapVM.showSnackbar("Please select field");
     } else {
       const styleItems: IRule[] = [];

@@ -55,7 +55,7 @@ export const LegendIcons = (props: SymbologyIconProps) => {
   // const {fillColor, strokeColor, strokeWidth} = style
   const getIcon = (): JSX.Element => {
     const gt =
-      props.geomType?.length == 1 ? props.geomType[0] : "GeometryCollection";
+      props.geomType?.length === 1 ? props.geomType[0] : "GeometryCollection";
 
     switch (gt) {
       case "Point":

@@ -25,7 +25,7 @@ interface IProps {
 
 const ShpFileUploader = (props: IProps) => {
   //@ts-ignore
-  const [files, setFiles] = React.useState<any[]>([]);
+  // const [files, setFiles] = React.useState<any[]>([]);
   const [rows, setRows] = React.useState<any[]>([]);
   const [selectedValue, setSelectedValues] = React.useState<string>("");
   const [disableUpload, setDisableUpload] = React.useState<any>();
@@ -67,7 +67,7 @@ const ShpFileUploader = (props: IProps) => {
       //@ts-ignore
       if (index === -1) rows.push(row);
     }
-    setFiles(files);
+    // setFiles(files);
     setRows(rows);
   };
   const handleSubmit = () => {
