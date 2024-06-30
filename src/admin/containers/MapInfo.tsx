@@ -16,8 +16,7 @@ const MapInfo = () => {
 
     const navigate = useNavigate();
     const getRowData = React.useCallback(() => {
-        const rowData = changeListRef.current?.getSelectedRowData();
-        return rowData;
+        return changeListRef.current?.getSelectedRowData();
     },[]);
     const getSelectedUUID = React.useCallback(() => {
         const rowData = getRowData();

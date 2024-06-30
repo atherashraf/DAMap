@@ -32,8 +32,7 @@ const LayerInfo = () => {
   }, [api]);
 
   const getSelectedRowData = React.useCallback(() => {
-    const rowData = changeListRef.current?.getSelectedRowData();
-    return rowData;
+    return changeListRef.current?.getSelectedRowData();
   }, []);
 
   const getSelectedUUID = React.useCallback(() => {
