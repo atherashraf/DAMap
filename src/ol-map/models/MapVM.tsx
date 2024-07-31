@@ -2,8 +2,8 @@ import "ol/ol.css";
 import "ol-ext/dist/ol-ext.css";
 import "../../static/css/da-ol.css";
 import * as React from "react";
-import Map from "ol/Map";
-import View from "ol/View";
+import Map from "ol/Map.js";
+import View from "ol/View.js";
 import {defaults as defaultControls, FullScreen} from "ol/control";
 import BaseLayers from "../layers/BaseLayers";
 import MapToolbar from "../components/MapToolbar";
@@ -541,37 +541,41 @@ class MapVM {
         const {uuid, style, zoomRange} = info;
         if (!(uuid in this.daLayers)) {
             this.getMapLoadingRef()?.current?.openIsLoading();
-            const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {
-                uuid: uuid,
-            });
-            if (payload) {
-                payload.zIndex = index;
-                if (style) payload.style = style;
-                if (zoomRange) payload.zoomRange = zoomRange;
-                let daLayer: AbstractDALayer | null;
-                //@ts-ignore
-                this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`);
-                if (payload?.dataModel === "V") {
-                    if (payload.format === "WFS") {
-                        daLayer = new DAVectorLayer(payload, this);
-                        this.daLayers[payload.uuid] = daLayer;
+            try {
+                const payload: ILayerInfo = await this.api.get(MapAPIs.DCH_LAYER_INFO, {
+                    uuid: uuid,
+                });
+                if (payload) {
+                    payload.zIndex = index;
+                    if (style) payload.style = style;
+                    if (zoomRange) payload.zoomRange = zoomRange;
+                    let daLayer: AbstractDALayer | null;
+                    //@ts-ignore
+                    this._domRef.snackBarRef.current.show(`Adding ${payload.title} Layer`);
+                    if (payload?.dataModel === "V") {
+                        if (payload.format === "WFS") {
+                            daLayer = new DAVectorLayer(payload, this);
+                            this.daLayers[payload.uuid] = daLayer;
+                        } else {
+                            daLayer = new MVTLayer(payload, this);
+                            this.daLayers[payload.uuid] = daLayer;
+                        }
                     } else {
-                        daLayer = new MVTLayer(payload, this);
+                        daLayer = new RasterTileLayer(payload, this);
                         this.daLayers[payload.uuid] = daLayer;
                     }
-                } else {
-                    daLayer = new RasterTileLayer(payload, this);
-                    this.daLayers[payload.uuid] = daLayer;
+                    const visible = info?.visible !== undefined ? info.visible : true;
+                    const opacity = info?.opacity !== undefined ? info.opacity : 1;
+                    if (daLayer) {
+                        const olLayer = daLayer?.getOlLayer();
+                        olLayer?.setVisible(visible);
+                        olLayer?.setOpacity(opacity);
+                        window.dispatchEvent(this._daLayerAddedEvent);
+                        setTimeout(() => olLayer.setZIndex(index), 3000);
+                    }
                 }
-                const visible = info?.visible !== undefined ? info.visible : true;
-                const opacity = info?.opacity !== undefined ? info.opacity : 1;
-                if (daLayer) {
-                    const olLayer = daLayer?.getOlLayer();
-                    olLayer?.setVisible(visible);
-                    olLayer?.setOpacity(opacity);
-                    window.dispatchEvent(this._daLayerAddedEvent);
-                    setTimeout(() => olLayer.setZIndex(index), 3000);
-                }
+            }catch(e){
+                console.error(e)
             }
             this.getMapLoadingRef()?.current?.closeIsLoading();
         }

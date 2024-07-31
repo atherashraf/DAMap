@@ -92,11 +92,12 @@ export const getPointSVG = (
 export const getPointShapes = (style: IGeomStyle): Style => {
   const svgElem = getPointSVG(style);
   const svg = renderToStaticMarkup(svgElem);
-  // console.log("svg", svg);
   return new Style({
     image: new Icon({
       src: "data:image/svg+xml;base64," + btoa(svg),
+      anchor: [0.5, 0.5]
     }),
+
   });
 };
 

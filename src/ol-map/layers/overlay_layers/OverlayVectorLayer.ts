@@ -33,7 +33,7 @@ class OverlayVectorLayer extends AbstractOverlayLayer {
         this.olLayer = this.createLayer();
         this.mapVM.addOverlayLayer(this);
         const gtype = this.getGeometryType()
-        console.log("geom type", gtype)
+        // console.log("geom type", gtype)
         StylingUtils.addLegendGraphic(this.olLayer, this.layerInfo.style, gtype)
     }
 
