@@ -33,6 +33,7 @@ class DAVectorLayer extends AbstractDALayer {
     }
 
     fetchFeatures() {
+        this.mapVM?.getMapLoadingRef()?.current?.openIsLoading()
         this.mapVM
             .getApi()
             .get(MapAPIs.DCH_LAYER_WFS, {
@@ -51,7 +52,11 @@ class DAVectorLayer extends AbstractDALayer {
                     const data = JSON.parse(unzippedData);
                     this.addGeojsonFeature(data);
                 }
-            });
+            }).catch((e) => {
+            console.error(e)
+        }).finally(()=>{
+            this.mapVM?.getMapLoadingRef()?.current?.closeIsLoading()
+        })
     }
 
     getSource() {

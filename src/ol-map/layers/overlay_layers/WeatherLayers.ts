@@ -95,8 +95,7 @@ class WeatherLayers {
             },
             source: new XYZ({
                 url: url,
-                // @ts-ignore
-                crossOrigion: "anonymous",
+                crossOrigin: 'anonymous',
             }),
             visible: true,
             opacity: 0.9,

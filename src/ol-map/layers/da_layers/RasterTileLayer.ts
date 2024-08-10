@@ -43,6 +43,7 @@ class RasterTileLayer extends AbstractDALayer {
       //     'apikey=873e70e2e69e4a36ae3f2c525f19425e'
       attributions: "Digital Arz Raster Tile Layer",
       url: `${url}{z}/{x}/{y}`,
+      crossOrigin: 'anonymous',
       // tileLoadFunction: (imageTile, src) => {
       //     console.log("src", src)
       //     // imageTile.getImage().src = src;

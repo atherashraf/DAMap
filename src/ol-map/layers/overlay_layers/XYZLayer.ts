@@ -32,8 +32,7 @@ class XYZLayer {
             name: this.uuid,
             source: new XYZ({
                 url: this.layerInfo.url,
-                // @ts-ignore
-                crossOrigion: "anonymous",
+                crossOrigin: "anonymous",
             }),
             visible: this.layerInfo.visible? this.layerInfo.visible: true,
             opacity: this.layerInfo.opacity? this.layerInfo.opacity : 1,

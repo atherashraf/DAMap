@@ -11,6 +11,7 @@ import {RefObject} from "react";
 import "jqwidgets-scripts/jqwidgets/styles/jqx.base.css";
 import "jqwidgets-scripts/jqwidgets/styles/jqx.web.css";
 import DAMapLoading from "../components/common/DAMapLoading";
+
 // import TestLayers from "../layers/TestLayers";
 
 interface MapVMProps {
@@ -60,14 +61,16 @@ class MapView extends React.PureComponent<MapVMProps, MapVMState> {
 
     componentDidMount() {
         const {props} = this;
-        if (this.props.isMap && this.props.uuid !== "-1") {
+        if (this.props.isMap && this.props.uuid && this.props.uuid !== "-1") {
             this.mapVM
                 ?.getApi()
-                ?.get(MapAPIs.DCH_MAP_INFO, {uuid: props.uuid})
+                ?.get(MapAPIs.DCH_MAP_INFO, {uuid: this.props.uuid as string})
                 .then((payload: IMapInfo) => {
-                    // console.log("mapInfo", payload)
-                    const mapInfo = Object.assign(payload, {isEditor: props.isEditor});
-                    if (!this.mapVM?.isInit) {
+                    let mapInfo: IMapInfo | null = null;
+                    if (payload) {
+                        mapInfo = Object.assign(payload, {isEditor: props.isEditor});
+                    }
+                    if (!this.mapVM?.isInit && mapInfo) {
                         this.mapVM?.initMap(mapInfo);
                     }
                     this.mapVM?.setTarget(this.mapDivId);

@@ -88,6 +88,7 @@ class BaseLayers {
       source: new XYZ({
         attributions: "Google Layer",
         url: "http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+        crossOrigin: 'anonymous',
         wrapX: true,
       }),
     });
