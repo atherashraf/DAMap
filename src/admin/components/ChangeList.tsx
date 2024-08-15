@@ -39,7 +39,7 @@ interface IChangeListState extends IGridProps {
 }
 
 class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
-  private daGrid = React.createRef<JqxGrid>();
+  private jqxGrid = React.createRef<JqxGrid>();
 
   private columns: any[] = [];
   private dataFields: any[] = [];
@@ -61,6 +61,10 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
       editable: false,
       isToolbarAdded: false,
     };
+  }
+
+  getJqxGrid(){
+    return this.jqxGrid
   }
 
   setTableStructure() {
@@ -136,7 +140,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
   }
 
   updateSource(data?: Row[]) {
-    this.daGrid.current!.setOptions({ source: this.getAdapter(data) });
+    this.jqxGrid.current!.setOptions({ source: this.getAdapter(data) });
   }
 
   componentDidCatch(error: any, errorInfo: any) {
@@ -161,7 +165,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
     return (
       <span style={{ display: "flex" }}>
         <ChangeListToolbar
-          daGrid={this.daGrid}
+          daGrid={this.jqxGrid}
           parent={this}
           buttons={buttons}
         />
@@ -218,12 +222,12 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
 
   getSelectedRowIndex() {
     // console.log(this.clGrid.current.getselectedrowindex())
-    return this.daGrid?.current?.getselectedrowindex();
+    return this.jqxGrid?.current?.getselectedrowindex();
   }
 
   getSelectedRowData(): Row {
-    const rowIndex = this.daGrid?.current?.getselectedrowindex();
-    return this.daGrid.current?.getrowdata(rowIndex || -1);
+    const rowIndex = this.jqxGrid?.current?.getselectedrowindex();
+    return this.jqxGrid.current?.getrowdata(rowIndex || -1);
   }
 
   startEditing() {
@@ -237,7 +241,7 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
     return (
       <React.Fragment>
         <JqxGrid
-          ref={this.daGrid}
+          ref={this.jqxGrid}
           theme={"ui-darkness"}
           width={this.state?.width}
           source={this.state?.source}
