@@ -63,8 +63,13 @@ class ChangeList extends React.PureComponent<ICLGridProps, IChangeListState> {
         };
     }
 
-    getJqxGrid(): React.RefObject<JqxGrid> {
+    public getJqxGridRef(): React.RefObject<JqxGrid> {
         return this.jqxGrid
+    }
+    public setFilterMode(mode: "default" | "excel" | undefined) {
+        if (this.jqxGrid.current) {
+            this.jqxGrid.current.setOptions({ "filtermode": mode });
+        }
     }
 
     setTableStructure() {
