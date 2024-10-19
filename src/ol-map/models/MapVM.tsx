@@ -66,6 +66,7 @@ class MapVM {
     daLayers: IDALayers = {};
     overlayLayers: IOverlays = {};
     geeLayers: IXYZLayers = {}
+    xyzLayer: IXYZLayers = {}
     private _domRef: IDomRef;
     private _layerOfInterest: string | null = null;
     private _daLayerAddedEvent = new Event("DALayerAdded");
