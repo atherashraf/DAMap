@@ -91,32 +91,47 @@
             return url;
         }
 
-        static getURL(api: string, params: any = null) {
-            let API_URL = process.env.REACT_APP_MAP_URL;
-            API_URL =
-                API_URL === ""
-                    ? window.location.protocol + "//" + window.location.host
-                    : API_URL;
-            //@ts-ignore
-            API_URL = API_URL?.slice(-1) === "/" ? API_URL?.slice(0, -1) : API_URL;
-            api = api[0] === "/" ? api.substring(1) : api;
-            let url = `${API_URL}/${api}`;
-            url = url.slice(-1) !== "/" ? url + "/" : url;
-            let getParamsCount = 0;
-            for (const key in params) {
-                if (url.includes(key)) {
-                    url = url.replace(`{${key}}`, params[key]);
-                } else {
-                    if (getParamsCount === 0) {
-                        url = `${url}?${key}=${params[key]}`;
-                    } else {
-                        url = `${url}&${key}=${params[key]}`;
-                    }
-                    getParamsCount++;
+        static getURL(api: string, params: Record<string, any> = {}) {
+            let API_URL = process.env.REACT_APP_MAP_URL || "";
+            let API_PORT = process.env.REACT_APP_MAP_PORT || "";
+            const hostname = window.location.hostname;
+
+            // ✅ Check if hostname is a DNS (not an IP)
+            const isDNS = !/^[0-9.]+$/.test(hostname); // True if hostname is not an IP address
+            // ✅ Set default URL if REACT_APP_MAP_URL is not set
+            if (!API_URL) {
+                API_URL = `${window.location.protocol}//${hostname}`;
+                if ((!isDNS || hostname === "localhost") && API_PORT) {
+                    API_URL += `:${API_PORT}`; // Add port only if it's an IP
                 }
             }
+
+            // ✅ Ensure API_URL does not end with a slash
+            API_URL = API_URL.endsWith("/") ? API_URL.slice(0, -1) : API_URL;
+            api = api.startsWith("/") ? api.substring(1) : api;
+
+            // ✅ Construct base URL
+            let url = `${API_URL}/${api}`;
+
+            // ✅ Append parameters
+            if (params && Object.keys(params).length > 0) {
+                let queryParams: string[] = [];
+                for (const key in params) {
+                    if (url.includes(`{${key}}`)) {
+                        url = url.replace(`{${key}}`, encodeURIComponent(params[key]));
+                    } else {
+                        queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
+                    }
+                }
+                if (queryParams.length > 0) {
+                    url += `?${queryParams.join("&")}`;
+                }
+            }
+
+            console.log("Generated URL:", url);
             return url;
         }
+
 
         static async getAccessToken(token: string) {
             try {
@@ -183,15 +198,31 @@
                     credentials: "same-origin",
                     headers: headers,
                 });
-                // console.log(response.text())
-                const res = await this.apiResponse(response, isJSON);
-                // console.log(response.)
-                if (isJSON) return res && res.payload;
-                else return res;
+
+                // ✅ Check if the response has content before parsing
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+
+                // ✅ Prevent parsing if response body is empty (204 No Content)
+                const contentType = response.headers.get("content-type");
+                if (!contentType || response.status === 204) {
+                    console.warn(`Warning: Empty response received for URL: ${url}`);
+                    return null;  // Return `null` instead of trying to parse
+                }
+
+                // ✅ Ensure it's JSON before parsing
+                const res = isJSON && contentType.includes("application/json")
+                    ? await response.json()
+                    : await response.text();
+
+                return isJSON ? res?.payload : res;
             } catch (e) {
-                console.log("error in map", e)
+                console.error("Error in fetch request:", e);
+                return null;  // Ensure the function always returns a value
             }
         }
+
 
         async post(apiKey: string, data: any, params: any = {}, isJSON = true) {
             try {

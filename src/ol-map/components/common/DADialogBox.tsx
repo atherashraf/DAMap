@@ -10,6 +10,8 @@ interface DialogData {
   title?: string;
   content: JSX.Element;
   actions?: JSX.Element;
+  isFullScreen?: boolean,
+  isFullWidth?: boolean
 }
 
 interface IState {
@@ -17,6 +19,8 @@ interface IState {
   title?: string;
   content: JSX.Element;
   actions?: JSX.Element;
+  isFullScreen?: boolean;
+  isFullWidth?: boolean
 }
 
 class DADialogBox extends React.PureComponent<IProps, IState> {
@@ -33,6 +37,8 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
     this.setState({
       open: false,
       content: <React.Fragment />,
+      isFullScreen: false,
+      isFullWidth: false
     });
   }
 
@@ -42,6 +48,8 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
       title: data.title,
       content: data.content,
       actions: data.actions,
+      isFullWidth: data.isFullWidth,
+      isFullScreen: data.isFullScreen
     });
   }
 
@@ -57,7 +65,8 @@ class DADialogBox extends React.PureComponent<IProps, IState> {
         {/*<Dialog scroll={"paper"} onClose={this.closeDialog} open={this.state.open}*/}
         {/*        PaperComponent={PaperComponent} maxWidth={'xl'}*/}
         {/*        aria-labelledby="draggable-dialog-title">*/}
-        <Dialog onClose={this.closeDialog} open={this.state.open}>
+        <Dialog onClose={this.closeDialog} open={this.state.open}
+                fullWidth={this.state.isFullWidth} fullScreen={this.state.isFullScreen}>
           {this.state.title && (
             <DialogTitle
               key={"main-title"}
